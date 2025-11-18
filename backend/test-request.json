@@ -1,0 +1,84 @@
+{
+  "examDate": "2026-10-22",
+  "weeklySchedule": {
+    "monday": 2,
+    "tuesday": 2,
+    "wednesday": 2,
+    "thursday": 2,
+    "friday": 2,
+    "saturday": 0,
+    "sunday": 0
+  },
+  "themes": [
+    {
+      "id": 1,
+      "title": "Derecho Administrativo General",
+      "hours": 45,
+      "priority": 3,
+      "block": "Parte 1"
+    },
+    {
+      "id": 2,
+      "title": "Régimen Jurídico de las Administraciones Públicas",
+      "hours": 40,
+      "priority": 3,
+      "block": "Parte 1"
+    },
+    {
+      "id": 3,
+      "title": "Organización de las Administraciones Públicas",
+      "hours": 35,
+      "priority": 3,
+      "block": "Parte 1"
+    },
+    {
+      "id": 4,
+      "title": "Procedimiento Administrativo Común",
+      "hours": 50,
+      "priority": 3,
+      "block": "Parte 2"
+    },
+    {
+      "id": 5,
+      "title": "Actos Administrativos",
+      "hours": 40,
+      "priority": 3,
+      "block": "Parte 2"
+    },
+    {
+      "id": 6,
+      "title": "Recursos Administrativos",
+      "hours": 35,
+      "priority": 3,
+      "block": "Parte 2"
+    },
+    {
+      "id": 7,
+      "title": "Contratos del Sector Público",
+      "hours": 60,
+      "priority": 3,
+      "block": "Parte 3"
+    },
+    {
+      "id": 8,
+      "title": "Gestión de Contratos",
+      "hours": 45,
+      "priority": 3,
+      "block": "Parte 3"
+    },
+    {
+      "id": 9,
+      "title": "Régimen de Bienes de las Administraciones",
+      "hours": 30,
+      "priority": 3,
+      "block": "Parte 3"
+    },
+    {
+      "id": 10,
+      "title": "Régimen de Personal",
+      "hours": 25,
+      "priority": 0.1,
+      "block": "Parte 4"
+    }
+  ]
+}

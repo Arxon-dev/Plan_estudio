@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Theme Parts Stats</title>
+</head>
+<body>
+    <h1>Test Theme Parts Stats</h1>
+    <button onclick="testThemeParts()">Probar Theme Parts Stats</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function testThemeParts() {
+            try {
+                // Probar con el plan ID 96
+                const response = await fetch('http://localhost:3000/api/study-plans/96/theme-parts-stats');
+                const data = await response.json();
+                
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                
+                // Buscar temas específicos que deberían estar desglosados
+                const temasInteres = [6, 7, 15, 16, 21];
+                const temasEncontrados = data.themePartsStats.filter(t => temasInteres.includes(t.themeId));
+                
+                console.log('Temas de interés encontrados:', temasEncontrados);
+                
+                // Verificar si están desglosados por partes
+                temasEncontrados.forEach(tema => {
+                    console.log(`Tema ${tema.themeId} (${tema.themeName}): ${tema.parts.length} partes`);
+                    tema.parts.forEach(part => {
+                        console.log(`  - ${part.partLabel}: ${part.totalSessions} sesiones, ${part.totalHours}h`);
+                    });
+                });
+                
+            } catch (error) {
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

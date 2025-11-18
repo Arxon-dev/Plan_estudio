@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Distribución Equitativa</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Test de Distribución Equitativa por Bloques</h1>
+    
+    <div class="test-section">
+        <h2>Verificación de Endpoints</h2>
+        <button onclick="testEndpoints()">Probar Endpoints</button>
+        <div id="endpoint-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Datos de Distribución</h2>
+        <button onclick="testDistribution()">Probar Distribución</button>
+        <div id="distribution-results"></div>
+    </div>
+
+    <script>
+        async function testEndpoints() {
+            const results = document.getElementById('endpoint-results');
+            results.innerHTML = '<p>Probando endpoints...</p>';
+            
+            try {
+                // Test equitable distribution endpoint
+                const distributionResponse = await fetch('http://localhost:3000/api/study-plans/96/equitable-distribution');
+                const distributionData = distributionResponse.ok ? await distributionResponse.json() : null;
+                
+                // Test theme parts stats endpoint  
+                const partsResponse = await fetch('http://localhost:3000/api/study-plans/96/theme-parts-stats');
+                const partsData = partsResponse.ok ? await partsResponse.json() : null;
+                
+                let html = '<h3>Resultados:</h3>';
+                
+                // Verificar distribución
+                if (distributionData && distributionData.distributionByComplexity) {
+                    const themes = [
+                        ...(distributionData.distributionByComplexity.LOW || []),
+                        ...(distributionData.distributionByComplexity.MEDIUM || []),
+                        ...(distributionData.distributionByComplexity.HIGH || [])
+                    ];
+                    
+                    const bloques = {
+                        'Bloque 1 - Organización': themes.filter(t => t.theme.id >= 1 && t.theme.id <= 6).length,
+                        'Bloque 2 - Jurídico-Social': themes.filter(t => t.theme.id >= 7 && t.theme.id <= 14).length,
+                        'Bloque 3 - Seguridad Nacional': themes.filter(t => t.theme.id >= 15 && t.theme.id <= 21).length
+                    };
+                    
+                    html += '<h4>Distribución por Bloques:</h4><ul>';
+                    for (const [bloque, count] of Object.entries(bloques)) {
+                        html += `<li class="${count > 0 ? 'success' : 'error'}">${bloque}: ${count} temas</li>`;
+                    }
+                    html += '</ul>';
+                } else {
+                    html += '<p class="error">Error al obtener distribución</p>';
+                }
+                
+                // Verificar partes
+                if (partsData && partsData.themePartsStats) {
+                    const temasConPartes = partsData.themePartsStats.filter(t => t.parts.length > 1);
+                    
+                    html += '<h4>Temas Desglosados:</h4><ul>';
+                    temasConPartes.forEach(tema => {
+                        html += `<li class="success">${tema.themeName}: ${tema.parts.length} partes</li>`;
+                    });
+                    
+                    if (temasConPartes.length === 0) {
+                        html += '<li class="error">No hay temas desglosados</li>';
+                    }
+                    html += '</ul>';
+                } else {
+                    html += '<p class="error">Error al obtener estadísticas de partes</p>';
+                }
+                
+                results.innerHTML = html;
+                
+            } catch (error) {
+                results.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testDistribution() {
+            const results = document.getElementById('distribution-results');
+            results.innerHTML = '<p>Probando distribución...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/study-plans/96/equitable-distribution');
+                const data = response.ok ? await response.json() : null;
+                
+                if (data && data.distributionByComplexity) {
+                    const themes = [
+                        ...(data.distributionByComplexity.LOW || []),
+                        ...(data.distributionByComplexity.MEDIUM || []),
+                        ...(data.distributionByComplexity.HIGH || [])
+                    ];
+                    
+                    // Agrupar por bloques
+                    const bloques = {
+                        'Bloque 1 - Organización': themes.filter(t => t.theme.id >= 1 && t.theme.id <= 6),
+                        'Bloque 2 - Jurídico-Social': themes.filter(t => t.theme.id >= 7 && t.theme.id <= 14),
+                        'Bloque 3 - Seguridad Nacional': themes.filter(t => t.theme.id >= 15 && t.theme.id <= 21)
+                    };
+                    
+                    let html = '<h3>Análisis de Equidad por Bloques:</h3>';
+                    
+                    for (const [bloqueNombre, temasBloque] of Object.entries(bloques)) {
+                        if (temasBloque.length > 0) {
+                            const sesiones = temasBloque.map(t => t.totalSessions);
+                            const maxSesiones = Math.max(...sesiones);
+                            const minSesiones = Math.min(...sesiones);
+                            const diferencia = maxSesiones - minSesiones;
+                            const esEquitativo = diferencia <= 15;
+                            
+                            html += `<div class="test-section">`;
+                            html += `<h4>${bloqueNombre} (${temasBloque.length} temas)</h4>`;
+                            html += `<p class="${esEquitativo ? 'success' : 'error'}">`;
+                            html += `${esEquitativo ? '✅' : '⚠️'} Equidad: ${diferencia} sesiones de diferencia</p>`;
+                            html += '<ul>';
+                            temasBloque.forEach(tema => {
+                                html += `<li>${tema.theme.title}: 📚${tema.totalSessions} 🔄${tema.reviewSessions} ⏱️${tema.totalHours}h</li>`;
+                            });
+                            html += '</ul></div>';
+                        }
+                    }
+                    
+                    results.innerHTML = html;
+                } else {
+                    results.innerHTML = '<p class="error">No se pudieron obtener los datos de distribución</p>';
+                }
+                
+            } catch (error) {
+                results.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

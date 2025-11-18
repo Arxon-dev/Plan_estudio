@@ -1,0 +1,350 @@
+=== Informe del Plan de Estudio ===
+Plan ID: 83
+Fecha inicio: 2025-11-17
+Fecha fin: 2026-10-20
+Total de días: 338
+
+=== Detalle por día ===
+2025-11-17 | progreso: 0.3% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 2: Ley Orgánica 5/2005, de la Defensa Nacional; Bloque ORGANIZACION · Tema 3: Ley 40/2015, de Régimen Jurídico del Sector Público
+2025-11-18 | progreso: 0.59% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 3: Ley 40/2015, de Régimen Jurídico del Sector Público; Bloque ORGANIZACION · Tema 4: Real Decreto 205/2024, Ministerio de Defensa
+2025-11-19 | progreso: 0.89% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 4: Real Decreto 205/2024, Ministerio de Defensa; Bloque ORGANIZACION · Tema 5: Real Decreto 521/2020, Organización Básica de las Fuerzas Armadas
+2025-11-20 | progreso: 1.18% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 5: Real Decreto 521/2020, Organización Básica de las Fuerzas Armadas; Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2025-11-21 | progreso: 1.48% | estudio: 3 | límite: 2 | cumple: No | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar; Bloque ORGANIZACION · Tema 1: Constitución Española de 1978. Títulos III, IV, V, VI y VIII
+2025-11-22 | progreso: 1.78% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2025-11-23 | progreso: 2.07% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 2: Real Decreto 96/2009, Reales Ordenanzas para las Fuerzas Armadas
+2025-11-24 | progreso: 2.37% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 2: Real Decreto 96/2009, Reales Ordenanzas para las Fuerzas Armadas
+2025-11-25 | progreso: 2.66% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 3: Ley Orgánica 9/2011, Derechos y Deberes FAS
+2025-11-26 | progreso: 2.96% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 3: Ley 40/2015, de Régimen Jurídico del Sector Público
+2025-11-27 | progreso: 3.25% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 4: Real Decreto 205/2024, Ministerio de Defensa
+2025-11-28 | progreso: 3.55% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar
+2025-11-29 | progreso: 3.85% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2025-11-30 | progreso: 4.14% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar
+2025-12-01 | progreso: 4.44% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar
+2025-12-02 | progreso: 4.73% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar
+2025-12-03 | progreso: 5.03% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 3: Ley Orgánica 9/2011, Derechos y Deberes FAS
+2025-12-04 | progreso: 5.33% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 3: Ley Orgánica 9/2011, Derechos y Deberes FAS; Bloque JURIDICO_SOCIAL · Tema 4: Ley Orgánica 8/2014, Régimen Disciplinario de las Fuerzas Armadas
+2025-12-05 | progreso: 5.62% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 4: Ley Orgánica 8/2014, Régimen Disciplinario de las Fuerzas Armadas; Bloque JURIDICO_SOCIAL · Tema 5: Real Decreto 176/2014, Iniciativas y Quejas
+2025-12-06 | progreso: 5.92% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2025-12-07 | progreso: 6.21% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 5: Real Decreto 176/2014, Iniciativas y Quejas; Bloque JURIDICO_SOCIAL · Tema 6: Ley Orgánica 3/2007, igualdad efectiva entre mujeres y hombres
+2025-12-08 | progreso: 6.51% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 6: Ley Orgánica 3/2007, igualdad efectiva entre mujeres y hombres
+2025-12-09 | progreso: 6.8% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 6: Ley Orgánica 3/2007, igualdad efectiva entre mujeres y hombres
+2025-12-10 | progreso: 7.1% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 7: Observatorio militar para la igualdad entre mujeres y hombres en las Fuerzas Armadas
+2025-12-11 | progreso: 7.4% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 7: Observatorio militar para la igualdad entre mujeres y hombres en las Fuerzas Armadas; Bloque JURIDICO_SOCIAL · Tema 8: Ley 39/2015, Procedimiento Administrativo Común de las Administraciones Públicas
+2025-12-12 | progreso: 7.69% | estudio: 5 | límite: 2 | cumple: No | Temas: Bloque JURIDICO_SOCIAL · Tema 8: Ley 39/2015, Procedimiento Administrativo Común de las Administraciones Públicas; Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021; Bloque ORGANIZACION · Tema 1: Constitución Española de 1978. Títulos III, IV, V, VI y VIII; Bloque ORGANIZACION · Tema 3: Ley 40/2015, de Régimen Jurídico del Sector Público; Bloque ORGANIZACION · Tema 5: Real Decreto 521/2020, Organización Básica de las Fuerzas Armadas
+2025-12-13 | progreso: 7.99% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2025-12-14 | progreso: 8.28% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 2: PDC-01(B) Doctrina para el empleo de las FAS
+2025-12-15 | progreso: 8.58% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 2: PDC-01(B) Doctrina para el empleo de las FAS
+2025-12-16 | progreso: 8.88% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 2: PDC-01(B) Doctrina para el empleo de las FAS
+2025-12-17 | progreso: 9.17% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 3: Organización de las Naciones Unidas (ONU)
+2025-12-18 | progreso: 9.47% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 3: Organización de las Naciones Unidas (ONU); Bloque SEGURIDAD_NACIONAL · Tema 4: Organización del Tratado del Atlántico Norte (OTAN)
+2025-12-19 | progreso: 9.76% | estudio: 5 | límite: 2 | cumple: No | Temas: Bloque SEGURIDAD_NACIONAL · Tema 4: Organización del Tratado del Atlántico Norte (OTAN); Bloque SEGURIDAD_NACIONAL · Tema 5: Organización para la Seguridad y Cooperación en Europa (OSCE); Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar; Bloque JURIDICO_SOCIAL · Tema 4: Ley Orgánica 8/2014, Régimen Disciplinario de las Fuerzas Armadas
+2025-12-20 | progreso: 10.06% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2025-12-21 | progreso: 10.36% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 6: Unión Europea (UE)
+2025-12-22 | progreso: 10.65% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 6: Unión Europea (UE)
+2025-12-23 | progreso: 10.95% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 7: España y su participación en Misiones Internacionales
+2025-12-24 | progreso: 11.24% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 7: España y su participación en Misiones Internacionales
+2025-12-25 | progreso: 11.54% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 7: España y su participación en Misiones Internacionales
+2025-12-26 | progreso: 11.83% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2025-12-27 | progreso: 12.13% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2025-12-28 | progreso: 12.43% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2025-12-29 | progreso: 12.72% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2025-12-30 | progreso: 13.02% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2025-12-31 | progreso: 13.31% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-01 | progreso: 13.61% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 8: Ley 39/2015, Procedimiento Administrativo Común de las Administraciones Públicas
+2026-01-02 | progreso: 13.91% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 8: Ley 39/2015, Procedimiento Administrativo Común de las Administraciones Públicas; Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-01-03 | progreso: 14.2% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-04 | progreso: 14.5% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-01-05 | progreso: 14.79% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-01-06 | progreso: 15.09% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-01-07 | progreso: 15.38% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-01-08 | progreso: 15.68% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 4: Organización del Tratado del Atlántico Norte (OTAN)
+2026-01-09 | progreso: 15.98% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 5: Organización para la Seguridad y Cooperación en Europa (OSCE)
+2026-01-10 | progreso: 16.27% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-11 | progreso: 16.57% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-01-12 | progreso: 16.86% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-01-13 | progreso: 17.16% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-14 | progreso: 17.46% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 4: Ley Orgánica 8/2014, Régimen Disciplinario de las Fuerzas Armadas
+2026-01-15 | progreso: 17.75% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 8: Ley 39/2015, Procedimiento Administrativo Común de las Administraciones Públicas
+2026-01-16 | progreso: 18.05% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 8: Ley 39/2015, Procedimiento Administrativo Común de las Administraciones Públicas
+2026-01-17 | progreso: 18.34% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-18 | progreso: 18.64% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-19 | progreso: 18.93% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-20 | progreso: 19.23% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-21 | progreso: 19.53% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar
+2026-01-22 | progreso: 19.82% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-23 | progreso: 20.12% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-24 | progreso: 20.41% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-25 | progreso: 20.71% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-26 | progreso: 21.01% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-27 | progreso: 21.3% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-01-28 | progreso: 21.6% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-01-29 | progreso: 21.89% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-30 | progreso: 22.19% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-01-31 | progreso: 22.49% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-01 | progreso: 22.78% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-02 | progreso: 23.08% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-03 | progreso: 23.37% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-04 | progreso: 23.67% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-02-05 | progreso: 23.96% | estudio: 3 | límite: 2 | cumple: No | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar; Bloque JURIDICO_SOCIAL · Tema 4: Ley Orgánica 8/2014, Régimen Disciplinario de las Fuerzas Armadas
+2026-02-06 | progreso: 24.26% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-02-07 | progreso: 24.56% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-08 | progreso: 24.85% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-09 | progreso: 25.15% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-10 | progreso: 25.44% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-11 | progreso: 25.74% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-12 | progreso: 26.04% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-02-13 | progreso: 26.33% | estudio: 4 | límite: 2 | cumple: No | Temas: Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021; Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-02-14 | progreso: 26.63% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-15 | progreso: 26.92% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-16 | progreso: 27.22% | estudio: 1 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-02-17 | progreso: 27.51% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar
+2026-02-18 | progreso: 27.81% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-19 | progreso: 28.11% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-20 | progreso: 28.4% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-21 | progreso: 28.7% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-22 | progreso: 28.99% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-23 | progreso: 29.29% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-24 | progreso: 29.59% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-02-25 | progreso: 29.88% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque JURIDICO_SOCIAL · Tema 1: Ley 8/2006, Tropa y Marinería / Ley 39/2007 de la Carrera Militar; Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA
+2026-02-26 | progreso: 30.18% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque ORGANIZACION · Tema 6: Instrucciones EMAD, ET, ARMADA y EA; Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-02-27 | progreso: 30.47% | estudio: 2 | límite: 2 | cumple: Sí | Temas: Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021; Bloque SEGURIDAD_NACIONAL · Tema 1: Ley 36/2015, Seguridad Nacional / RD 1150/2021, Estrategia de Seguridad Nacional 2021
+2026-02-28 | progreso: 30.77% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-01 | progreso: 31.07% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-02 | progreso: 31.36% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-03 | progreso: 31.66% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-04 | progreso: 31.95% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-05 | progreso: 32.25% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-06 | progreso: 32.54% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-07 | progreso: 32.84% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-08 | progreso: 33.14% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-09 | progreso: 33.43% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-10 | progreso: 33.73% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-11 | progreso: 34.02% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-12 | progreso: 34.32% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-13 | progreso: 34.62% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-14 | progreso: 34.91% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-15 | progreso: 35.21% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-16 | progreso: 35.5% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-17 | progreso: 35.8% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-18 | progreso: 36.09% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-19 | progreso: 36.39% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-20 | progreso: 36.69% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-21 | progreso: 36.98% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-22 | progreso: 37.28% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-23 | progreso: 37.57% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-24 | progreso: 37.87% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-25 | progreso: 38.17% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-26 | progreso: 38.46% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-27 | progreso: 38.76% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-28 | progreso: 39.05% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-29 | progreso: 39.35% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-30 | progreso: 39.64% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-03-31 | progreso: 39.94% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-01 | progreso: 40.24% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-02 | progreso: 40.53% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-03 | progreso: 40.83% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-04 | progreso: 41.12% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-05 | progreso: 41.42% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-06 | progreso: 41.72% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-07 | progreso: 42.01% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-08 | progreso: 42.31% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-09 | progreso: 42.6% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-10 | progreso: 42.9% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-11 | progreso: 43.2% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-12 | progreso: 43.49% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-13 | progreso: 43.79% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-14 | progreso: 44.08% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-15 | progreso: 44.38% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-16 | progreso: 44.67% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-17 | progreso: 44.97% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-18 | progreso: 45.27% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-19 | progreso: 45.56% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-20 | progreso: 45.86% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-21 | progreso: 46.15% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-22 | progreso: 46.45% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-23 | progreso: 46.75% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-24 | progreso: 47.04% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-25 | progreso: 47.34% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-26 | progreso: 47.63% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-27 | progreso: 47.93% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-28 | progreso: 48.22% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-29 | progreso: 48.52% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-04-30 | progreso: 48.82% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-05-01 | progreso: 49.11% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-05-02 | progreso: 49.41% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-05-03 | progreso: 49.7% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-05-04 | progreso: 50% | estudio: 0 | límite: 2 | cumple: Sí | Temas: -
+2026-05-05 | progreso: 50.3% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-06 | progreso: 50.59% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-07 | progreso: 50.89% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-08 | progreso: 51.18% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-09 | progreso: 51.48% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-10 | progreso: 51.78% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-11 | progreso: 52.07% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-12 | progreso: 52.37% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-13 | progreso: 52.66% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-14 | progreso: 52.96% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-15 | progreso: 53.25% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-16 | progreso: 53.55% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-17 | progreso: 53.85% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-18 | progreso: 54.14% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-19 | progreso: 54.44% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-20 | progreso: 54.73% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-21 | progreso: 55.03% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-22 | progreso: 55.33% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-23 | progreso: 55.62% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-24 | progreso: 55.92% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-25 | progreso: 56.21% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-26 | progreso: 56.51% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-27 | progreso: 56.8% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-28 | progreso: 57.1% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-29 | progreso: 57.4% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-30 | progreso: 57.69% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-05-31 | progreso: 57.99% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-01 | progreso: 58.28% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-02 | progreso: 58.58% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-03 | progreso: 58.88% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-04 | progreso: 59.17% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-05 | progreso: 59.47% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-06 | progreso: 59.76% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-07 | progreso: 60.06% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-08 | progreso: 60.36% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-09 | progreso: 60.65% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-10 | progreso: 60.95% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-11 | progreso: 61.24% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-12 | progreso: 61.54% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-13 | progreso: 61.83% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-14 | progreso: 62.13% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-15 | progreso: 62.43% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-16 | progreso: 62.72% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-17 | progreso: 63.02% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-18 | progreso: 63.31% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-19 | progreso: 63.61% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-20 | progreso: 63.91% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-21 | progreso: 64.2% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-22 | progreso: 64.5% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-23 | progreso: 64.79% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-24 | progreso: 65.09% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-25 | progreso: 65.38% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-26 | progreso: 65.68% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-27 | progreso: 65.98% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-28 | progreso: 66.27% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-29 | progreso: 66.57% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-06-30 | progreso: 66.86% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-01 | progreso: 67.16% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-02 | progreso: 67.46% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-03 | progreso: 67.75% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-04 | progreso: 68.05% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-05 | progreso: 68.34% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-06 | progreso: 68.64% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-07 | progreso: 68.93% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-08 | progreso: 69.23% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-09 | progreso: 69.53% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-10 | progreso: 69.82% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-11 | progreso: 70.12% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-12 | progreso: 70.41% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-13 | progreso: 70.71% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-14 | progreso: 71.01% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-15 | progreso: 71.3% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-16 | progreso: 71.6% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-17 | progreso: 71.89% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-18 | progreso: 72.19% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-19 | progreso: 72.49% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-20 | progreso: 72.78% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-21 | progreso: 73.08% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-22 | progreso: 73.37% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-23 | progreso: 73.67% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-24 | progreso: 73.96% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-25 | progreso: 74.26% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-26 | progreso: 74.56% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-27 | progreso: 74.85% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-28 | progreso: 75.15% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-29 | progreso: 75.44% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-30 | progreso: 75.74% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-07-31 | progreso: 76.04% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-01 | progreso: 76.33% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-02 | progreso: 76.63% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-03 | progreso: 76.92% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-04 | progreso: 77.22% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-05 | progreso: 77.51% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-06 | progreso: 77.81% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-07 | progreso: 78.11% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-08 | progreso: 78.4% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-09 | progreso: 78.7% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-10 | progreso: 78.99% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-11 | progreso: 79.29% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-12 | progreso: 79.59% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-13 | progreso: 79.88% | estudio: 0 | límite: 4 | cumple: Sí | Temas: -
+2026-08-14 | progreso: 80.18% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-15 | progreso: 80.47% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-16 | progreso: 80.77% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-17 | progreso: 81.07% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-18 | progreso: 81.36% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-19 | progreso: 81.66% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-20 | progreso: 81.95% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-21 | progreso: 82.25% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-22 | progreso: 82.54% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-23 | progreso: 82.84% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-24 | progreso: 83.14% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-25 | progreso: 83.43% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-26 | progreso: 83.73% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-27 | progreso: 84.02% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-28 | progreso: 84.32% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-29 | progreso: 84.62% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-30 | progreso: 84.91% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-08-31 | progreso: 85.21% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-01 | progreso: 85.5% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-02 | progreso: 85.8% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-03 | progreso: 86.09% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-04 | progreso: 86.39% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-05 | progreso: 86.69% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-06 | progreso: 86.98% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-07 | progreso: 87.28% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-08 | progreso: 87.57% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-09 | progreso: 87.87% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-10 | progreso: 88.17% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-11 | progreso: 88.46% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-12 | progreso: 88.76% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-13 | progreso: 89.05% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-14 | progreso: 89.35% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-15 | progreso: 89.64% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-16 | progreso: 89.94% | estudio: 0 | límite: 6 | cumple: Sí | Temas: -
+2026-09-17 | progreso: 90.24% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-18 | progreso: 90.53% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-19 | progreso: 90.83% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-20 | progreso: 91.12% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-21 | progreso: 91.42% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-22 | progreso: 91.72% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-23 | progreso: 92.01% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-24 | progreso: 92.31% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-25 | progreso: 92.6% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-26 | progreso: 92.9% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-27 | progreso: 93.2% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-28 | progreso: 93.49% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-29 | progreso: 93.79% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-09-30 | progreso: 94.08% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-01 | progreso: 94.38% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-02 | progreso: 94.67% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-03 | progreso: 94.97% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-04 | progreso: 95.27% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-05 | progreso: 95.56% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-06 | progreso: 95.86% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-07 | progreso: 96.15% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-08 | progreso: 96.45% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-09 | progreso: 96.75% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-10 | progreso: 97.04% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-11 | progreso: 97.34% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-12 | progreso: 97.63% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-13 | progreso: 97.93% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-14 | progreso: 98.22% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-15 | progreso: 98.52% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-16 | progreso: 98.82% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-17 | progreso: 99.11% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-18 | progreso: 99.41% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-19 | progreso: 99.7% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+2026-10-20 | progreso: 100% | estudio: 0 | límite: 8 | cumple: Sí | Temas: -
+
+=== Resumen ===
+Días que cumplen: 333
+Días que NO cumplen: 5
+Porcentaje de cumplimiento: 98.52%
