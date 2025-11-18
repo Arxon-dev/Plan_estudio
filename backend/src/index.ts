@@ -8,7 +8,7 @@ import { errorHandler } from './middleware/errorHandler';
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 const routes = require('./routes').default;
 
@@ -60,10 +60,12 @@ async function startServer() {
     }
 
     // Iniciar servidor
-    app.listen(PORT, () => {
-      console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-      console.log(`📚 API disponible en http://localhost:${PORT}/api`);
-      console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
+    // En producción (Docker/Railway), escuchar en 0.0.0.0 para aceptar conexiones externas
+    const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+    app.listen(PORT, host, () => {
+      console.log(`🚀 Servidor corriendo en http://${host}:${PORT}`);
+      console.log(`📚 API disponible en http://${host}:${PORT}/api`);
+      console.log(`🏥 Health check: http://${host}:${PORT}/api/health`);
     });
   } catch (error) {
     console.error('❌ Error al iniciar el servidor:', error);
