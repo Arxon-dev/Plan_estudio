@@ -5,6 +5,8 @@ import type { StudyPlan, PlanProgress, StudySession } from '../services/studyPla
 import { useAuth } from '../contexts/AuthContext';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 // Helper para formatear horas de manera más legible
 const formatHours = (hours: number | string): string => {
@@ -55,6 +57,33 @@ export const Dashboard: React.FC = () => {
   useEffect(() => {
     loadDashboardData();
   }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+    const raw = localStorage.getItem('user');
+    if (!raw) return;
+    const id = JSON.parse(raw).id;
+    const key = `onboarding:v1:${id}`;
+    const seen = localStorage.getItem(key);
+    if (seen === 'done') return;
+    const hasPlan = !!(plan && progress);
+    const steps = hasPlan
+      ? [
+          { element: '#tour-dashboard-title', popover: { title: 'Inicio', description: 'Estado general de tu plan.' } },
+          { element: '#tour-agenda-btn', popover: { title: 'Agenda de hoy', description: 'Accede a tus sesiones de hoy.' } },
+          { element: '#tour-sessions-card', popover: { title: 'Sesiones', description: 'Calendario completo de estudio.' } },
+          { element: '#tour-themes-card', popover: { title: 'Temas', description: 'Explora los 21 temas.' } },
+          { element: '#tour-manual-card', popover: { title: 'Editor manual', description: 'Reorganiza sesiones a tu manera.' } },
+          { element: '#tour-smart-card', popover: { title: 'Calendario inteligente', description: 'Genera un plan optimizado.' } },
+        ]
+      : [
+          { element: '#tour-dashboard-title', popover: { title: 'Bienvenido', description: 'Aquí verás tu progreso cuando tengas plan.' } },
+          { element: '#tour-smart-card', popover: { title: 'Crear calendario', description: 'Empieza creando tu calendario inteligente.' } },
+        ];
+    const d = driver({ steps, showProgress: true, allowClose: true });
+    d.drive();
+    localStorage.setItem(key, 'done');
+  }, [isLoading, plan, progress]);
 
   const loadDashboardData = async () => {
     try {
@@ -121,7 +150,7 @@ export const Dashboard: React.FC = () => {
         {/* Header */}
         <header className="bg-white shadow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Plan de Estudio</h1>
+            <h1 id="tour-dashboard-title" className="text-2xl font-bold text-gray-900">Plan de Estudio</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">
                 ¡Hola, {user?.firstName}!
@@ -142,20 +171,21 @@ export const Dashboard: React.FC = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Aún no tienes un plan de estudio
             </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Crea tu primer plan de estudio personalizado con nuestro Calendario Inteligente.
-              <br />
-              Te ayudaremos a organizar tu tiempo y maximizar tu aprendizaje.
-            </p>
-            <button
-              onClick={() => navigate('/smart-calendar')}
-              className="btn-primary text-lg px-8 py-3"
-            >
-              🧠 Crear Mi Calendario Inteligente
-            </button>
-          </div>
-        </main>
-      </div>
+          <p className="text-lg text-gray-600 mb-8">
+            Crea tu primer plan de estudio personalizado con nuestro Calendario Inteligente.
+            <br />
+            Te ayudaremos a organizar tu tiempo y maximizar tu aprendizaje.
+          </p>
+          <button
+            onClick={() => navigate('/smart-calendar')}
+            id="tour-smart-card"
+            className="btn-primary text-lg px-8 py-3"
+          >
+            🧠 Crear Mi Calendario Inteligente
+          </button>
+        </div>
+      </main>
+    </div>
     );
   }
 
@@ -164,13 +194,14 @@ export const Dashboard: React.FC = () => {
       {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Plan de Estudio</h1>
+          <h1 id="tour-dashboard-title" className="text-2xl font-bold text-gray-900">Plan de Estudio</h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">
               ¡Hola, {user?.firstName}!
             </span>
             <button
               onClick={() => navigate('/today')}
+              id="tour-agenda-btn"
               className="px-3 py-1.5 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors font-medium"
               title="Ver agenda de hoy"
             >
@@ -178,6 +209,7 @@ export const Dashboard: React.FC = () => {
             </button>
             <button 
               onClick={() => navigate('/profile')} 
+              id="tour-profile-btn"
               className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors font-medium"
               title="Ver mi perfil"
             >
@@ -347,6 +379,7 @@ export const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <button
             onClick={() => navigate('/sessions')}
+            id="tour-sessions-card"
             className="card hover:shadow-lg transition-shadow cursor-pointer text-left"
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-2">📚 Ver Todas las Sesiones</h3>
@@ -355,6 +388,7 @@ export const Dashboard: React.FC = () => {
 
           <button
             onClick={() => navigate('/themes')}
+            id="tour-themes-card"
             className="card hover:shadow-lg transition-shadow cursor-pointer text-left"
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-2">📖 Ver Temas</h3>
@@ -364,6 +398,7 @@ export const Dashboard: React.FC = () => {
 
           <button
             onClick={() => navigate(`/manual-planner?planId=${plan.id}`)}
+            id="tour-manual-card"
             className="card hover:shadow-lg transition-shadow cursor-pointer text-left bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200"
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-2">✏️ Editar Manualmente</h3>
@@ -372,6 +407,7 @@ export const Dashboard: React.FC = () => {
           
           <button
             onClick={() => navigate('/smart-calendar')}
+            id="tour-smart-card"
             className="card hover:shadow-lg transition-shadow cursor-pointer text-left bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200"
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-2">🧠 Calendario Inteligente</h3>

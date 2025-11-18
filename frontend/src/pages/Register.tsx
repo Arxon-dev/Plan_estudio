@@ -37,11 +37,17 @@ export const Register: React.FC = () => {
 
     setIsLoading(true);
 
-    try {
+  try {
       await register(formData.email, formData.password, formData.firstName, formData.lastName);
       toast.success('¡Cuenta creada exitosamente!');
+      const rawUser = localStorage.getItem('user');
+      if (rawUser) {
+        const u = JSON.parse(rawUser);
+        localStorage.setItem(`onboarding:v1:${u.id}`, 'pending');
+        localStorage.setItem(`onboarding:smart:v1:${u.id}`, 'pending');
+      }
       navigate('/smart-calendar');
-    } catch (error: any) {
+  } catch (error: any) {
       toast.error(error.response?.data?.error || 'Error al registrarse');
     } finally {
       setIsLoading(false);

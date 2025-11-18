@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { studyPlanService } from '../services/studyPlanService';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 interface Theme {
   id: number;
@@ -78,6 +80,26 @@ const SmartCalendar: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [bufferWarning, setBufferWarning] = useState<any>(null);
+
+  useEffect(() => {
+    const raw = localStorage.getItem('user');
+    if (!raw) return;
+    const id = JSON.parse(raw).id;
+    const key = `onboarding:smart:v1:${id}`;
+    const seen = localStorage.getItem(key);
+    if (seen === 'done') return;
+    const steps = [
+      { element: '#tour-smart-back', popover: { title: 'Volver a inicio', description: 'Regresa al panel principal.' } },
+      { element: '#tour-start-date', popover: { title: 'Fecha de inicio', description: 'Selecciona cuándo empiezas.' } },
+      { element: '#tour-exam-date', popover: { title: 'Fecha de examen', description: 'Indica el día del examen.' } },
+      { element: '#tour-block-toggle-1', popover: { title: 'Bloque 1', description: 'Selecciona o deselecciona todos los temas del bloque.' } },
+      { element: '#tour-weekly-total', popover: { title: 'Horas semanales', description: 'Resumen de horas disponibles por semana.' } },
+      { element: '#tour-generate-btn', popover: { title: 'Generar calendario', description: 'Crea el plan con rotación y repasos.' } },
+    ];
+    const d = driver({ steps, showProgress: true, allowClose: true });
+    d.drive();
+    localStorage.setItem(key, 'done');
+  }, []);
 
   // Manejar cambios en el horario semanal
   const handleScheduleChange = (day: keyof WeeklySchedule, value: string) => {
@@ -223,6 +245,7 @@ const SmartCalendar: React.FC = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/dashboard')}
+              id="tour-smart-back"
               className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -282,6 +305,7 @@ const SmartCalendar: React.FC = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
+                id="tour-start-date"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -295,6 +319,7 @@ const SmartCalendar: React.FC = () => {
                 type="date"
                 value={examDate}
                 onChange={(e) => setExamDate(e.target.value)}
+                id="tour-exam-date"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -365,6 +390,7 @@ const SmartCalendar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => toggleBlock('Bloque 1 – Organización')}
+                  id="tour-block-toggle-1"
                   className="text-sm px-3 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md"
                 >
                   {PREDEFINED_THEMES.filter(t => t.block === 'Bloque 1 – Organización').every(t => selectedThemes.has(t.id))
@@ -455,7 +481,7 @@ const SmartCalendar: React.FC = () => {
             </div>
           </div>
           
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+          <div id="tour-weekly-total" className="mt-6 p-4 bg-blue-50 rounded-lg">
             <p className="text-blue-800 font-medium mb-1">
               📊 Temas seleccionados: {selectedThemes.size} de {PREDEFINED_THEMES.length}
             </p>
@@ -513,6 +539,7 @@ const SmartCalendar: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
+            id="tour-generate-btn"
             className={`px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               loading ? 'opacity-75 cursor-not-allowed' : ''
             }`}

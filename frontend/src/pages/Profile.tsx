@@ -85,6 +85,15 @@ export const Profile: React.FC = () => {
     navigate('/login');
   };
 
+  const handleRelaunchOnboarding = () => {
+    const raw = localStorage.getItem('user');
+    if (!raw) return;
+    const id = JSON.parse(raw).id;
+    localStorage.setItem(`onboarding:v1:${id}`, 'pending');
+    toast.success('Tutorial preparado');
+    navigate('/dashboard');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -195,6 +204,13 @@ export const Profile: React.FC = () => {
         <div className="card mb-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Configuración de Cuenta</h2>
           <div className="space-y-4">
+            <button
+              id="tour-relaunch"
+              onClick={handleRelaunchOnboarding}
+              className="w-full px-4 py-3 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium"
+            >
+              Ver tutorial de bienvenida
+            </button>
             <button
               onClick={handleLogout}
               className="w-full px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
