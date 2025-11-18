@@ -18,6 +18,9 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http:/
   .split(',')
   .map(o => o.trim());
 
+console.log('🔧 CORS_ORIGIN configurado:', process.env.CORS_ORIGIN);
+console.log('✅ Orígenes permitidos:', allowedOrigins);
+
 app.use(cors({
   origin: (origin, callback) => {
     // Permitir peticiones sin origen (p.ej., curl, tests) y orígenes en la lista
