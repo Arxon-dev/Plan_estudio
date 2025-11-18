@@ -12,7 +12,8 @@ RUN npm ci
 # Copiar código fuente
 COPY . .
 
-# Compilar TypeScript
+# Limpiar dist anterior y compilar TypeScript desde cero
+RUN rm -rf dist
 RUN npm run build
 
 # Limpiar devDependencies después de compilar para reducir tamaño
