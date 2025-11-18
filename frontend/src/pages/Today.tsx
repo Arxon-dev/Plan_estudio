@@ -191,7 +191,7 @@ export const Today: React.FC = () => {
               onClick={() => navigate('/dashboard')} 
               className="btn-secondary text-sm"
             >
-              Dashboard
+              Inicio
             </button>
             <button 
               onClick={() => navigate('/profile')} 

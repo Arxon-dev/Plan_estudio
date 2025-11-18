@@ -95,7 +95,7 @@ export const Profile: React.FC = () => {
             onClick={() => navigate('/dashboard')} 
             className="btn-secondary text-sm"
           >
-            Volver al Dashboard
+            Volver a Inicio
           </button>
         </div>
       </header>
