@@ -1,5 +1,3 @@
-import 'tsconfig-paths/register';
-import { register as registerPaths } from 'tsconfig-paths';
 import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -11,18 +9,6 @@ dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
-
-registerPaths({
-  baseUrl: __dirname,
-  paths: {
-    '@controllers/*': ['controllers/*'],
-    '@services/*': ['services/*'],
-    '@models/*': ['models/*'],
-    '@middleware/*': ['middleware/*'],
-    '@config/*': ['config/*'],
-    '@utils/*': ['utils/*'],
-  },
-});
 
 const routes = require('./routes').default;
 
