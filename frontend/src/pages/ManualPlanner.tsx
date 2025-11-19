@@ -18,6 +18,8 @@ interface SessionAssignment {
   themes: Array<{
     theme: Theme;
     hours: number;
+    status: string;
+    isEditable: boolean;
   }>;
 }
 
@@ -52,6 +54,7 @@ export const ManualPlanner: React.FC = () => {
       // Convertir sesiones existentes a formato de asignaciones
       const assignments: SessionAssignment[] = [];
       const sessionsList = sessionsRes.data.sessions || [];
+      
       sessionsList.forEach((session: any) => {
         const sessionDate = new Date(session.scheduledDate);
         let assignment = assignments.find(a => isSameDay(a.date, sessionDate));
@@ -61,9 +64,14 @@ export const ManualPlanner: React.FC = () => {
           assignments.push(assignment);
         }
         
+        // Solo sesiones PENDING son editables
+        const isEditable = session.status === 'PENDING';
+        
         assignment.themes.push({
           theme: session.theme,
           hours: session.scheduledHours,
+          status: session.status,
+          isEditable: isEditable,
         });
       });
 
@@ -115,6 +123,8 @@ export const ManualPlanner: React.FC = () => {
       assignment.themes.push({
         theme: selectedTheme,
         hours: hoursInput,
+        status: 'PENDING',
+        isEditable: true,
       });
 
       return newSessions;
@@ -134,6 +144,14 @@ export const ManualPlanner: React.FC = () => {
       const assignment = newSessions.find(s => isSameDay(s.date, date));
       
       if (assignment) {
+        const themeToRemove = assignment.themes[themeIndex];
+        
+        // Solo permitir eliminar sesiones editables (PENDING)
+        if (!themeToRemove.isEditable) {
+          toast.error('No puedes eliminar sesiones ya completadas o en progreso');
+          return prev;
+        }
+        
         assignment.themes.splice(themeIndex, 1);
         if (assignment.themes.length === 0) {
           return newSessions.filter(s => !isSameDay(s.date, date));
@@ -149,12 +167,15 @@ export const ManualPlanner: React.FC = () => {
   const savePlan = async () => {
     try {
       // Convertir asignaciones a formato de sesiones
+      // Solo guardar sesiones editables (PENDING)
       const sessionsData = sessions.flatMap(assignment =>
-        assignment.themes.map(({ theme, hours }) => ({
-          themeId: theme.id,
-          scheduledDate: assignment.date.toISOString(),
-          scheduledHours: hours,
-        }))
+        assignment.themes
+          .filter(item => item.isEditable) // Solo sesiones PENDING
+          .map(({ theme, hours }) => ({
+            themeId: theme.id,
+            scheduledDate: assignment.date.toISOString(),
+            scheduledHours: hours,
+          }))
       );
 
       await apiClient.post(`/sessions/manual-plan/${planId}`, { sessions: sessionsData });
@@ -165,6 +186,19 @@ export const ManualPlanner: React.FC = () => {
     }
   };
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'COMPLETED':
+        return { icon: '✅', label: 'Completada', color: 'bg-green-100 text-green-800' };
+      case 'IN_PROGRESS':
+        return { icon: '⏸️', label: 'En progreso', color: 'bg-blue-100 text-blue-800' };
+      case 'SKIPPED':
+        return { icon: '⏭️', label: 'Saltada', color: 'bg-yellow-100 text-yellow-800' };
+      default:
+        return null;
+    }
+  };
+  
   const getBlockColor = (block: string) => {
     switch (block) {
       case 'ORGANIZACION':
@@ -212,9 +246,15 @@ export const ManualPlanner: React.FC = () => {
       <div className="max-w-7xl mx-auto py-8 px-4">
         {/* Info */}
         <div className="mb-6">
-          <p className="text-gray-600">
-            Arrastra los temas a los días que deseas estudiarlos
-          </p>
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+            <p className="text-blue-900 font-medium mb-2">
+              📝 Arrastra los temas a los días que deseas estudiarlos
+            </p>
+            <p className="text-blue-700 text-sm">
+              ℹ️ Las sesiones ya completadas, en progreso o saltadas aparecerán bloqueadas y no se pueden editar.
+              Solo puedes modificar las sesiones pendientes.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -301,26 +341,53 @@ export const ManualPlanner: React.FC = () => {
 
                       {/* Temas Asignados */}
                       <div className="space-y-2">
-                        {assignment?.themes.map((item, idx) => (
-                          <div
-                            key={idx}
-                            className={`p-2 rounded border text-xs ${getBlockColor(item.theme.block)}`}
-                          >
-                            <div className="flex items-start justify-between gap-1">
-                              <div className="flex-1">
-                                <div className="font-semibold">T{item.theme.themeNumber}</div>
-                                <div className="line-clamp-2 opacity-90">{item.theme.title}</div>
-                                <div className="mt-1 font-medium">{item.hours}h</div>
+                        {assignment?.themes.map((item, idx) => {
+                          const statusBadge = getStatusBadge(item.status);
+                          const isEditable = item.isEditable;
+                          
+                          return (
+                            <div
+                              key={idx}
+                              className={`p-2 rounded border text-xs ${
+                                isEditable 
+                                  ? getBlockColor(item.theme.block)
+                                  : 'bg-gray-50 border-gray-300 opacity-75'
+                              }`}
+                            >
+                              <div className="flex items-start justify-between gap-1">
+                                <div className="flex-1">
+                                  <div className="font-semibold">T{item.theme.themeNumber}</div>
+                                  <div className="line-clamp-2 opacity-90">{item.theme.title}</div>
+                                  <div className="mt-1 font-medium">{item.hours}h</div>
+                                  
+                                  {/* Mostrar estado si no es editable */}
+                                  {!isEditable && statusBadge && (
+                                    <div className={`mt-1 inline-block px-2 py-0.5 rounded text-xs ${
+                                      statusBadge.color
+                                    }`}>
+                                      {statusBadge.icon} {statusBadge.label}
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                {/* Botón eliminar solo para sesiones editables */}
+                                {isEditable ? (
+                                  <button
+                                    onClick={() => removeThemeFromDate(date, idx)}
+                                    className="text-red-600 hover:text-red-800 transition-colors"
+                                    title="Eliminar sesión"
+                                  >
+                                    ✕
+                                  </button>
+                                ) : (
+                                  <div className="text-gray-400" title="No se puede eliminar">
+                                    🔒
+                                  </div>
+                                )}
                               </div>
-                              <button
-                                onClick={() => removeThemeFromDate(date, idx)}
-                                className="text-red-600 hover:text-red-800"
-                              >
-                                ✕
-                              </button>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   );
