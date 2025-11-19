@@ -6,6 +6,8 @@ import type { StudySession } from '../services/studyPlanService';
 import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, isSameDay, startOfMonth, endOfMonth, addMonths, subMonths, eachDayOfInterval } from 'date-fns';
 import { es } from 'date-fns/locale';
 import toast from 'react-hot-toast';
+import { PDFExportService } from '../services/pdfExportService';
+import { useAuth } from '../contexts/AuthContext';
 
 // Helper para formatear horas de manera más legible
 const formatHours = (hours: number | string): string => {
@@ -66,7 +68,10 @@ export const Sessions: React.FC = () => {
   const [showDayDetailsModal, setShowDayDetailsModal] = useState(false);
   const [selectedDaySessions, setSelectedDaySessions] = useState<StudySession[]>([]);
   const [selectedDayDate, setSelectedDayDate] = useState<Date | null>(null);
+  const [activePlan, setActivePlan] = useState<any>(null);
+  const [isExporting, setIsExporting] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const displayTitle = (s: StudySession): string => {
     if ((s as any).subThemeLabel) {
@@ -92,8 +97,9 @@ export const Sessions: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const activePlan = await studyPlanService.getActivePlan();
-      const planSessions = await studyPlanService.getPlanSessions(activePlan.id);
+      const plan = await studyPlanService.getActivePlan();
+      setActivePlan(plan);
+      const planSessions = await studyPlanService.getPlanSessions(plan.id);
       setSessions(planSessions);
     } catch (error) {
       toast.error('Error al cargar las sesiones');
@@ -226,6 +232,29 @@ export const Sessions: React.FC = () => {
     }
   };
 
+  const handleExportToPDF = async () => {
+    if (!activePlan || !user) {
+      toast.error('No se pudo obtener la información del plan');
+      return;
+    }
+
+    setIsExporting(true);
+    try {
+      await PDFExportService.exportCalendarToPDF({
+        userName: `${user.firstName} ${user.lastName}`,
+        planName: activePlan.name || 'Plan de Estudio',
+        examDate: activePlan.examDate,
+        sessions: sessions,
+      });
+      toast.success('¡PDF generado exitosamente!');
+    } catch (error) {
+      console.error('Error al exportar PDF:', error);
+      toast.error('Error al generar el PDF');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const handleContinueSession = async (sessionId: number) => {
     const session = sessions.find(s => s.id === sessionId);
     if (!session) return;
@@ -312,6 +341,30 @@ export const Sessions: React.FC = () => {
               </button>
               <h1 className="text-2xl font-bold text-gray-900">Calendario de Sesiones</h1>
             </div>
+            
+            {/* Botón Exportar PDF */}
+            <button
+              onClick={handleExportToPDF}
+              disabled={isExporting || sessions.length === 0}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+            >
+              {isExporting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Generando PDF...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  📄 Descargar PDF
+                </>
+              )}
+            </button>
           </div>
         </div>
       </header>
