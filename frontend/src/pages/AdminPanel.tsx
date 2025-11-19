@@ -46,7 +46,7 @@ export const AdminPanel: React.FC = () => {
   const checkAdminStatus = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/check`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/check`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -67,7 +67,7 @@ export const AdminPanel: React.FC = () => {
   const loadStatistics = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
