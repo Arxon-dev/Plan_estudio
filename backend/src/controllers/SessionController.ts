@@ -313,19 +313,166 @@ export class SessionController {
         return;
       }
 
+      // Guardar información original antes de actualizar
+      const originalDate = new Date(session.scheduledDate);
+      const originalHours = Number(session.scheduledHours);
+      const originalThemeId = session.themeId;
+      const originalNotes = session.notes || '';
+
+      // Marcar sesión como saltada
+      const skipReason = reason || 'Sesión omitida';
       await session.update({
         status: SessionStatus.SKIPPED,
-        notes: reason || session.notes,
+        notes: `[SALTADA] ${skipReason} - ${originalDate.toLocaleDateString()}`,
       });
 
-      res.json({
-        message: 'Sesión saltada',
-        session,
-      });
+      console.log(`⏭️ Sesión ${sessionId} saltada. Buscando día para reprogramar...`);
+
+      // Intentar reprogramar automáticamente
+      try {
+        const plan = await StudyPlan.findByPk(session.studyPlanId, {
+          include: [{ model: WeeklySchedule, as: 'weeklySchedule' }],
+        } as any);
+
+        if (!plan || !(plan as any).weeklySchedule) {
+          console.warn('⚠️ No se pudo reprogramar: plan sin horario semanal');
+          res.json({
+            message: 'Sesión saltada (no se pudo reprogramar automáticamente)',
+            session,
+            rescheduled: false,
+          });
+          return;
+        }
+
+        const weekly = (plan as any).weeklySchedule as WeeklySchedule;
+        const examDay = new Date((plan as any).examDate);
+        const bufferEnd = addDays(examDay, -1);
+        
+        // Buscar el siguiente día disponible con capacidad
+        const nextDay = await this.findNextAvailableDay(
+          session.studyPlanId,
+          originalHours,
+          new Date(),
+          bufferEnd,
+          weekly,
+          originalThemeId
+        );
+
+        if (nextDay) {
+          // Crear sesión reprogramada
+          const rescheduledSession = await StudySession.create({
+            studyPlanId: session.studyPlanId,
+            themeId: originalThemeId,
+            scheduledDate: nextDay,
+            scheduledHours: originalHours,
+            status: SessionStatus.PENDING,
+            sessionType: session.sessionType,
+            reviewStage: session.reviewStage,
+            notes: `[REPROGRAMADA] ${originalNotes} (original: ${originalDate.toLocaleDateString()})`,
+          } as any);
+
+          console.log(`✅ Sesión reprogramada para ${nextDay.toLocaleDateString()}`);
+
+          res.json({
+            message: 'Sesión saltada y reprogramada automáticamente',
+            session,
+            rescheduledSession,
+            rescheduled: true,
+            newDate: nextDay.toISOString(),
+          });
+        } else {
+          console.warn('⚠️ No hay días disponibles para reprogramar');
+          res.json({
+            message: 'Sesión saltada (no hay capacidad disponible para reprogramar)',
+            session,
+            rescheduled: false,
+            warning: 'No se encontró espacio disponible en el calendario',
+          });
+        }
+      } catch (rescheduleError) {
+        console.error('⚠️ Error al reprogramar sesión:', rescheduleError);
+        res.json({
+          message: 'Sesión saltada (error al reprogramar)',
+          session,
+          rescheduled: false,
+        });
+      }
     } catch (error) {
       console.error('Error al saltar sesión:', error);
       res.status(500).json({ error: 'Error al saltar sesión' });
     }
+  }
+
+  /**
+   * Encuentra el siguiente día disponible con capacidad suficiente
+   * Aplica límite flexible: ignora límite de temas por día para sesiones reprogramadas
+   */
+  private static async findNextAvailableDay(
+    planId: number,
+    hoursNeeded: number,
+    startFrom: Date,
+    bufferEnd: Date,
+    weeklySchedule: WeeklySchedule,
+    themeId: number
+  ): Promise<Date | null> {
+    let currentDate = addDays(startFrom, 1);
+    currentDate.setHours(0, 0, 0, 0);
+    const bufferEndDay = new Date(bufferEnd);
+    bufferEndDay.setHours(0, 0, 0, 0);
+
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+
+    while (currentDate <= bufferEndDay) {
+      const dayOfWeek = currentDate.getDay();
+      const dayName = dayNames[dayOfWeek];
+      const dayCapacity = Number((weeklySchedule as any)[dayName]) || 0;
+
+      // Si el día no tiene horas configuradas, saltar
+      if (dayCapacity <= 0) {
+        currentDate = addDays(currentDate, 1);
+        continue;
+      }
+
+      // Calcular horas usadas en este día
+      const dayStart = new Date(currentDate);
+      const dayEnd = addDays(dayStart, 1);
+
+      const sessionsInDay = await StudySession.findAll({
+        where: {
+          studyPlanId: planId,
+          status: { [Op.in]: [SessionStatus.PENDING, SessionStatus.IN_PROGRESS] },
+          scheduledDate: { [Op.between]: [dayStart, dayEnd] },
+        },
+      } as any);
+
+      const usedHours = sessionsInDay.reduce(
+        (sum: number, sess: any) => sum + Number(sess.scheduledHours || 0),
+        0
+      );
+      const freeHours = dayCapacity - usedHours;
+
+      // ✅ LÍMITE FLEXIBLE: Si hay capacidad de horas, permitir (ignorar límite de temas)
+      if (freeHours >= hoursNeeded) {
+        // Verificar límite de repasos del mismo tema por día (máximo 2)
+        const sameThemeSessions = sessionsInDay.filter(
+          (sess: any) => sess.themeId === themeId
+        );
+        
+        if (sameThemeSessions.length < 2) {
+          // Día válido encontrado
+          return new Date(currentDate);
+        } else {
+          console.log(
+            `⚠️ Día ${currentDate.toLocaleDateString()} ya tiene ${sameThemeSessions.length} sesiones del tema ${themeId}, buscando otro día...`
+          );
+        }
+      }
+
+      currentDate = addDays(currentDate, 1);
+    }
+
+    // No se encontró día disponible
+    return null;
   }
 
   // Marcar sesión en progreso (parcialmente completada)
