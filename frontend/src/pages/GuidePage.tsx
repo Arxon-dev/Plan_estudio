@@ -364,12 +364,10 @@ const GuidePage = () => {
                 Algunos temas extensos se dividen en partes independientes para facilitar su estudio:
               </p>
               <div className="bg-white p-3 rounded text-sm">
-                <p className="font-semibold text-gray-800 mb-2">Ejemplo: Tema 6 - Organización Internacional</p>
+                <p className="font-semibold text-gray-800 mb-2">Ejemplo: Tema 1 (Bloque 3) - Ley 36/2015 Seguridad Nacional + RD 1150/2021 (2 partes)</p>
                 <ul className="list-disc list-inside space-y-1 text-gray-700 ml-2">
-                  <li>Parte 1: La ONU - Estructura y órganos</li>
-                  <li>Parte 2: La ONU - Funciones y agencias</li>
-                  <li>Parte 3: La OTAN - Historia y miembros</li>
-                  <li>Parte 4: La OTAN - Operaciones y defensa colectiva</li>
+                  <li>Parte 1: Ley 36/2015, Seguridad Nacional</li>
+                  <li>Parte 2: Real Decreto 1150/2021, Estrategia de Seguridad Nacional 2021</li>
                 </ul>
               </div>
               <p className="text-xs text-amber-700 mt-3">
