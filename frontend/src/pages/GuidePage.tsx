@@ -364,10 +364,12 @@ const GuidePage = () => {
                 Algunos temas extensos se dividen en partes independientes para facilitar su estudio:
               </p>
               <div className="bg-white p-3 rounded text-sm">
-                <p className="font-semibold text-gray-800 mb-2">Ejemplo: Tema 1 (Bloque 3) - Ley 36/2015 Seguridad Nacional + RD 1150/2021 (2 partes)</p>
+                <p className="font-semibold text-gray-800 mb-2">Ejemplo: Tema 6 (Bloque 1) - Instrucciones EMAD, ET, ARMADA y EA</p>
                 <ul className="list-disc list-inside space-y-1 text-gray-700 ml-2">
-                  <li>Parte 1: Ley 36/2015, Seguridad Nacional</li>
-                  <li>Parte 2: Real Decreto 1150/2021, Estrategia de Seguridad Nacional 2021</li>
+                  <li>Parte 1: Instrucción 55/2021, EMAD</li>
+                  <li>Parte 2: Instrucción 14/2021, ET</li>
+                  <li>Parte 3: Instrucción 15/2021, ARMADA</li>
+                  <li>Parte 4: Instrucción 6/2025, EA</li>
                 </ul>
               </div>
               <p className="text-xs text-amber-700 mt-3">
