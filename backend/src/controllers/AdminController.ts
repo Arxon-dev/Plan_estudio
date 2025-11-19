@@ -94,19 +94,19 @@ class AdminController {
       });
 
       // Usuarios más activos (top 10 por número de sesiones)
-      const topUsers = await StudySession.findAll({
-        attributes: [
-          'userId',
-          [StudySession.sequelize!.fn('COUNT', StudySession.sequelize!.col('id')), 'sessionCount'],
-        ],
-        group: ['userId'],
-        order: [[StudySession.sequelize!.fn('COUNT', StudySession.sequelize!.col('id')), 'DESC']],
-        limit: 10,
-        raw: true,
-      });
+      const [topUsers] = await StudySession.sequelize!.query(`
+        SELECT 
+          sp.userId,
+          COUNT(ss.id) as sessionCount
+        FROM study_sessions ss
+        INNER JOIN study_plans sp ON ss.studyPlanId = sp.id
+        GROUP BY sp.userId
+        ORDER BY sessionCount DESC
+        LIMIT 10
+      `);
 
       // Obtener detalles de los usuarios más activos
-      const topUserIds = topUsers.map((u: any) => u.userId);
+      const topUserIds = (topUsers as any[]).map((u: any) => u.userId);
       const topUsersDetails = await User.findAll({
         where: {
           id: topUserIds,
@@ -114,10 +114,11 @@ class AdminController {
         attributes: ['id', 'firstName', 'lastName', 'email', 'createdAt'],
       });
 
-      const topUsersWithStats = topUsers.map((stat: any) => {
+      const topUsersWithStats = (topUsers as any[]).map((stat: any) => {
         const userDetail = topUsersDetails.find((u) => u.id === stat.userId);
         return {
-          ...stat,
+          userId: stat.userId,
+          sessionCount: Number(stat.sessionCount),
           firstName: userDetail?.firstName,
           lastName: userDetail?.lastName,
           email: userDetail?.email,
