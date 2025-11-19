@@ -43,9 +43,6 @@ export class PDFExportService {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
-    // Añadir marca de agua en todas las páginas
-    this.addWatermark(doc, pageWidth, pageHeight);
-
     // Header del documento
     this.addHeader(doc, userName, planName, examDate, sessions.length);
 
@@ -57,7 +54,7 @@ export class PDFExportService {
     // Agrupar sesiones por semana
     const sessionsByWeek = this.groupSessionsByWeek(sessions);
 
-    let startY = 65; // Posición inicial después del header
+    let startY = 71; // Posición inicial después del header (ajustado para nuevo texto)
 
     // Generar tabla por cada semana
     Object.entries(sessionsByWeek).forEach(([weekLabel, weekSessions], index) => {
@@ -110,10 +107,6 @@ export class PDFExportService {
           // Añadir footer en cada página
           this.addFooter(doc, pageWidth, pageHeight);
         },
-        willDrawPage: () => {
-          // Añadir marca de agua ANTES del contenido (fondo)
-          this.addWatermark(doc, pageWidth, pageHeight);
-        },
       });
 
       // Actualizar posición Y para la siguiente semana
@@ -138,32 +131,6 @@ export class PDFExportService {
     // Descargar el PDF
     const fileName = `Plan_Estudio_${planName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyyMMdd')}.pdf`;
     doc.save(fileName);
-  }
-
-  /**
-   * Añade marca de agua de OpoMelilla.com
-   */
-  private static addWatermark(doc: jsPDF, pageWidth: number, pageHeight: number): void {
-    // Guardar estado actual del color de texto
-    const currentTextColor = doc.getTextColor();
-    
-    // Configurar para marca de agua (gris muy claro para máxima transparencia)
-    doc.setFontSize(50);
-    doc.setFont('helvetica', 'bold');
-    // Gris super claro (240, 240, 240) para 70% más transparente
-    doc.setTextColor(240, 240, 240);
-    
-    // Rotar y posicionar en el centro
-    const text = 'OpoMelilla.com';
-    
-    // Calcular posición central con rotación
-    doc.text(text, pageWidth / 2, pageHeight / 2, {
-      angle: 45,
-      align: 'center',
-    });
-    
-    // Restaurar color de texto original
-    doc.setTextColor(currentTextColor as any);
   }
 
   /**
@@ -196,20 +163,26 @@ export class PDFExportService {
     doc.text(`Fecha Examen: ${format(new Date(examDate), 'dd/MM/yyyy')}`, 14, 42);
     doc.text(`Total Sesiones: ${totalSessions}`, 14, 48);
 
+    // Mensaje de OpoMelilla.com
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(37, 99, 235); // blue-600
+    doc.text('Prepárate con OpoMelilla.com', 14, 54);
+
     // Fecha de generación
     doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
     doc.text(
       `Generado el ${format(new Date(), "dd/MM/yyyy 'a las' HH:mm", { locale: es })}`,
       doc.internal.pageSize.getWidth() - 14,
-      48,
+      54,
       { align: 'right' }
     );
 
     // Línea separadora
     doc.setDrawColor(200, 200, 200);
     doc.setLineWidth(0.3);
-    doc.line(14, 53, doc.internal.pageSize.getWidth() - 14, 53);
+    doc.line(14, 59, doc.internal.pageSize.getWidth() - 14, 59);
   }
 
   /**
@@ -246,9 +219,6 @@ export class PDFExportService {
     doc.addPage();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-
-    // Marca de agua
-    this.addWatermark(doc, pageWidth, pageHeight);
 
     // Título
     doc.setFontSize(16);
