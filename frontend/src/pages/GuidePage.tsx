@@ -466,11 +466,19 @@ const GuidePage = () => {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-semibold text-green-900 mb-3">⚡ Acciones Rápidas</h3>
               <ul className="space-y-2 text-green-800 text-sm">
-                <li>✅ <strong>Marcar como Completada:</strong> Registra que has terminado una sesión</li>
+                <li>✅ <strong>Marcar como Completada:</strong> Registra que has terminado una sesión. El sistema ajustará automáticamente los intervalos de repaso según tu dificultad.</li>
                 <li>▶️ <strong>Iniciar Sesión:</strong> Marca el inicio de tu estudio (útil para tracking)</li>
-                <li>⏭️ <strong>Saltar Sesión:</strong> Si no puedes estudiar hoy, omite la sesión</li>
+                <li>⏭️ <strong>Saltar Sesión:</strong> Si no puedes estudiar hoy, omite la sesión. El sistema la reprogramará automáticamente para el siguiente día con capacidad disponible.</li>
                 <li>📝 <strong>Añadir Notas:</strong> Guarda apuntes o comentarios sobre tu sesión</li>
               </ul>
+              
+              <div className="mt-3 p-3 bg-green-100 rounded border border-green-300">
+                <p className="text-xs text-green-900 font-medium mb-1">💡 Reprogramación Automática:</p>
+                <p className="text-xs text-green-800">
+                  Cuando saltas una sesión, el sistema busca automáticamente el siguiente día con horas disponibles
+                  y crea una nueva sesión. Respeta tu horario semanal y evita sobrecargar días específicos.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -538,7 +546,9 @@ const GuidePage = () => {
               <li>Revisa tu calendario al inicio de cada semana para planificar</li>
               <li>Identifica días con carga pesada y prepárate mentalmente</li>
               <li>Los días con pocas sesiones son ideales para descanso activo</li>
-              <li>Puedes reorganizar sesiones si hay imprevistos (función próximamente)</li>
+              <li>Usa el planificador manual para reorganizar sesiones pendientes según tus necesidades</li>
+              <li>Las sesiones saltadas se reprograman automáticamente al siguiente día disponible</li>
+              <li>Puedes rebalancear el calendario manualmente desde tu perfil si es necesario</li>
             </ul>
           </div>
         </div>
@@ -614,6 +624,99 @@ const GuidePage = () => {
               <div>
                 <p className="font-semibold mb-1">⚡ Si vas adelantado:</p>
                 <p className="text-sm">¡Excelente! Aprovecha para profundizar en temas complejos o añadir repasos extra.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'manual-planner',
+      title: 'Planificador Manual',
+      content: (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-primary-600">Planificador Manual</h2>
+          
+          <p className="text-gray-700">
+            El planificador manual te permite reorganizar tus sesiones pendientes arrastrando y soltando
+            temas en diferentes días. Es ideal para ajustes rápidos sin necesidad de crear un nuevo plan.
+          </p>
+
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-lg border border-green-300">
+            <h3 className="font-semibold text-green-900 mb-3">📝 Cómo usar el Planificador</h3>
+            <ol className="list-decimal list-inside space-y-2 text-green-800">
+              <li><strong>Accede desde Dashboard:</strong> Haz clic en "✏️ Editar Manualmente"</li>
+              <li><strong>Arrastra temas:</strong> Selecciona un tema del panel izquierdo y arrástralo al día deseado</li>
+              <li><strong>Define horas:</strong> Especifica cuántas horas dedicarás a esa sesión</li>
+              <li><strong>Guarda cambios:</strong> Haz clic en "Guardar Plan" para aplicar los cambios</li>
+            </ol>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h4 className="font-semibold text-blue-900 mb-3">✅ Sesiones Editables</h4>
+              <p className="text-sm text-blue-800 mb-2">
+                Solo puedes modificar sesiones con estado <strong>PENDIENTE</strong>:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-blue-700 text-sm ml-2">
+                <li>Aparecen con colores normales de bloque</li>
+                <li>Tienen botón ✕ para eliminar</li>
+                <li>Se pueden mover a otros días</li>
+                <li>Se guardan al hacer clic en "Guardar Plan"</li>
+              </ul>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-300">
+              <h4 className="font-semibold text-gray-900 mb-3">🔒 Sesiones Bloqueadas</h4>
+              <p className="text-sm text-gray-700 mb-2">
+                Las sesiones <strong>COMPLETADAS</strong>, <strong>EN PROGRESO</strong> o <strong>SALTADAS</strong> no son editables:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm ml-2">
+                <li>Aparecen en gris con opacidad reducida</li>
+                <li>Muestran badge de estado (✅ ⏸️ ⏭️)</li>
+                <li>Tienen icono 🔒 en lugar de botón eliminar</li>
+                <li>Preservan tu historial de estudio</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+            <h4 className="font-semibold text-yellow-900 mb-2">💡 Qué puedes hacer</h4>
+            <ul className="space-y-2 text-yellow-800 text-sm">
+              <li><strong>✅ Sustituir un tema:</strong> Elimina una sesión pendiente y arrastra otro tema al mismo día</li>
+              <li><strong>✅ Añadir temas extra:</strong> Arrastra nuevos temas a días con capacidad disponible</li>
+              <li><strong>✅ Eliminar sesiones:</strong> Quita sesiones pendientes que ya no necesites</li>
+              <li><strong>✅ Reorganizar fechas:</strong> Mueve sesiones pendientes a otros días</li>
+            </ul>
+          </div>
+
+          <div className="bg-amber-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-amber-900 mb-2">⚠️ Importante</h4>
+            <ul className="list-disc list-inside space-y-1 text-amber-800 text-sm">
+              <li>Al guardar, se eliminan todas las sesiones pendientes y se crean las nuevas</li>
+              <li>Las sesiones completadas/en progreso/saltadas <strong>NO</strong> se ven afectadas</li>
+              <li>El sistema respeta tu horario semanal al validar cambios</li>
+              <li>Si necesitas añadir/quitar temas, crea un nuevo plan en su lugar</li>
+            </ul>
+          </div>
+
+          <div className="bg-indigo-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-indigo-900 mb-3">🎯 Ejemplo de uso</h4>
+            <div className="space-y-2 text-indigo-800 text-sm">
+              <div className="bg-white p-3 rounded border border-indigo-200">
+                <p className="font-semibold mb-1">Escenario:</p>
+                <p>Tienes un imprevisto el martes y necesitas mover 2 sesiones al miércoles.</p>
+              </div>
+              <div className="bg-white p-3 rounded border border-indigo-200">
+                <p className="font-semibold mb-1">Solución:</p>
+                <ol className="list-decimal list-inside space-y-1 ml-2">
+                  <li>Accede al planificador manual</li>
+                  <li>Las sesiones del martes aparecen en su día</li>
+                  <li>Elimina las 2 sesiones del martes (botón ✕)</li>
+                  <li>Arrastra los mismos temas al miércoles</li>
+                  <li>Ajusta las horas según tu disponibilidad</li>
+                  <li>Guarda el plan</li>
+                </ol>
               </div>
             </div>
           </div>
@@ -735,9 +838,10 @@ const GuidePage = () => {
                 ❓ ¿Qué pasa si salto varias sesiones?
               </summary>
               <p className="mt-2 text-gray-600 text-sm">
-                Las sesiones saltadas se reprograman automáticamente. Sin embargo, si saltas muchas,
-                el plan puede desbalancearse. Es mejor ajustar tu horario semanal si ves que no puedes
-                cumplir con las sesiones programadas.
+                Las sesiones saltadas se reprograman automáticamente al siguiente día con capacidad disponible.
+                El sistema respeta tu horario semanal y evita sobrecargar días específicos. Sin embargo, si saltas
+                muchas sesiones, el plan puede acumular más carga al final. Es mejor ajustar tu horario semanal
+                si ves que no puedes cumplir consistentemente con las sesiones programadas.
               </p>
             </details>
 
@@ -746,9 +850,18 @@ const GuidePage = () => {
                 ❓ ¿Puedo modificar el calendario una vez creado?
               </summary>
               <p className="mt-2 text-gray-600 text-sm">
-                Actualmente puedes marcar sesiones como completadas, en progreso o saltadas. Las
-                funciones de reorganización y rebalanceo manual están en desarrollo. Si necesitas
-                cambios grandes, considera crear un nuevo plan.
+                ¡Sí! Puedes modificar tu calendario de varias formas:
+              </p>
+              <ul className="mt-2 text-gray-600 text-sm list-disc list-inside space-y-1 ml-3">
+                <li><strong>Planificador Manual:</strong> Reorganiza sesiones pendientes arrastrando temas a diferentes días.
+                Las sesiones completadas o en progreso no se pueden editar para preservar tu historial.</li>
+                <li><strong>Rebalanceo Manual:</strong> Desde tu perfil, puedes rebalancear el calendario completo
+                para redistribuir las sesiones pendientes de forma óptima.</li>
+                <li><strong>Marcar Estados:</strong> Cambia el estado de sesiones (completada, en progreso, saltada)
+                según tu avance real.</li>
+              </ul>
+              <p className="mt-2 text-gray-600 text-sm">
+                <strong>Nota:</strong> Si necesitas cambios grandes (añadir/quitar temas), considera crear un nuevo plan.
               </p>
             </details>
 
