@@ -13,6 +13,8 @@ import SmartCalendar from './pages/SmartCalendar';
 import Today from './pages/Today';
 import { Profile } from './pages/Profile';
 import GuidePage from './pages/GuidePage';
+import { PremiumFeatures } from './pages/PremiumFeatures';
+import { TelegramCommunity } from './pages/TelegramCommunity';
 
 function App() {
   return (
@@ -101,6 +103,24 @@ function App() {
               element={
                 <ProtectedRoute>
                   <GuidePage />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/premium"
+              element={
+                <ProtectedRoute>
+                  <PremiumFeatures />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/telegram"
+              element={
+                <ProtectedRoute>
+                  <TelegramCommunity />
                 </ProtectedRoute>
               }
             />

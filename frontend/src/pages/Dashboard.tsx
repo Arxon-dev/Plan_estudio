@@ -376,7 +376,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <button
             onClick={() => navigate('/sessions')}
             id="tour-sessions-card"
@@ -413,6 +413,59 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">🧠 Calendario Inteligente</h3>
             <p className="text-sm text-gray-600">Genera un plan con rotación de temas y repetición espaciada</p>
           </button>
+        </div>
+
+        {/* Premium Features Section */}
+        <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white mb-8">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-4">✨ ¿Quieres Más?</h2>
+              <p className="text-lg mb-6 opacity-90">
+                Descubre nuestra plataforma completa con tecnología IA, simulacros militares y miles de preguntas actualizadas
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  onClick={() => navigate('/premium')}
+                  className="px-6 py-3 bg-white text-blue-600 rounded-xl font-bold hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                >
+                  🚀 Ver Plataforma OpoMelilla
+                </button>
+                <button
+                  onClick={() => navigate('/telegram')}
+                  className="px-6 py-3 bg-blue-700 bg-opacity-50 border-2 border-white text-white rounded-xl font-bold hover:bg-opacity-70 transition-all duration-300"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                    </svg>
+                    Unirme a Telegram
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div className="hidden md:grid grid-cols-2 gap-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-3xl mb-2">🤖</div>
+                <div className="font-bold">Análisis IA</div>
+                <div className="text-sm opacity-90">Recomendaciones personalizadas</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-3xl mb-2">🎯</div>
+                <div className="font-bold">Ilimitado</div>
+                <div className="text-sm opacity-90">Miles de preguntas</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-3xl mb-2">🎮</div>
+                <div className="font-bold">Gamificación</div>
+                <div className="text-sm opacity-90">Duelos y torneos</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-3xl mb-2">📱</div>
+                <div className="font-bold">En Telegram</div>
+                <div className="text-sm opacity-90">Estudia donde quieras</div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
