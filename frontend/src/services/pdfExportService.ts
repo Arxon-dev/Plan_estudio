@@ -106,7 +106,7 @@ export class PDFExportService {
           5: { cellWidth: 28 }, // Estado
         },
         margin: { left: 14, right: 14 },
-        didDrawPage: (data) => {
+        didDrawPage: () => {
           // Añadir marca de agua en cada página nueva
           this.addWatermark(doc, pageWidth, pageHeight);
           
@@ -155,7 +155,6 @@ export class PDFExportService {
     
     // Rotar y posicionar en el centro
     const text = 'OpoMelilla.com';
-    const textWidth = doc.getTextWidth(text);
     
     // Calcular posición central con rotación
     doc.text(text, pageWidth / 2, pageHeight / 2, {
