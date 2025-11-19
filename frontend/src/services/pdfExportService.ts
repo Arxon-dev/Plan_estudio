@@ -143,15 +143,15 @@ export class PDFExportService {
    * Añade marca de agua de OpoMelilla.com
    */
   private static addWatermark(doc: jsPDF, pageWidth: number, pageHeight: number): void {
-    doc.saveGraphicsState();
+    // Guardar estado actual
+    const currentFillColor = doc.getFillColor();
+    const currentTextColor = doc.getTextColor();
     
-    // Configurar transparencia para la marca de agua
-    doc.setGState({ opacity: 0.1 } as any);
-    
-    // Texto de la marca de agua
+    // Configurar para marca de agua
     doc.setFontSize(50);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(100, 100, 100);
+    // Usar gris muy claro para simular transparencia
+    doc.setTextColor(220, 220, 220);
     
     // Rotar y posicionar en el centro
     const text = 'OpoMelilla.com';
@@ -162,7 +162,8 @@ export class PDFExportService {
       align: 'center',
     });
     
-    doc.restoreGraphicsState();
+    // Restaurar colores originales
+    doc.setTextColor(currentTextColor as any);
   }
 
   /**
