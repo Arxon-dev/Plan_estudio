@@ -314,30 +314,48 @@ const GuidePage = () => {
                 <div className="flex items-center mb-2">
                   <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">BAJA</span>
                 </div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-700 mb-3">
                   Temas concisos con conceptos directos. Requieren menos sesiones de estudio.
                 </p>
-                <p className="text-xs text-green-700 mt-2">Ejemplo: Tema 1 - Conceptos básicos</p>
+                <div className="text-xs text-green-800 space-y-1">
+                  <p className="font-semibold mb-1">📚 Actualmente no hay temas clasificados como complejidad baja.</p>
+                  <p className="italic">Todos los temas de esta oposición requieren al menos nivel medio de preparación.</p>
+                </div>
               </div>
 
               <div className="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-300">
                 <div className="flex items-center mb-2">
                   <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-semibold">MEDIA</span>
                 </div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-700 mb-3">
                   Temas de extensión moderada con varios subapartados. Equilibrio estudio-repaso.
                 </p>
-                <p className="text-xs text-yellow-700 mt-2">Ejemplo: Tema 15 - Procedimientos administrativos</p>
+                <div className="text-xs text-yellow-800 space-y-1">
+                  <p className="font-semibold mb-1">📚 Ejemplos:</p>
+                  <p>• Constitución Española de 1978</p>
+                  <p>• Ley Orgánica 5/2005, Defensa Nacional</p>
+                  <p>• Reales Ordenanzas para las FAS</p>
+                  <p>• ONU, OTAN, OSCE, UE</p>
+                  <p className="italic mt-2">...y 9 temas más</p>
+                </div>
               </div>
 
               <div className="bg-red-50 p-4 rounded-lg border-2 border-red-300">
                 <div className="flex items-center mb-2">
                   <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">ALTA</span>
                 </div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-700 mb-3">
                   Temas extensos con múltiples partes. Requieren más sesiones y repasos frecuentes.
                 </p>
-                <p className="text-xs text-red-700 mt-2">Ejemplo: Tema 6 - ONU y OTAN (4 partes)</p>
+                <div className="text-xs text-red-800 space-y-1">
+                  <p className="font-semibold mb-1">📚 Ejemplos:</p>
+                  <p>• Ley 40/2015, Régimen Jurídico</p>
+                  <p>• Instrucciones EMAD, ET, ARMADA y EA (4 partes)</p>
+                  <p>• Ley 8/2006 y Ley 39/2007 (2 partes)</p>
+                  <p>• Régimen Disciplinario de las FAS</p>
+                  <p>• Ley 36/2015, Seguridad Nacional (2 partes)</p>
+                  <p className="italic mt-2">...y 2 temas más</p>
+                </div>
               </div>
             </div>
 
