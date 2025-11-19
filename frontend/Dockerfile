@@ -18,6 +18,9 @@ RUN npm ci
 # Copiar código fuente
 COPY . .
 
+# Limpiar builds anteriores para forzar rebuild limpio
+RUN rm -rf dist
+
 # Construir aplicación
 RUN npm run build
 
