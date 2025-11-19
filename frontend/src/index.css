@@ -25,3 +25,21 @@
     @apply bg-white rounded-lg shadow-md p-6;
   }
 }
+
+/* Animaciones personalizadas */
+@layer utilities {
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.4s ease-out forwards;
+  }
+}

@@ -421,7 +421,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <h2 className="text-3xl font-bold mb-4">✨ ¿Quieres Más?</h2>
               <p className="text-lg mb-6 opacity-90">
-                Descubre nuestra plataforma completa con tecnología IA, simulacros militares y miles de preguntas actualizadas
+                Descubre nuestra plataforma completa con tecnología IA, simulacros ET, ARMADA Y EA y miles de preguntas actualizadas
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button

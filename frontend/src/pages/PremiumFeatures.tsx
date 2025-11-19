@@ -115,7 +115,7 @@ export const PremiumFeatures: React.FC = () => {
               <div className="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center text-white text-2xl mb-4">
                 🎖️
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Simulacros Militares</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">Simulacros ET, ARMADA Y EA</h3>
               <p className="text-slate-600">
                 Simulacros personalizados por especialidad: Ejército de Tierra, Aire y Armada
               </p>
