@@ -143,8 +143,7 @@ export class PDFExportService {
    * Añade marca de agua de OpoMelilla.com
    */
   private static addWatermark(doc: jsPDF, pageWidth: number, pageHeight: number): void {
-    // Guardar estado actual
-    const currentFillColor = doc.getFillColor();
+    // Guardar estado actual del color de texto
     const currentTextColor = doc.getTextColor();
     
     // Configurar para marca de agua
@@ -162,7 +161,7 @@ export class PDFExportService {
       align: 'center',
     });
     
-    // Restaurar colores originales
+    // Restaurar color de texto original
     doc.setTextColor(currentTextColor as any);
   }
 
