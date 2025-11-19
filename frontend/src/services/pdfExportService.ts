@@ -107,11 +107,12 @@ export class PDFExportService {
         },
         margin: { left: 14, right: 14 },
         didDrawPage: () => {
-          // Añadir marca de agua en cada página nueva
-          this.addWatermark(doc, pageWidth, pageHeight);
-          
           // Añadir footer en cada página
           this.addFooter(doc, pageWidth, pageHeight);
+        },
+        willDrawPage: () => {
+          // Añadir marca de agua ANTES del contenido (fondo)
+          this.addWatermark(doc, pageWidth, pageHeight);
         },
       });
 
@@ -146,11 +147,11 @@ export class PDFExportService {
     // Guardar estado actual del color de texto
     const currentTextColor = doc.getTextColor();
     
-    // Configurar para marca de agua
+    // Configurar para marca de agua (gris muy claro para máxima transparencia)
     doc.setFontSize(50);
     doc.setFont('helvetica', 'bold');
-    // Usar gris muy claro para simular transparencia
-    doc.setTextColor(220, 220, 220);
+    // Gris super claro (240, 240, 240) para 70% más transparente
+    doc.setTextColor(240, 240, 240);
     
     // Rotar y posicionar en el centro
     const text = 'OpoMelilla.com';
