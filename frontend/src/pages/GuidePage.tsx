@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Section {
   id: string;
@@ -9,6 +10,7 @@ interface Section {
 
 const GuidePage = () => {
   const [activeSection, setActiveSection] = useState<string>('intro');
+  const navigate = useNavigate();
 
   const sections: Section[] = [
     {
@@ -949,6 +951,17 @@ const GuidePage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white p-8 rounded-lg shadow-lg mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded-lg text-white transition-all duration-200 shadow-sm hover:shadow-md font-medium backdrop-blur-sm"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Volver a Inicio
+            </button>
+          </div>
           <h1 className="text-4xl font-bold mb-3">📖 Guía Completa de Plan de Estudio</h1>
           <p className="text-primary-100 text-lg">
             Todo lo que necesitas saber para dominar tu preparación de oposiciones
