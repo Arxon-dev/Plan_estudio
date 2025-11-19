@@ -143,7 +143,14 @@ export const Profile: React.FC = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                  onClick={() => navigate('/guide')}
+                  className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                >
+                  📖 Guía de uso
+                </button>
+
                 <button
                   onClick={handleRebalance}
                   disabled={isRebalancing}
@@ -162,6 +169,7 @@ export const Profile: React.FC = () => {
               </div>
 
               <div className="text-sm text-gray-600 space-y-2">
+                <p><strong>Guía de uso:</strong> Accede a la documentación completa sobre cómo funciona el sistema, el calendario inteligente y consejos para maximizar tu preparación.</p>
                 <p><strong>Rebalancear Calendario:</strong> Optimiza la rotación de tus sesiones para mantener múltiples temas activos y mejorar la retención a largo plazo.</p>
                 <p><strong>Eliminar Plan:</strong> Borra permanentemente tu plan actual y crea uno nuevo. Esta acción no se puede deshacer.</p>
               </div>

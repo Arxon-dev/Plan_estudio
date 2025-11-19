@@ -12,6 +12,7 @@ import { ManualPlanner } from './pages/ManualPlanner';
 import SmartCalendar from './pages/SmartCalendar';
 import Today from './pages/Today';
 import { Profile } from './pages/Profile';
+import GuidePage from './pages/GuidePage';
 
 function App() {
   return (
@@ -91,6 +92,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Today />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/guide"
+              element={
+                <ProtectedRoute>
+                  <GuidePage />
                 </ProtectedRoute>
               }
             />
