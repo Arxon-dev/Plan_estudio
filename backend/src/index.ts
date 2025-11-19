@@ -10,6 +10,9 @@ dotenv.config();
 const app: Application = express();
 const PORT = Number(process.env.PORT) || 3001;
 
+console.log('🔍 PORT detectado:', process.env.PORT);
+console.log('🔍 PORT usado:', PORT);
+
 const routes = require('./routes').default;
 
 // Middlewares
@@ -60,12 +63,11 @@ async function startServer() {
     }
 
     // Iniciar servidor
-    // En producción (Docker/Railway), escuchar en 0.0.0.0 para aceptar conexiones externas
-    const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
-    app.listen(PORT, host, () => {
-      console.log(`🚀 Servidor corriendo en http://${host}:${PORT}`);
-      console.log(`📚 API disponible en http://${host}:${PORT}/api`);
-      console.log(`🏥 Health check: http://${host}:${PORT}/api/health`);
+    // Railway detecta automáticamente el puerto desde process.env.PORT
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+      console.log(`📚 API disponible en http://0.0.0.0:${PORT}/api`);
+      console.log(`🏥 Health check: http://0.0.0.0:${PORT}/api/health`);
     });
   } catch (error) {
     console.error('❌ Error al iniciar el servidor:', error);
