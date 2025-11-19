@@ -85,6 +85,10 @@ export class RotationStudyService {
     config: RotationConfig = this.DEFAULT_CONFIG
   ): RotationSession[][] {
     
+    // IMPORTANTE: Resetear contadores al iniciar nueva generación
+    this.themeSessionCounters.clear();
+    console.log('🔄 Contadores de sesiones reseteados para nueva generación');
+    
     const totalDays = Math.ceil((examDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     const totalWeeks = Math.ceil(totalDays / 7);
     const weeklyHours = this.calculateWeeklyHours(weeklySchedule);
@@ -187,6 +191,9 @@ export class RotationStudyService {
       return 'Parte 1'; // Por defecto
     }
   }
+
+  // Mapa global para rastrear el número de sesión de cada tema
+  private static themeSessionCounters: Map<number, number> = new Map();
 
   /**
    * Crea la rotación semanal manteniendo variedad constante
@@ -356,8 +363,22 @@ export class RotationStudyService {
       const baseTime = remainingHours / (rotatedThemes.length - index);
       const sessionTime = Math.max(config.minSessionTime, Math.min(baseTime, config.maxSessionTime));
       
-      // Determinar tipo de sesión según el día y tema
-      const sessionType = this.determineSessionType(dayDate, theme, index);
+      // Obtener el ID único del tema (considerando subThemeIndex para temas compuestos)
+      const themeId = (theme as any).id;
+      const subIndex = (theme as any).subThemeIndex || 0;
+      const uniqueThemeKey = subIndex > 0 ? themeId * 1000 + subIndex : themeId;
+      
+      // Incrementar contador de sesiones para este tema
+      const sessionCount = (this.themeSessionCounters.get(uniqueThemeKey) || 0) + 1;
+      this.themeSessionCounters.set(uniqueThemeKey, sessionCount);
+      
+      // Determinar tipo de sesión según el contador de sesiones del tema
+      const sessionType = this.determineSessionType(dayDate, theme, sessionCount);
+      
+      // Log de tracking para debugging
+      const themeName = (theme as any).title || 'Tema sin nombre';
+      const subLabel = (theme as any).subThemeLabel ? ` - ${(theme as any).subThemeLabel}` : '';
+      console.log(`      └─ ${themeName}${subLabel}: Sesión #${sessionCount} → ${sessionType} (${sessionTime.toFixed(1)}h)`);
       
       sessions.push({
         themeId: (theme as any).id,
@@ -388,15 +409,36 @@ export class RotationStudyService {
 
   /**
    * Determina el tipo de sesión según patrón de repetición espaciada
+   * @param date - Fecha de la sesión
+   * @param theme - Tema de la sesión
+   * @param sessionCount - Número de sesión del tema (1, 2, 3, ...)
+   * 
+   * Patrón implementado:
+   * - Sesión 1: STUDY (primera vez que se ve el tema)
+   * - Sesión 2: REVIEW (primer repaso)
+   * - Sesión 3: REVIEW (segundo repaso)
+   * - Sesión 4: TEST (primera evaluación)
+   * - Sesión 5: REVIEW (tercer repaso)
+   * - Sesión 6: REVIEW (cuarto repaso)
+   * - Sesión 7: TEST (segunda evaluación)
+   * - Sesión 8+: Repite el ciclo desde sesión 2 (REVIEW, REVIEW, TEST, ...)
    */
-  private static determineSessionType(date: Date, theme: Theme, position: number): 'STUDY' | 'REVIEW' | 'TEST' {
-    const dayOfYear = Math.floor(date.getTime() / (1000 * 60 * 60 * 24));
+  private static determineSessionType(date: Date, theme: Theme, sessionCount: number): 'STUDY' | 'REVIEW' | 'TEST' {
+    // Primera sesión siempre es STUDY
+    if (sessionCount === 1) {
+      return 'STUDY';
+    }
     
-    // Patrón de repetición: Estudio → Repaso → Repaso → Test → Repaso → Repaso → Test...
-    const cycle = dayOfYear % 7;
+    // Para sesiones posteriores, usar ciclo de 6 (2-7 se repite)
+    // Patrón: STUDY(1) → REVIEW(2) → REVIEW(3) → TEST(4) → REVIEW(5) → REVIEW(6) → TEST(7) → ciclo
+    const cycle = ((sessionCount - 2) % 6) + 2; // Normaliza a rango 2-7
     
-    if (cycle === 0) return 'STUDY';
-    if (cycle === 3 || cycle === 6) return 'TEST';
+    // TEST en posiciones 4 y 7 del ciclo
+    if (cycle === 4 || cycle === 7) {
+      return 'TEST';
+    }
+    
+    // REVIEW en todas las demás posiciones
     return 'REVIEW';
   }
 
