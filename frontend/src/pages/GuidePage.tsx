@@ -299,10 +299,9 @@ const GuidePage = () => {
           <div className="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded">
             <h3 className="font-semibold text-indigo-900 mb-2">📚 Bloques Temáticos Disponibles:</h3>
             <ul className="space-y-2 text-indigo-800">
-              <li><strong>Bloque I:</strong> Organización del Estado y la Administración Pública</li>
-              <li><strong>Bloque II:</strong> Derecho Constitucional y de la Unión Europea</li>
-              <li><strong>Bloque III:</strong> Gestión de Personal y Recursos Humanos</li>
-              <li className="text-sm text-indigo-600 italic">...y más bloques según tu oposición</li>
+              <li><strong>Bloque 1 – Organización</strong></li>
+              <li><strong>Bloque 2 – Jurídico-Social</strong></li>
+              <li><strong>Bloque 3 – Seguridad Nacional</strong></li>
             </ul>
           </div>
 
