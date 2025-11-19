@@ -16,6 +16,7 @@ import { Profile } from './pages/Profile';
 import GuidePage from './pages/GuidePage';
 import { PremiumFeatures } from './pages/PremiumFeatures';
 import { TelegramCommunity } from './pages/TelegramCommunity';
+import { AdminPanel } from './pages/AdminPanel';
 
 function App() {
   return (
@@ -125,6 +126,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <TelegramCommunity />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminPanel />
                 </ProtectedRoute>
               }
             />

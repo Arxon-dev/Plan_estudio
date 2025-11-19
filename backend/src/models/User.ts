@@ -8,6 +8,7 @@ interface UserAttributes {
   password: string;
   firstName: string;
   lastName: string;
+  isAdmin?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -20,6 +21,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public password!: string;
   public firstName!: string;
   public lastName!: string;
+  public isAdmin!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -60,6 +62,11 @@ User.init(
     lastName: {
       type: DataTypes.STRING(100),
       allowNull: false,
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
