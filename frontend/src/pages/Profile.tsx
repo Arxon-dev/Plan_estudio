@@ -12,6 +12,8 @@ export const Profile: React.FC = () => {
   const [isDeletingPlan, setIsDeletingPlan] = useState(false);
   const [isRebalancing, setIsRebalancing] = useState(false);
   const [activePlan, setActivePlan] = useState<any>(null);
+  const [showRebalanceInfo, setShowRebalanceInfo] = useState(false);
+  const [showRebalanceConfirm, setShowRebalanceConfirm] = useState(false);
 
   React.useEffect(() => {
     loadActivePlan();
@@ -56,6 +58,9 @@ export const Profile: React.FC = () => {
       toast.error('No hay un plan activo para rebalancear');
       return;
     }
+    
+    // Cerrar el modal de confirmación
+    setShowRebalanceConfirm(false);
     
     setIsRebalancing(true);
     try {
@@ -152,7 +157,7 @@ export const Profile: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={handleRebalance}
+                  onClick={() => setShowRebalanceConfirm(true)}
                   disabled={isRebalancing}
                   className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
                 >
@@ -170,7 +175,16 @@ export const Profile: React.FC = () => {
 
               <div className="text-sm text-gray-600 space-y-2">
                 <p><strong>Guía de uso:</strong> Accede a la documentación completa sobre cómo funciona el sistema, el calendario inteligente y consejos para maximizar tu preparación.</p>
-                <p><strong>Rebalancear Calendario:</strong> Optimiza la rotación de tus sesiones para mantener múltiples temas activos y mejorar la retención a largo plazo.</p>
+                <p className="flex items-start gap-2">
+                  <span><strong>Rebalancear Calendario:</strong> Optimiza la rotación de tus sesiones para mantener múltiples temas activos y mejorar la retención a largo plazo.</span>
+                  <button
+                    onClick={() => setShowRebalanceInfo(true)}
+                    className="flex-shrink-0 w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center hover:bg-blue-200 transition-colors font-bold text-xs"
+                    title="Más información"
+                  >
+                    ?
+                  </button>
+                </p>
                 <p><strong>Eliminar Plan:</strong> Borra permanentemente tu plan actual y crea uno nuevo. Esta acción no se puede deshacer.</p>
               </div>
             </div>
@@ -238,6 +252,215 @@ export const Profile: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Modal de Información sobre Rebalanceo */}
+      {showRebalanceInfo && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                  <span className="text-3xl">🔄</span>
+                  ¿Qué hace "Rebalancear Calendario"?
+                </h3>
+                <button
+                  onClick={() => setShowRebalanceInfo(false)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                  <p className="text-blue-900 font-medium mb-2">📋 Resumen:</p>
+                  <p className="text-blue-800 text-sm">
+                    El rebalanceo redistribuye automáticamente todas tus sesiones pendientes de forma óptima,
+                    manteniendo múltiples temas activos y aplicando repasos espaciados.
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-green-900 mb-3 flex items-center gap-2">
+                    <span>✅</span> ¿Qué SE hará?
+                  </h4>
+                  <ul className="space-y-2 text-sm text-green-800">
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">•</span>
+                      <span><strong>Eliminar sesiones PENDIENTES</strong> desde hoy en adelante</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">•</span>
+                      <span><strong>Regenerar calendario completo</strong> con distribución óptima</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">•</span>
+                      <span><strong>Aplicar rotación inteligente</strong> de temas</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">•</span>
+                      <span><strong>Respetar tu horario semanal</strong> configurado</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">•</span>
+                      <span><strong>Mantener buffer de 30 días</strong> antes del examen</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-r from-amber-50 to-yellow-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
+                    <span>🔒</span> ¿Qué NO se modificará?
+                  </h4>
+                  <ul className="space-y-2 text-sm text-amber-800">
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span>Sesiones <strong>COMPLETADAS</strong> (tu progreso se mantiene)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span>Sesiones <strong>EN PROGRESO</strong></span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span>Sesiones <strong>SALTADAS</strong> (historial preservado)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span>Tu horario semanal configurado</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span>Temas seleccionados en tu plan</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
+                  <h4 className="font-semibold text-purple-900 mb-3 flex items-center gap-2">
+                    <span>💡</span> ¿Cuándo usar el Rebalanceo?
+                  </h4>
+                  <ul className="space-y-2 text-sm text-purple-800">
+                    <li className="flex items-start gap-2">
+                      <span>1.</span>
+                      <span>Has saltado muchas sesiones y quieres reorganizar todo</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span>2.</span>
+                      <span>Sientes que estudias mucho de un tema y poco de otros</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span>3.</span>
+                      <span>Después de usar el planificador manual extensivamente</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span>4.</span>
+                      <span>Quieres mejorar la rotación y repasos espaciados</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                  <p className="text-red-900 font-medium mb-2 flex items-center gap-2">
+                    <span>⚠️</span> Advertencia:
+                  </p>
+                  <p className="text-red-800 text-sm">
+                    Esta acción <strong>NO se puede deshacer</strong>. Todas las sesiones pendientes
+                    serán eliminadas y reemplazadas por un nuevo calendario optimizado.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setShowRebalanceInfo(false)}
+                  className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                >
+                  Entendido
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmación de Rebalanceo */}
+      {showRebalanceConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full">
+            <div className="p-6">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="flex-shrink-0 w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <span className="text-2xl">⚠️</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    ¿Confirmar Rebalanceo de Calendario?
+                  </h3>
+                  <p className="text-gray-700 text-sm">
+                    Estás a punto de rebalancear tu calendario de estudio.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h4 className="font-semibold text-blue-900 mb-2 text-sm">📋 Esto realizará las siguientes acciones:</h4>
+                <ul className="space-y-1.5 text-sm text-blue-800">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 font-bold mt-0.5">✓</span>
+                    <span>Eliminar todas las sesiones <strong>PENDIENTES</strong> desde hoy</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 font-bold mt-0.5">✓</span>
+                    <span>Crear nuevo calendario con distribución optimizada</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 font-bold mt-0.5">✓</span>
+                    <span>Aplicar rotación inteligente de temas</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <h4 className="font-semibold text-green-900 mb-2 text-sm">🔒 Se mantendrán intactas:</h4>
+                <ul className="space-y-1.5 text-sm text-green-800">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600 font-bold mt-0.5">✓</span>
+                    <span>Sesiones completadas, en progreso y saltadas</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600 font-bold mt-0.5">✓</span>
+                    <span>Tu progreso y estadísticas</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
+                <p className="text-red-900 text-sm font-medium flex items-start gap-2">
+                  <span className="flex-shrink-0 mt-0.5">⚠️</span>
+                  <span>Esta acción <strong>no se puede deshacer</strong>.</span>
+                </p>
+              </div>
+
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setShowRebalanceConfirm(false)}
+                  className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleRebalance}
+                  disabled={isRebalancing}
+                  className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+                >
+                  {isRebalancing ? 'Rebalanceando...' : 'Confirmar Rebalanceo'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
