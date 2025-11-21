@@ -5,8 +5,16 @@ import apiClient from '../services/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 
-// Initialize Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+// Initialize Stripe safely
+const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+
+if (!STRIPE_KEY) {
+  console.error('⚠️ VITE_STRIPE_PUBLISHABLE_KEY no está definida. Los pagos fallarán.');
+} else {
+  console.log('✅ Stripe Key cargada:', STRIPE_KEY.substring(0, 10) + '...');
+}
+
+const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
 export const PremiumFeatures: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +26,11 @@ export const PremiumFeatures: React.FC = () => {
   const handleSubscribe = async () => {
     try {
       setIsLoading(true);
+
+      if (!stripePromise) {
+        throw new Error('La clave de Stripe no está configurada en el frontend.');
+      }
+
       const stripe = await stripePromise;
       if (!stripe) throw new Error('Stripe failed to load');
 
@@ -30,7 +43,7 @@ export const PremiumFeatures: React.FC = () => {
       window.location.href = data.url;
     } catch (error: any) {
       console.error('Error:', error);
-      toast.error('Error al iniciar el pago. Por favor, inténtalo de nuevo.');
+      toast.error(error.message || 'Error al iniciar el pago. Por favor, inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
