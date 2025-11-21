@@ -63,6 +63,13 @@ ENABLE_PARTS_COLUMNS=true
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
+# IA (Generación de Preguntas y Análisis)
+Z_AI_API_KEY=tu_api_key_de_zhipu
+Z_AI_MODEL=glm-4-flash
+AI_QUESTION_GENERATION=true
+GEMINI_API_KEY=tu_api_key_de_google_gemini
+
+
 ```
 
 **⚠️ IMPORTANTE:** Cambia `JWT_SECRET` por un valor aleatorio seguro.
@@ -107,6 +114,8 @@ Ve a **Variables** y añade:
 
 ```
 VITE_API_URL=https://tu-app-backend.up.railway.app/api
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
 ```
 
 **⚠️ IMPORTANTE:** Reemplaza `tu-app-backend.up.railway.app` con la URL real que Railway asignó a tu backend.
@@ -246,6 +255,8 @@ Una vez que tus dominios estén activos, debes actualizar las variables. **Es fu
 Cambia `VITE_API_URL` para que apunte a tu nuevo dominio de backend.
 ```
 VITE_API_URL=https://api.opomelilla.com/api
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
 ```
 ❌ **MAL:** `api.opomelilla.com/api` (Esto causará errores de ruta relativa)
 ✅ **BIEN:** `https://api.opomelilla.com/api`
