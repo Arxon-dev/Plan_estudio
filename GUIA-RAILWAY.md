@@ -58,6 +58,11 @@ CORS_ORIGIN=*
 
 # Temas con partes
 ENABLE_PARTS_COLUMNS=true
+
+# Stripe (Pagos)
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
 ```
 
 **⚠️ IMPORTANTE:** Cambia `JWT_SECRET` por un valor aleatorio seguro.

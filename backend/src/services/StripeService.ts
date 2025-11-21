@@ -1,7 +1,13 @@
 import Stripe from 'stripe';
 import User from '../models/User';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_dummy';
+
+if (!process.env.STRIPE_SECRET_KEY) {
+    console.warn('⚠️ STRIPE_SECRET_KEY no está configurada. Los pagos no funcionarán.');
+}
+
+const stripe = new Stripe(stripeKey, {
     apiVersion: '2025-11-17.clover' as any,
 });
 
