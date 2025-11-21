@@ -4,7 +4,7 @@ import { studyPlanService } from '../services/studyPlanService';
 import type { StudyPlan, PlanProgress, StudySession } from '../services/studyPlanService';
 import { useAuth } from '../contexts/AuthContext';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { SparklesIcon } from '@heroicons/react/24/solid';
@@ -33,7 +33,7 @@ export const Dashboard: React.FC = () => {
   const [todaySessions, setTodaySessions] = useState<StudySession[]>([]);
   const [generationStatus, setGenerationStatus] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const isPremium = user?.isPremium;
 
@@ -135,10 +135,7 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+
 
   const displayTitle = (s: any): string => {
     const base = s.theme?.title || `Tema ${s.themeId}`;
@@ -293,7 +290,7 @@ export const Dashboard: React.FC = () => {
           </div>
           <div className="card">
             <h3 className="text-sm font-medium text-gray-500 mb-1">Horas Estudiadas</h3>
-            <p className="text-2xl font-bold text-gray-900">{formatHours(progress.totalStudyHours)}</p>
+            <p className="text-2xl font-bold text-gray-900">{formatHours(progress.totalHoursCompleted)}</p>
           </div>
           <div className="card">
             <h3 className="text-sm font-medium text-gray-500 mb-1">Sesiones Completadas</h3>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import toast from 'react-hot-toast';
 import apiClient from '../services/api';
 import { Header } from '../components/Header';
@@ -22,7 +22,6 @@ export const Themes: React.FC = () => {
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
   const [filterBlock, setFilterBlock] = useState<string>('ALL');
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   useEffect(() => {
