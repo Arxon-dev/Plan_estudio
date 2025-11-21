@@ -4,6 +4,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { studyPlanService } from '../services/studyPlanService';
 import { EquitableDistribution } from '../components/EquitableDistribution';
 import ThemePartsStats from '../components/ThemePartsStats';
+import { UserRankingStats } from '../components/UserRankingStats';
+import { Header } from '../components/Header';
 import toast from 'react-hot-toast';
 
 export const Profile: React.FC = () => {
@@ -14,6 +16,9 @@ export const Profile: React.FC = () => {
   const [activePlan, setActivePlan] = useState<any>(null);
   const [showRebalanceInfo, setShowRebalanceInfo] = useState(false);
   const [showRebalanceConfirm, setShowRebalanceConfirm] = useState(false);
+  const [showDistribution, setShowDistribution] = useState(false);
+  const [showThemeStats, setShowThemeStats] = useState(false);
+  const [showRanking, setShowRanking] = useState(false);
 
   React.useEffect(() => {
     loadActivePlan();
@@ -31,7 +36,7 @@ export const Profile: React.FC = () => {
 
   const handleDeletePlan = async () => {
     if (!activePlan) return;
-    
+
     if (!window.confirm('¿Estás seguro de que quieres eliminar tu plan de estudio actual? Esta acción no se puede deshacer.')) {
       return;
     }
@@ -58,10 +63,10 @@ export const Profile: React.FC = () => {
       toast.error('No hay un plan activo para rebalancear');
       return;
     }
-    
+
     // Cerrar el modal de confirmación
     setShowRebalanceConfirm(false);
-    
+
     setIsRebalancing(true);
     try {
       const response = await fetch(`http://localhost:3000/api/sessions/rebalance/${activePlan.id}`, {
@@ -102,17 +107,7 @@ export const Profile: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Mi Perfil</h1>
-          <button 
-            onClick={() => navigate('/dashboard')} 
-            className="btn-secondary text-sm"
-          >
-            Volver a Inicio
-          </button>
-        </div>
-      </header>
+      <Header title="Mi Perfil" showBack={true} backPath="/dashboard" />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Información del Usuario */}
@@ -191,19 +186,81 @@ export const Profile: React.FC = () => {
           </div>
         )}
 
-        {/* Distribución Equitativa por Complejidad */}
-        {activePlan && (
-          <div className="card mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">📊 Análisis de Distribución Equitativa</h2>
-            <EquitableDistribution planId={activePlan.id} />
-          </div>
-        )}
+        {/* Sección de Ranking */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <button
+            onClick={() => setShowRanking(!showRanking)}
+            className="w-full flex items-center justify-between focus:outline-none"
+          >
+            <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+              <span className="mr-2">🏆</span> Comparativa con Otros Usuarios
+            </h2>
+            <svg
+              className={`w-6 h-6 text-gray-500 transform transition-transform duration-200 ${showRanking ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {showRanking && (
+            <div className="mt-6 animate-fade-in">
+              <UserRankingStats />
+            </div>
+          )}
+        </div>
+
+        {/* Sección de Análisis de Distribución Equitativa */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <button
+            onClick={() => setShowDistribution(!showDistribution)}
+            className="w-full flex items-center justify-between focus:outline-none"
+          >
+            <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+              <span className="mr-2">📊</span> Análisis de Distribución Equitativa
+            </h2>
+            <svg
+              className={`w-6 h-6 text-gray-500 transform transition-transform duration-200 ${showDistribution ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {showDistribution && (
+            <div className="mt-6 animate-fade-in">
+              <EquitableDistribution planId={activePlan?.id || 0} />
+            </div>
+          )}
+        </div>
 
         {/* Estadísticas por Partes de Temas */}
         {activePlan && (
           <div className="card mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">📚 Estadísticas por Partes de Temas</h2>
-            <ThemePartsStats planId={activePlan.id} />
+            <button
+              onClick={() => setShowThemeStats(!showThemeStats)}
+              className="w-full flex justify-between items-center text-left focus:outline-none group"
+            >
+              <h2 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">📚 Estadísticas por Partes de Temas</h2>
+              <svg
+                className={`w-6 h-6 text-gray-500 transform transition-transform duration-200 ${showThemeStats ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {showThemeStats && (
+              <div className="mt-6 animate-fade-in border-t pt-6">
+                <ThemePartsStats planId={activePlan.id} />
+              </div>
+            )}
           </div>
         )}
 

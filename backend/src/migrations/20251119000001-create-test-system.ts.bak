@@ -1,0 +1,555 @@
+import { QueryInterface, DataTypes } from 'sequelize';
+
+export default {
+  up: async (queryInterface: QueryInterface): Promise<void> => {
+    
+    console.log('📦 Creando tablas del sistema de tests...');
+    
+    // 1. Tabla test_questions
+    await queryInterface.createTable('test_questions', {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      themeId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'themes',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        field: 'theme_id',
+      },
+      question: {
+        type: DataTypes.STRING(500),
+        allowNull: false,
+      },
+      options: {
+        type: DataTypes.JSON,
+        allowNull: false,
+      },
+      correctAnswer: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        field: 'correct_answer',
+      },
+      explanation: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      difficulty: {
+        type: DataTypes.ENUM('EASY', 'MEDIUM', 'HARD'),
+        allowNull: false,
+      },
+      source: {
+        type: DataTypes.ENUM('MANUAL', 'AI_GENERATED'),
+        allowNull: false,
+        defaultValue: 'MANUAL',
+      },
+      aiModel: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        field: 'ai_model',
+      },
+      usageCount: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'usage_count',
+      },
+      successRate: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'success_rate',
+      },
+      tags: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: '[]',
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'created_at',
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'updated_at',
+      },
+    });
+    
+    // Índices para test_questions
+    await queryInterface.addIndex('test_questions', ['theme_id', 'difficulty']);
+    await queryInterface.addIndex('test_questions', ['source']);
+    await queryInterface.addIndex('test_questions', ['success_rate']);
+    
+    console.log('✅ Tabla test_questions creada');
+    
+    // 2. Tabla test_attempts
+    await queryInterface.createTable('test_attempts', {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      userId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        field: 'user_id',
+      },
+      themeId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true,
+        references: {
+          model: 'themes',
+          key: 'id',
+        },
+        onDelete: 'SET NULL',
+        field: 'theme_id',
+      },
+      sessionId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true,
+        references: {
+          model: 'study_sessions',
+          key: 'id',
+        },
+        onDelete: 'SET NULL',
+        field: 'session_id',
+      },
+      testType: {
+        type: DataTypes.ENUM('INITIAL', 'SCHEDULED', 'PRACTICE', 'SIMULATION', 'ADAPTIVE'),
+        allowNull: false,
+        field: 'test_type',
+      },
+      totalQuestions: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        field: 'total_questions',
+      },
+      correctAnswers: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'correct_answers',
+      },
+      score: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+      },
+      timeSpent: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'time_spent',
+      },
+      answers: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: '[]',
+      },
+      passThreshold: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 70,
+        field: 'pass_threshold',
+      },
+      passed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      adaptiveDifficulty: {
+        type: DataTypes.DECIMAL(3, 1),
+        allowNull: true,
+        field: 'adaptive_difficulty',
+      },
+      weakAreas: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        field: 'weak_areas',
+      },
+      strongAreas: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        field: 'strong_areas',
+      },
+      aiRecommendations: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        field: 'ai_recommendations',
+      },
+      predictedExamScore: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: true,
+        field: 'predicted_exam_score',
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'created_at',
+      },
+    });
+    
+    // Índices para test_attempts
+    await queryInterface.addIndex('test_attempts', ['user_id', 'created_at']);
+    await queryInterface.addIndex('test_attempts', ['theme_id', 'test_type']);
+    await queryInterface.addIndex('test_attempts', ['passed', 'score']);
+    
+    console.log('✅ Tabla test_attempts creada');
+    
+    // 3. Tabla theme_progress
+    await queryInterface.createTable('theme_progress', {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      userId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        field: 'user_id',
+      },
+      themeId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'themes',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        field: 'theme_id',
+      },
+      level: {
+        type: DataTypes.ENUM('LOCKED', 'BRONZE', 'SILVER', 'GOLD', 'DIAMOND'),
+        allowNull: false,
+        defaultValue: 'LOCKED',
+      },
+      totalTests: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'total_tests',
+      },
+      averageScore: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'average_score',
+      },
+      bestScore: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'best_score',
+      },
+      worstScore: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: true,
+        field: 'worst_score',
+      },
+      studySessionsCompleted: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'study_sessions_completed',
+      },
+      reviewSessionsCompleted: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'review_sessions_completed',
+      },
+      testSessionsCompleted: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'test_sessions_completed',
+      },
+      masteryLevel: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'mastery_level',
+      },
+      weakTopics: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        field: 'weak_topics',
+      },
+      strongTopics: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        field: 'strong_topics',
+      },
+      learningCurve: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        field: 'learning_curve',
+      },
+      estimatedTimeToMastery: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true,
+        field: 'estimated_time_to_mastery',
+      },
+      lastTestDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'last_test_date',
+      },
+      lastStudyDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'last_study_date',
+      },
+      nextReviewDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'next_review_date',
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'updated_at',
+      },
+    });
+    
+    // Índices para theme_progress
+    await queryInterface.addIndex('theme_progress', ['user_id', 'theme_id'], { unique: true });
+    await queryInterface.addIndex('theme_progress', ['level', 'average_score']);
+    
+    console.log('✅ Tabla theme_progress creada');
+    
+    // 4. Tabla user_test_stats
+    await queryInterface.createTable('user_test_stats', {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      userId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        unique: true,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        field: 'user_id',
+      },
+      totalTests: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'total_tests',
+      },
+      totalQuestionsAnswered: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'total_questions_answered',
+      },
+      globalSuccessRate: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'global_success_rate',
+      },
+      totalTimeSpent: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'total_time_spent',
+      },
+      monthlyPracticeTests: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'monthly_practice_tests',
+      },
+      overallMasteryLevel: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'overall_mastery_level',
+      },
+      examReadinessScore: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'exam_readiness_score',
+      },
+      strongestBlock: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        field: 'strongest_block',
+      },
+      weakestBlock: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        field: 'weakest_block',
+      },
+      averageTestSpeed: {
+        type: DataTypes.DECIMAL(6, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'average_test_speed',
+      },
+      consistencyScore: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+        defaultValue: 0,
+        field: 'consistency_score',
+      },
+      userRank: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true,
+        field: 'user_rank',
+      },
+      topPercentile: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: true,
+        field: 'top_percentile',
+      },
+      lastMonthlyReset: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'last_monthly_reset',
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'updated_at',
+      },
+    });
+    
+    // Índices para user_test_stats
+    await queryInterface.addIndex('user_test_stats', ['user_id'], { unique: true });
+    await queryInterface.addIndex('user_test_stats', ['user_rank']);
+    await queryInterface.addIndex('user_test_stats', ['exam_readiness_score']);
+    
+    console.log('✅ Tabla user_test_stats creada');
+    
+    // 5. Tabla ai_test_sessions
+    await queryInterface.createTable('ai_test_sessions', {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      userId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        field: 'user_id',
+      },
+      themeId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true,
+        references: {
+          model: 'themes',
+          key: 'id',
+        },
+        onDelete: 'SET NULL',
+        field: 'theme_id',
+      },
+      testAttemptId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'test_attempts',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        field: 'test_attempt_id',
+      },
+      initialDifficulty: {
+        type: DataTypes.DECIMAL(3, 1),
+        allowNull: false,
+        field: 'initial_difficulty',
+      },
+      finalDifficulty: {
+        type: DataTypes.DECIMAL(3, 1),
+        allowNull: false,
+        field: 'final_difficulty',
+      },
+      adaptiveAlgorithm: {
+        type: DataTypes.ENUM('IRT', 'BAYESIAN', 'SIMPLE'),
+        allowNull: false,
+        defaultValue: 'SIMPLE',
+        field: 'adaptive_algorithm',
+      },
+      aiAnalysis: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: '{}',
+        field: 'ai_analysis',
+      },
+      generatedQuestions: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'generated_questions',
+      },
+      personalizedFeedback: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        field: 'personalized_feedback',
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'created_at',
+      },
+    });
+    
+    // Índices para ai_test_sessions
+    await queryInterface.addIndex('ai_test_sessions', ['user_id', 'created_at']);
+    await queryInterface.addIndex('ai_test_sessions', ['test_attempt_id']);
+    
+    console.log('✅ Tabla ai_test_sessions creada');
+    console.log('🎉 ¡Todas las tablas del sistema de tests creadas exitosamente!');
+  },
+
+  down: async (queryInterface: QueryInterface): Promise<void> => {
+    
+    console.log('🗑️  Eliminando tablas del sistema de tests...');
+    
+    await queryInterface.dropTable('ai_test_sessions');
+    console.log('✅ Tabla ai_test_sessions eliminada');
+    
+    await queryInterface.dropTable('user_test_stats');
+    console.log('✅ Tabla user_test_stats eliminada');
+    
+    await queryInterface.dropTable('theme_progress');
+    console.log('✅ Tabla theme_progress eliminada');
+    
+    await queryInterface.dropTable('test_attempts');
+    console.log('✅ Tabla test_attempts eliminada');
+    
+    await queryInterface.dropTable('test_questions');
+    console.log('✅ Tabla test_questions eliminada');
+    
+    console.log('🎉 Rollback completado');
+  },
+};

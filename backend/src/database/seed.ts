@@ -1,4 +1,5 @@
 import { Theme, ThemeBlock, ThemeComplexity } from '../models';
+import testQuestionsSeed from '../seeders/20251119000001-test-questions-seed';
 
 const themesData = [
   // BLOQUE 1 - ORGANIZACIÓN
@@ -221,7 +222,14 @@ export async function seedThemes() {
 
 // Ejecutar seed si es llamado directamente
 if (require.main === module) {
-  seedThemes()
-    .then(() => process.exit(0))
-    .catch(() => process.exit(1));
+  (async () => {
+    try {
+      await seedThemes();
+      await testQuestionsSeed.up();
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ Error en seed:', error);
+      process.exit(1);
+    }
+  })();
 }

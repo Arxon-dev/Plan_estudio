@@ -18,6 +18,12 @@ export interface User {
   firstName: string;
   lastName: string;
   createdAt?: string;
+  isPremium?: boolean;
+  isAdmin?: boolean;
+  stripeCustomerId?: string;
+  subscriptionStatus?: string;
+  subscriptionEndDate?: string;
+  hasUsedTrial?: boolean;
 }
 
 export interface AuthResponse {

@@ -4,6 +4,7 @@ import { format, addDays, startOfWeek, isSameDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 import apiClient from '../services/api';
+import { studyPlanService } from '../services/studyPlanService';
 
 interface Theme {
   id: number;
@@ -11,6 +12,8 @@ interface Theme {
   themeNumber: number;
   title: string;
   estimatedHours: number;
+  parts?: number;
+  content?: string;
 }
 
 interface SessionAssignment {
@@ -20,8 +23,16 @@ interface SessionAssignment {
     hours: number;
     status: string;
     isEditable: boolean;
+    subThemeIndex?: number;
+    sessionType?: string;
   }>;
 }
+
+const SESSION_TYPES = [
+  { type: 'TEST', label: 'Test', icon: '📝', color: 'bg-purple-100 text-purple-800 border-purple-300' },
+  { type: 'REVIEW', label: 'Repaso', icon: '🔄', color: 'bg-orange-100 text-orange-800 border-orange-300' },
+  { type: 'SIMULATION', label: 'Simulacro', icon: '🎓', color: 'bg-indigo-100 text-indigo-800 border-indigo-300' },
+];
 
 export const ManualPlanner: React.FC = () => {
   const navigate = useNavigate();
@@ -31,11 +42,15 @@ export const ManualPlanner: React.FC = () => {
   const [themes, setThemes] = useState<Theme[]>([]);
   const [sessions, setSessions] = useState<SessionAssignment[]>([]);
   const [draggedTheme, setDraggedTheme] = useState<Theme | null>(null);
+  const [draggedType, setDraggedType] = useState<any | null>(null);
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
+  const [selectedType, setSelectedType] = useState<any | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedPart, setSelectedPart] = useState<number | null>(null);
   const [hoursInput, setHoursInput] = useState(1);
+  const [effectivePlanId, setEffectivePlanId] = useState<string | null>(planId);
 
   useEffect(() => {
     loadData();
@@ -44,34 +59,60 @@ export const ManualPlanner: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
+
+      let currentPlanId = planId;
+
+      // Si no hay planId en la URL, intentar obtener el plan activo
+      if (!currentPlanId) {
+        try {
+          const activePlan = await studyPlanService.getActivePlan();
+          if (activePlan && activePlan.id) {
+            currentPlanId = activePlan.id.toString();
+          } else {
+            toast.error('No tienes un plan de estudio activo');
+            navigate('/dashboard');
+            return;
+          }
+        } catch (error) {
+          console.error('Error al obtener plan activo:', error);
+          toast.error('Error al cargar el plan de estudio');
+          navigate('/dashboard');
+          return;
+        }
+      }
+
+      setEffectivePlanId(currentPlanId);
+
       const [themesRes, sessionsRes] = await Promise.all([
         apiClient.get('/themes'),
-        apiClient.get(`/study-plans/${planId}/sessions`),
+        apiClient.get(`/study-plans/${currentPlanId}/sessions`),
       ]);
 
       setThemes(themesRes.data.themes || themesRes.data);
-      
+
       // Convertir sesiones existentes a formato de asignaciones
       const assignments: SessionAssignment[] = [];
       const sessionsList = sessionsRes.data.sessions || [];
-      
+
       sessionsList.forEach((session: any) => {
         const sessionDate = new Date(session.scheduledDate);
         let assignment = assignments.find(a => isSameDay(a.date, sessionDate));
-        
+
         if (!assignment) {
           assignment = { date: sessionDate, themes: [] };
           assignments.push(assignment);
         }
-        
+
         // Solo sesiones PENDING son editables
         const isEditable = session.status === 'PENDING';
-        
+
         assignment.themes.push({
           theme: session.theme,
           hours: session.scheduledHours,
           status: session.status,
           isEditable: isEditable,
+          subThemeIndex: session.subThemeIndex,
+          sessionType: session.sessionType
         });
       });
 
@@ -91,6 +132,12 @@ export const ManualPlanner: React.FC = () => {
 
   const handleDragStart = (theme: Theme) => {
     setDraggedTheme(theme);
+    setDraggedType(null);
+  };
+
+  const handleDragTypeStart = (type: any) => {
+    setDraggedType(type);
+    setDraggedTheme(null);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -98,17 +145,51 @@ export const ManualPlanner: React.FC = () => {
   };
 
   const handleDrop = (date: Date) => {
-    if (!draggedTheme) return;
-
-    setSelectedTheme(draggedTheme);
-    setSelectedDate(date);
-    setDraggedTheme(null);
+    if (draggedTheme) {
+      setSelectedTheme(draggedTheme);
+      setSelectedType(null);
+      setSelectedDate(date);
+      setSelectedPart(null);
+      setDraggedTheme(null);
+    } else if (draggedType) {
+      setSelectedType(draggedType);
+      setSelectedTheme(null);
+      setSelectedDate(date);
+      setSelectedPart(null);
+      setDraggedType(null);
+    }
   };
 
   const addThemeToDate = () => {
-    if (!selectedTheme || !selectedDate || hoursInput <= 0) {
+    if ((!selectedTheme && !selectedType) || !selectedDate || hoursInput <= 0) {
       toast.error('Selecciona un tema y número de horas válido');
       return;
+    }
+
+    if (selectedType && !selectedTheme) {
+      toast.error('Debes seleccionar un tema para este tipo de sesión');
+      return;
+    }
+
+    // Calcular el número de sesiones editables actuales
+    const currentSessionsCount = sessions.reduce((total, assignment) =>
+      total + assignment.themes.filter(t => t.isEditable).length, 0
+    );
+
+    // Límite: 4000 sesiones (backend soporta hasta 10MB)
+    const MAX_SESSIONS = 4000;
+
+    if (currentSessionsCount >= MAX_SESSIONS) {
+      toast.error(`Has alcanzado el límite de ${MAX_SESSIONS} sesiones. Por favor, guarda el plan actual antes de añadir más.`);
+      return;
+    }
+
+    // Advertencia cuando se acerca al límite
+    if (currentSessionsCount >= MAX_SESSIONS * 0.8) {
+      toast(
+        `⚠️ Te acercas al límite (${currentSessionsCount}/${MAX_SESSIONS} sesiones). Considera guardar pronto.`,
+        { duration: 4000, icon: '⚠️' }
+      );
     }
 
     setSessions(prev => {
@@ -121,20 +202,24 @@ export const ManualPlanner: React.FC = () => {
       }
 
       assignment.themes.push({
-        theme: selectedTheme,
+        theme: selectedTheme!,
         hours: hoursInput,
         status: 'PENDING',
         isEditable: true,
+        subThemeIndex: selectedPart !== null ? selectedPart : undefined,
+        sessionType: selectedType ? selectedType.type : 'STUDY'
       });
 
       return newSessions;
     });
 
-    toast.success('Tema agregado');
-    
+    toast.success('Sesión agregada');
+
     // Cerrar modal y resetear
     setSelectedTheme(null);
+    setSelectedType(null);
     setSelectedDate(null);
+    setSelectedPart(null);
     setHoursInput(1);
   };
 
@@ -142,16 +227,22 @@ export const ManualPlanner: React.FC = () => {
     setSessions(prev => {
       const newSessions = [...prev];
       const assignment = newSessions.find(s => isSameDay(s.date, date));
-      
+
       if (assignment) {
         const themeToRemove = assignment.themes[themeIndex];
-        
+
+        // Validar que el tema existe
+        if (!themeToRemove) {
+          console.error('Tema no encontrado en el índice:', themeIndex);
+          return prev;
+        }
+
         // Solo permitir eliminar sesiones editables (PENDING)
         if (!themeToRemove.isEditable) {
           toast.error('No puedes eliminar sesiones ya completadas o en progreso');
           return prev;
         }
-        
+
         assignment.themes.splice(themeIndex, 1);
         if (assignment.themes.length === 0) {
           return newSessions.filter(s => !isSameDay(s.date, date));
@@ -170,15 +261,17 @@ export const ManualPlanner: React.FC = () => {
       // Solo guardar sesiones editables (PENDING)
       const sessionsData = sessions.flatMap(assignment =>
         assignment.themes
-          .filter(item => item.isEditable) // Solo sesiones PENDING
-          .map(({ theme, hours }) => ({
-            themeId: theme.id,
+          .filter(item => item.isEditable)
+          .map((item: any) => ({
+            themeId: item.theme.id,
             scheduledDate: assignment.date.toISOString(),
-            scheduledHours: hours,
+            scheduledHours: item.hours,
+            sessionType: item.sessionType || 'STUDY',
+            subThemeIndex: item.subThemeIndex
           }))
       );
 
-      await apiClient.post(`/sessions/manual-plan/${planId}`, { sessions: sessionsData });
+      await apiClient.post(`/sessions/manual-plan/${effectivePlanId}`, { sessions: sessionsData });
       toast.success('Plan guardado exitosamente');
       navigate('/dashboard');
     } catch (error: any) {
@@ -198,7 +291,7 @@ export const ManualPlanner: React.FC = () => {
         return null;
     }
   };
-  
+
   const getBlockColor = (block: string) => {
     switch (block) {
       case 'ORGANIZACION':
@@ -258,11 +351,30 @@ export const ManualPlanner: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Panel de Temas */}
-          <div className="lg:col-span-1">
+          {/* Panel de Temas y Tipos */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Tipos de Actividad */}
+            <div className="card">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">🎯 Tipos de Actividad</h2>
+              <div className="space-y-2">
+                {SESSION_TYPES.map(type => (
+                  <div
+                    key={type.type}
+                    draggable
+                    onDragStart={() => handleDragTypeStart(type)}
+                    className={`p-3 rounded-lg border cursor-move hover:shadow-md transition-all flex items-center gap-3 ${type.color}`}
+                  >
+                    <span className="text-xl">{type.icon}</span>
+                    <span className="font-medium">{type.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Lista de Temas */}
             <div className="card sticky top-4">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">📚 Temas Disponibles</h2>
-              
+
               {themes.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <p className="text-sm">No hay temas disponibles</p>
@@ -344,32 +456,37 @@ export const ManualPlanner: React.FC = () => {
                         {assignment?.themes.map((item, idx) => {
                           const statusBadge = getStatusBadge(item.status);
                           const isEditable = item.isEditable;
-                          
+                          const sessionType = SESSION_TYPES.find(t => t.type === item.sessionType);
+
                           return (
                             <div
                               key={idx}
-                              className={`p-2 rounded border text-xs ${
-                                isEditable 
-                                  ? getBlockColor(item.theme.block)
-                                  : 'bg-gray-50 border-gray-300 opacity-75'
-                              }`}
+                              className={`p-2 rounded border text-xs ${isEditable
+                                ? (sessionType ? sessionType.color : getBlockColor(item.theme.block))
+                                : 'bg-gray-50 border-gray-300 opacity-75'
+                                }`}
                             >
                               <div className="flex items-start justify-between gap-1">
                                 <div className="flex-1">
-                                  <div className="font-semibold">T{item.theme.themeNumber}</div>
+                                  <div className="font-semibold flex items-center gap-1">
+                                    {sessionType && <span>{sessionType.icon}</span>}
+                                    T{item.theme.themeNumber}
+                                    {item.subThemeIndex !== undefined && item.subThemeIndex !== null && (
+                                      <span className="text-xs opacity-75 ml-1">(P{item.subThemeIndex + 1})</span>
+                                    )}
+                                  </div>
                                   <div className="line-clamp-2 opacity-90">{item.theme.title}</div>
                                   <div className="mt-1 font-medium">{item.hours}h</div>
-                                  
+
                                   {/* Mostrar estado si no es editable */}
                                   {!isEditable && statusBadge && (
-                                    <div className={`mt-1 inline-block px-2 py-0.5 rounded text-xs ${
-                                      statusBadge.color
-                                    }`}>
+                                    <div className={`mt-1 inline-block px-2 py-0.5 rounded text-xs ${statusBadge.color
+                                      }`}>
                                       {statusBadge.icon} {statusBadge.label}
                                     </div>
                                   )}
                                 </div>
-                                
+
                                 {/* Botón eliminar solo para sesiones editables */}
                                 {isEditable ? (
                                   <button
@@ -414,18 +531,91 @@ export const ManualPlanner: React.FC = () => {
         </div>
 
         {/* Modal de Agregar Horas */}
-        {selectedTheme && selectedDate && (
+        {(selectedTheme || selectedType) && selectedDate && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 Agregar Tema al {format(selectedDate, 'dd/MM/yyyy')}
               </h3>
-              
+
               <div className="mb-4">
-                <div className={`p-3 rounded-lg border ${getBlockColor(selectedTheme.block)}`}>
-                  <div className="font-semibold">Tema {selectedTheme.themeNumber}</div>
-                  <div className="text-sm mt-1">{selectedTheme.title}</div>
-                </div>
+                {selectedType ? (
+                  <>
+                    <div className={`p-3 rounded-lg border mb-4 flex items-center gap-3 ${selectedType.color}`}>
+                      <span className="text-xl">{selectedType.icon}</span>
+                      <div>
+                        <div className="font-bold">{selectedType.label}</div>
+                        <div className="text-xs opacity-75">Selecciona el tema asociado</div>
+                      </div>
+                    </div>
+
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tema Asociado
+                    </label>
+                    <select
+                      className="input-field mb-2"
+                      value={selectedTheme?.id || ''}
+                      onChange={(e) => {
+                        const theme = themes.find(t => t.id === Number(e.target.value));
+                        setSelectedTheme(theme || null);
+                        setSelectedPart(null);
+                      }}
+                    >
+                      <option value="">-- Selecciona un tema --</option>
+                      {themes.map(theme => (
+                        <option key={theme.id} value={theme.id}>
+                          Tema {theme.themeNumber}: {theme.title}
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                ) : (
+                  <div className={`p-3 rounded-lg border ${getBlockColor(selectedTheme!.block)}`}>
+                    <div className="font-semibold">Tema {selectedTheme!.themeNumber}</div>
+                    <div className="text-sm mt-1">{selectedTheme!.title}</div>
+                  </div>
+                )}
+
+                {/* Selector de Partes si el tema tiene más de 1 parte */}
+                {selectedTheme && selectedTheme.parts && selectedTheme.parts > 1 && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Parte del Tema
+                    </label>
+                    <select
+                      className="input-field"
+                      value={selectedPart !== null ? selectedPart : ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSelectedPart(val === '' ? null : Number(val));
+                      }}
+                    >
+                      <option value="">Tema Completo</option>
+                      {(() => {
+                        // Extraer las descripciones de las partes del campo content
+                        const parts = selectedTheme.content
+                          ? selectedTheme.content.split('\n').filter(line => line.trim().startsWith('Parte'))
+                          : [];
+
+                        // Si no hay descripciones en content, usar formato genérico
+                        if (parts.length === 0) {
+                          return Array.from({ length: selectedTheme.parts }).map((_, idx) => (
+                            <option key={idx} value={idx}>
+                              Parte {idx + 1}
+                            </option>
+                          ));
+                        }
+
+                        // Mostrar las descripciones extraídas
+                        return parts.map((part, idx) => (
+                          <option key={idx} value={idx}>
+                            {part.trim()}
+                          </option>
+                        ));
+                      })()}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="mb-4">
@@ -447,7 +637,9 @@ export const ManualPlanner: React.FC = () => {
                 <button
                   onClick={() => {
                     setSelectedTheme(null);
+                    setSelectedType(null);
                     setSelectedDate(null);
+                    setSelectedPart(null);
                   }}
                   className="flex-1 btn-secondary"
                 >

@@ -17,6 +17,13 @@ import GuidePage from './pages/GuidePage';
 import { PremiumFeatures } from './pages/PremiumFeatures';
 import { TelegramCommunity } from './pages/TelegramCommunity';
 import { AdminPanel } from './pages/AdminPanel';
+import ImportQuestions from './pages/ImportQuestions';
+import ManageQuestions from './pages/ManageQuestions';
+import Tests from './pages/Tests';
+import TestSession from './pages/TestSession';
+import TestResults from './pages/TestResults';
+import { PaymentSuccess } from './pages/PaymentSuccess';
+import { PaymentCancel } from './pages/PaymentCancel';
 
 function App() {
   return (
@@ -25,11 +32,11 @@ function App() {
         <div className="App">
           {/* Mobile Warning Banner - Shown globally */}
           <MobileWarningBanner />
-          
+
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            
+
             <Route
               path="/dashboard"
               element={
@@ -38,7 +45,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/profile"
               element={
@@ -47,7 +54,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/create-plan"
               element={
@@ -56,7 +63,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/sessions"
               element={
@@ -65,7 +72,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/themes"
               element={
@@ -74,7 +81,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
 
             <Route
               path="/manual-planner"
@@ -84,7 +91,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/smart-calendar"
               element={
@@ -102,7 +109,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/guide"
               element={
@@ -111,7 +118,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/premium"
               element={
@@ -120,7 +127,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/telegram"
               element={
@@ -129,7 +136,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/admin"
               element={
@@ -138,11 +145,74 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+
+            <Route
+              path="/admin/import-questions"
+              element={
+                <ProtectedRoute>
+                  <ImportQuestions />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/manage-questions"
+              element={
+                <ProtectedRoute>
+                  <ManageQuestions />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/tests"
+              element={
+                <ProtectedRoute>
+                  <Tests />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/test-session"
+              element={
+                <ProtectedRoute>
+                  <TestSession />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/test-results/:attemptId"
+              element={
+                <ProtectedRoute>
+                  <TestResults />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/payment/success"
+              element={
+                <ProtectedRoute>
+                  <PaymentSuccess />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/payment/cancel"
+              element={
+                <ProtectedRoute>
+                  <PaymentCancel />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
-          
+
           <Toaster
             position="top-right"
             toastOptions={{

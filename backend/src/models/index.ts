@@ -5,6 +5,11 @@ import WeeklySchedule from './WeeklySchedule';
 import StudySession from './StudySession';
 import UserNote from './UserNote';
 import PlanThemeStats from './PlanThemeStats';
+import TestQuestion from './TestQuestion';
+import TestAttempt from './TestAttempt';
+import ThemeProgress from './ThemeProgress';
+import UserTestStats from './UserTestStats';
+import AITestSession from './AITestSession';
 
 // Exportar todos los modelos
 export {
@@ -15,9 +20,18 @@ export {
   StudySession,
   UserNote,
   PlanThemeStats,
+  TestQuestion,
+  TestAttempt,
+  ThemeProgress,
+  UserTestStats,
+  AITestSession,
 };
 
 // Exportar enums
 export { ThemeBlock, ThemeComplexity } from './Theme';
 export { PlanStatus } from './StudyPlan';
 export { SessionStatus, SessionType } from './StudySession';
+export { QuestionDifficulty, QuestionSource } from './TestQuestion';
+export { TestType } from './TestAttempt';
+export { ThemeLevel } from './ThemeProgress';
+export { AdaptiveAlgorithm } from './AITestSession';

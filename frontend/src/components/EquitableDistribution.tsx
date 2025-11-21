@@ -21,13 +21,13 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
         studyPlanService.getEquitableDistribution(planId),
         studyPlanService.getThemePartsStats(planId)
       ]);
-      
+
       // Combinar ambas respuestas en un solo objeto
       const combinedData = {
         ...distributionResponse,
         partsStatsData: partsStatsResponse
       };
-      
+
       setDistributionData(combinedData);
       setError(null);
     } catch (err) {
@@ -67,7 +67,7 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
   }
 
   const { distributionByComplexity, stats } = distributionData;
-  
+
   // Función para obtener estadísticas de partes de un tema
   const getThemePartsStats = (themeId: number) => {
     if (!distributionData.partsStatsData || !distributionData.partsStatsData.themePartsStats) return null;
@@ -78,13 +78,13 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
   const getThemeBlock = (themeId: number) => {
     // Bloque 1 – Organización (temas 1-6)
     if (themeId >= 1 && themeId <= 6) return 'BLOQUE_1';
-    
+
     // Bloque 2 – Jurídico-Social (temas 7-14)
     if (themeId >= 7 && themeId <= 14) return 'BLOQUE_2';
-    
+
     // Bloque 3 – Seguridad Nacional (temas 15-21)
     if (themeId >= 15 && themeId <= 21) return 'BLOQUE_3';
-    
+
     return 'BLOQUE_1'; // Por defecto
   };
 
@@ -107,7 +107,7 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
       default: return { border: 'border-gray-500', bg: 'bg-gray-50', text: 'text-gray-800' };
     }
   };
-  
+
   // Validar que los datos necesarios existan
   if (!distributionByComplexity || !stats) {
     return (
@@ -149,12 +149,12 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
   const isEquitable = (block: string) => {
     const themesInBlock = themesByBlock[block as keyof typeof themesByBlock];
     if (!themesInBlock || themesInBlock.length === 0) return true;
-    
+
     const sessions = themesInBlock.map((td: any) => td.totalSessions).filter(Boolean);
     if (sessions.length === 0) return true;
-    
+
     const maxDifference = Math.max(...sessions) - Math.min(...sessions);
-    
+
     return maxDifference <= 15; // Consideramos equitativo si la diferencia máxima es ≤ 15 sesiones
   };
 
@@ -167,6 +167,7 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
   };
 
   const BlockSection = ({ block }: any) => {
+    const [isOpen, setIsOpen] = useState(true);
     const themes = themesByBlock[block as keyof typeof themesByBlock] || [];
     const blockName = getBlockName(block);
     const blockColor = getBlockColor(block);
@@ -174,8 +175,21 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
     if (themes.length === 0) {
       return (
         <div className={`border-l-4 ${blockColor.border} pl-4 opacity-50`}>
-          <h4 className={`text-lg font-semibold ${blockColor.text} mb-3`}>{blockName}</h4>
-          <p className="text-gray-500 text-sm">No hay temas en este bloque</p>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-full flex items-center justify-between mb-3 focus:outline-none"
+          >
+            <h4 className={`text-lg font-semibold ${blockColor.text}`}>{blockName}</h4>
+            <svg
+              className={`w-5 h-5 ${blockColor.text} transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {isOpen && <p className="text-gray-500 text-sm">No hay temas en este bloque</p>}
         </div>
       );
     }
@@ -187,80 +201,97 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
 
     return (
       <div className={`border-l-4 ${blockColor.border} pl-4`}>
-        <div className="flex items-center justify-between mb-3">
-          <h4 className={`text-lg font-semibold ${blockColor.text}`}>{blockName}</h4>
-          <span className={`text-sm font-medium ${getEquityColor(block)}`}>
-            {getEquityIcon(block)} {isEquitable(block) ? 'Equitativo' : 'Desigual'}
-          </span>
-        </div>
-        
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 mb-4`}>
-          <div className={`${blockColor.bg} p-3 rounded-lg`}>
-            <p className={`text-sm ${blockColor.text} opacity-80`}>Total de temas</p>
-            <p className={`text-2xl font-bold ${blockColor.text}`}>{totalThemes}</p>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex items-center justify-between mb-3 focus:outline-none group"
+        >
+          <div className="flex items-center gap-3">
+            <h4 className={`text-lg font-semibold ${blockColor.text}`}>{blockName}</h4>
+            <span className={`text-sm font-medium ${getEquityColor(block)} bg-white px-2 py-0.5 rounded shadow-sm`}>
+              {getEquityIcon(block)} {isEquitable(block) ? 'Equitativo' : 'Desigual'}
+            </span>
           </div>
-          <div className={`${blockColor.bg} p-3 rounded-lg`}>
-            <p className={`text-sm ${blockColor.text} opacity-80`}>Sesiones promedio</p>
-            <p className={`text-2xl font-bold ${blockColor.text}`}>{avgSessions.toFixed(1)}</p>
-          </div>
-          <div className={`${blockColor.bg} p-3 rounded-lg`}>
-            <p className={`text-sm ${blockColor.text} opacity-80`}>Total de horas</p>
-            <p className={`text-lg font-bold ${blockColor.text}`}>{totalHours.toFixed(1)}h</p>
-          </div>
-        </div>
+          <svg
+            className={`w-5 h-5 ${blockColor.text} transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-        <div className="space-y-2">
-          {themes.map((td: any) => {
-            const themeParts = getThemePartsStats(td.theme.id);
-            const hasMultipleParts = themeParts && themeParts.parts && themeParts.parts.length > 1;
-            
-            return (
-              <div key={td.theme.id}>
-                {/* Tema principal con partes desglosadas */}
-                {hasMultipleParts ? (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-blue-800">
-                        {td.theme.title}
-                      </span>
-                      <div className="flex items-center space-x-3 text-xs flex-shrink-0">
-                        <span className="text-blue-600">📚 {td.totalSessions}</span>
-                        <span className="text-purple-600">🔄 {td.reviewSessions}</span>
-                        <span className="text-orange-600">⏱️ {typeof td.totalHours === 'number' ? td.totalHours.toFixed(1) : '0.0'}h</span>
-                      </div>
-                    </div>
-                    <div className="ml-4 space-y-1 border-l-2 border-blue-200 pl-3">
-                      {themeParts.parts.map((part: any) => (
-                        <div key={part.partIndex} className="flex items-center justify-between py-1">
-                          <span className="text-xs text-blue-700 truncate flex-1 mr-2">
-                            Parte {part.partIndex}: {part.partLabel}
+        {isOpen && (
+          <div className="animate-fade-in">
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 mb-4`}>
+              <div className={`${blockColor.bg} p-3 rounded-lg`}>
+                <p className={`text-sm ${blockColor.text} opacity-80`}>Total de temas</p>
+                <p className={`text-2xl font-bold ${blockColor.text}`}>{totalThemes}</p>
+              </div>
+              <div className={`${blockColor.bg} p-3 rounded-lg`}>
+                <p className={`text-sm ${blockColor.text} opacity-80`}>Sesiones promedio</p>
+                <p className={`text-2xl font-bold ${blockColor.text}`}>{avgSessions.toFixed(1)}</p>
+              </div>
+              <div className={`${blockColor.bg} p-3 rounded-lg`}>
+                <p className={`text-sm ${blockColor.text} opacity-80`}>Total de horas</p>
+                <p className={`text-lg font-bold ${blockColor.text}`}>{totalHours.toFixed(1)}h</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {themes.map((td: any) => {
+                const themeParts = getThemePartsStats(td.theme.id);
+                const hasMultipleParts = themeParts && themeParts.parts && themeParts.parts.length > 1;
+
+                return (
+                  <div key={td.theme.id}>
+                    {/* Tema principal con partes desglosadas */}
+                    {hasMultipleParts ? (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-semibold text-blue-800">
+                            {td.theme.title}
                           </span>
-                          <div className="flex items-center space-x-2 text-xs flex-shrink-0">
-                            <span className="text-blue-600">📚 {part.totalSessions}</span>
-                            <span className="text-purple-600">🔄 {part.reviewSessions}</span>
-                            <span className="text-orange-600">⏱️ {typeof part.totalHours === 'number' ? part.totalHours.toFixed(1) : '0.0'}h</span>
+                          <div className="flex items-center space-x-3 text-xs flex-shrink-0">
+                            <span className="text-blue-600">📚 {td.totalSessions}</span>
+                            <span className="text-purple-600">🔄 {td.reviewSessions}</span>
+                            <span className="text-orange-600">⏱️ {typeof td.totalHours === 'number' ? td.totalHours.toFixed(1) : '0.0'}h</span>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                        <div className="ml-4 space-y-1 border-l-2 border-blue-200 pl-3">
+                          {themeParts.parts.map((part: any) => (
+                            <div key={part.partIndex} className="flex items-center justify-between py-1">
+                              <span className="text-xs text-blue-700 truncate flex-1 mr-2">
+                                Parte {part.partIndex}: {part.partLabel}
+                              </span>
+                              <div className="flex items-center space-x-2 text-xs flex-shrink-0">
+                                <span className="text-blue-600">📚 {part.totalSessions}</span>
+                                <span className="text-purple-600">🔄 {part.reviewSessions}</span>
+                                <span className="text-orange-600">⏱️ {typeof part.totalHours === 'number' ? part.totalHours.toFixed(1) : '0.0'}h</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      /* Tema sin partes - mostrar como antes */
+                      <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span className="text-sm font-medium text-gray-700 truncate flex-1 mr-2">
+                          {td.theme.title}
+                        </span>
+                        <div className="flex items-center space-x-3 text-xs md:text-sm flex-shrink-0">
+                          <span className="text-blue-600">📚 {td.totalSessions}</span>
+                          <span className="text-purple-600">🔄 {td.reviewSessions}</span>
+                          <span className="text-orange-600">⏱️ {typeof td.totalHours === 'number' ? td.totalHours.toFixed(1) : '0.0'}h</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  /* Tema sin partes - mostrar como antes */
-                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                    <span className="text-sm font-medium text-gray-700 truncate flex-1 mr-2">
-                      {td.theme.title}
-                    </span>
-                    <div className="flex items-center space-x-3 text-xs md:text-sm flex-shrink-0">
-                      <span className="text-blue-600">📚 {td.totalSessions}</span>
-                      <span className="text-purple-600">🔄 {td.reviewSessions}</span>
-                      <span className="text-orange-600">⏱️ {typeof td.totalHours === 'number' ? td.totalHours.toFixed(1) : '0.0'}h</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -269,14 +300,14 @@ export const EquitableDistribution: React.FC<EquitableDistributionProps> = ({ pl
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-gray-900">📊 Distribución por Rotación de Temas</h3>
-        <button 
+        <button
           onClick={loadDistributionData}
           className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
         >
           🔄 Actualizar
         </button>
       </div>
-      
+
       <div className="space-y-8">
         <BlockSection block="BLOQUE_1" />
         <BlockSection block="BLOQUE_2" />

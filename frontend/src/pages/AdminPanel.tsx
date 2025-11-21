@@ -132,6 +132,64 @@ export const AdminPanel: React.FC = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Acciones Rápidas */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">⚡ Acciones Rápidas</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <button
+              onClick={() => navigate('/admin/import-questions')}
+              className="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition shadow-md"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <div className="text-left">
+                <p className="font-semibold">📚 Importar Preguntas GIFT</p>
+                <p className="text-xs text-blue-100">Subir archivos .gift</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate('/tests')}
+              className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition shadow-md"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <div className="text-left">
+                <p className="font-semibold">📋 Ver Tests</p>
+                <p className="text-xs text-green-100">Gestionar preguntas</p>
+              </div>
+            </button>
+
+            <button
+              onClick={loadStatistics}
+              className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition shadow-md"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <div className="text-left">
+                <p className="font-semibold">🔄 Actualizar</p>
+                <p className="text-xs text-purple-100">Refrescar estadísticas</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate('/admin/manage-questions')}
+              className="flex items-center gap-3 p-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition shadow-md"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <div className="text-left">
+                <p className="font-semibold">🗑️ Gestionar Preguntas</p>
+                <p className="text-xs text-red-100">Eliminar preguntas</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
         {/* Tarjetas de estadísticas principales */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Usuarios */}
@@ -219,7 +277,7 @@ export const AdminPanel: React.FC = () => {
               {stats.users.registrationsByDay.map((day, index) => {
                 const maxCount = Math.max(...stats.users.registrationsByDay.map(d => Number(d.count)));
                 const height = maxCount > 0 ? (Number(day.count) / maxCount) * 100 : 0;
-                
+
                 return (
                   <div key={index} className="flex flex-col items-center flex-1 min-w-[30px]">
                     <div className="text-xs text-gray-600 mb-1">{Number(day.count)}</div>
@@ -284,16 +342,6 @@ export const AdminPanel: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
-
-        {/* Botón de actualizar */}
-        <div className="mt-8 flex justify-center">
-          <button
-            onClick={loadStatistics}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md font-medium"
-          >
-            🔄 Actualizar Estadísticas
-          </button>
         </div>
       </div>
     </div>

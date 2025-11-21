@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application } from 'express'; // Force restart 2
 import cors from 'cors';
 import dotenv from 'dotenv';
 import sequelize from './config/database';
@@ -36,8 +36,13 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// Webhook de Stripe (necesita raw body)
+import { PaymentController } from './controllers/PaymentController';
+app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), PaymentController.handleWebhook);
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Rutas
 app.use('/api', routes);
@@ -52,15 +57,9 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('✅ Conexión a la base de datos establecida correctamente');
 
-    // Sincronizar modelos solo si está habilitado explícitamente (evita ALTER en tablas existentes)
-    const shouldSync = process.env.DB_SYNC === 'true';
-    if (shouldSync) {
-      const alter = process.env.DB_SYNC_ALTER === 'true';
-      await sequelize.sync({ alter });
-      console.log(`✅ Modelos sincronizados (alter=${alter})`);
-    } else {
-      console.log('ℹ️ DB Sync deshabilitado (set DB_SYNC=true para habilitar)');
-    }
+    // NO sincronizar modelos automáticamente para evitar conflictos
+    // Las tablas ya existen en la BD (creadas por migraciones)
+    console.log('ℹ️ DB Sync deshabilitado - Usando tablas existentes');
 
     // Iniciar servidor
     // Railway detecta automáticamente el puerto desde process.env.PORT

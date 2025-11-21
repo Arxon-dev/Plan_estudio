@@ -1,0 +1,29 @@
+import { QueryInterface, DataTypes } from 'sequelize';
+
+module.exports = {
+    up: async (queryInterface: QueryInterface) => {
+        // 1. Añadir columna themePart
+        await queryInterface.addColumn('test_questions', 'themePart', {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            validate: {
+                min: 1,
+                max: 10,
+            },
+            comment: 'Número de parte del tema (1, 2, 3, 4...) o NULL si tema sin partes',
+        });
+
+        // 2. Añadir índice compuesto
+        await queryInterface.addIndex('test_questions', ['themeId', 'themePart'], {
+            name: 'test_questions_theme_part_idx'
+        });
+    },
+
+    down: async (queryInterface: QueryInterface) => {
+        // 1. Eliminar índice
+        await queryInterface.removeIndex('test_questions', 'test_questions_theme_part_idx');
+
+        // 2. Eliminar columna
+        await queryInterface.removeColumn('test_questions', 'themePart');
+    }
+};

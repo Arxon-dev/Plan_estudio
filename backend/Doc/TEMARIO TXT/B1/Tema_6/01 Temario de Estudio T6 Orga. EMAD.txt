@@ -1,0 +1,1323 @@
+INSTRUCCIÓN 55/2021, ORGANIZACIÓN DEL EMAD
+
+Instrucción 55/2021, de 27 de octubre, del Jefe de Estado Mayor de la Defensa, por la que se
+desarrolla la organización del Estado Mayor de la Defensa.
+(Incluido Orden DEF/100/2023, Orden DEF/1110/2023, Resolución 200/00067/24 y Resolución 455/06616/24)
+
+DISPONGO:
+
+CAPÍTULO I - Generalidades
+Primero. Finalidad.
+Esta instrucción tiene como finalidad el desarrollo de la organización del Estado Mayor de la
+Defensa (EMAD).
+
+Segundo. Ámbito de aplicación.
+La instrucción alcanza a las unidades componentes del EMAD y, en cuanto les afecte, a aquellas
+otras que se integren en la estructura operativa de las Fuerzas Armadas (FAS).
+
+Tercero. El Estado Mayor de la Defensa.
+El Estado Mayor de la Defensa es el órgano que posibilita al Jefe de Estado Mayor de la Defensa
+(JEMAD) el cumplimiento de sus funciones.
+Se organizará de forma que permita:
+- la definición y el desarrollo de la estrategia militar,
+- el planeamiento militar,
+- el planeamiento, seguimiento y conducción de las operaciones militares,
+- el aseguramiento de la eficacia operativa de las FAS, especialmente en el combate,
+- su transformación digital y
+- la representación del JEMAD ante las Organizaciones Internacionales de Seguridad y
+Defensa (OISD),
+así como el ejercicio del resto de sus competencias.
+
+Cuarto. Transformación Digital en el Estado Mayor de la Defensa.
+La transformación digital del EMAD, en consonancia con la del Ministerio de Defensa, tiene como
+finalidad adaptar la organización del EMAD a la evolución permanente de las FAS para hacer
+frente a los nuevos retos y amenazas.
+Para ello, además de la aplicación de nuevas tecnologías de gestión y análisis del dato en su ámbito,
+se modificará la cultura de trabajo centrándola en el conocimiento, ubicando a las personas, sus
+valores y a la información del entorno en el centro de las actividades que desarrolle el EMAD.
+
+Quinto. Gestión por procesos en el Estado Mayor de la Defensa.
+1. El modelo de organización del EMAD estará basado en la gestión por procesos, que
+comprenderá la metodología y tecnología sobre la que deben basarse las actividades
+funcionales y operativas del EMAD y que permitirá sistematizar, automatizar y optimizar
+dichas actividades mediante su análisis correspondiente.
+2. En el EMAD, los procesos se organizarán jerárquicamente, situándose en el nivel más alto
+de esta jerarquía los procesos troncales del JEMAD.
+Dichos procesos se establecerán sobre la base de las responsabilidades del JEMAD recogidas en
+la Ley Orgánica 5/2005, de 17 de noviembre, de la Defensa Nacional.
+172
+
+
+
+
+Una Instrucción, enmarcada en el Plan de Transformación Digital del Ministerio, definirá dichos
+procesos y detallará su naturaleza.
+3. Además, el Estado Mayor Conjunto de la Defensa (EMACON) coordinará el esfuerzo de
+integración de los procesos específicos con los procesos troncales del JEMAD.
+
+Sexto. Organización del Estado Mayor de la Defensa.
+El EMAD se estructurará de la siguiente forma:
+a) El Cuartel General del Estado Mayor de la Defensa (CGEMAD).
+b) El Mando de Operaciones (MOPS).
+c) El Centro de Inteligencia de las Fuerzas Armadas (CIFAS).
+d) El Mando Conjunto del Ciberespacio (MCCE).
+e) El Centro Superior de Estudios de la Defensa Nacional (CESEDEN).
+
+Séptimo. Las organizaciones operativas permanentes. (Modificado por Orden DEF/1110/2023)
+1. Directamente subordinados al JEMAD, se encuentran las ORGANIZACIONES OPERATIVAS
+PERMANENTES para el desarrollo de las operaciones que las FAS tienen activadas
+continuamente:
+a) El Mando Operativo Terrestre. (MOT)
+b) El Mando Operativo Marítimo. (MOM)
+c) El Mando Operativo Aéreo (MOA)
+d) El Mando Operativo Espacial (MOESPA)
+e) El Mando Operativo Ciberespacial. (MOC)
+2. Los Jefes de Estado Mayor del Ejército de Tierra, de la Armada y del Ejército del Aire y del
+Espacio propondrán al JEMAD la designación de su respectivo Comandante del Mando Operativo
+Terrestre, Marítimo y Aeroespacial Aéreo, Espacial y Ciberespacial.
+Orden DEF/1110/2023
+3. Mandos Componentes designados. A propuesta del JEMAD y de los respectivos Jefes de Estado Mayor de
+los Ejércitos y de la Armada y previa conformidad de la persona titular del Ministerio de Defensa, serán
+designados por el JEMAD los Mandos Componentes del máximo nivel, que serán generados por los Ejércitos
+y la Armada y el MCCE y que recibirán la denominación siguiente:
+- Mando Componente Terrestre
+- Mando Componente Marítimo
+- Mando Componente Aéreo
+- Mando Componente Espacial
+- Mando Componente Ciberespacial.
+4. Además de los anteriores, por su carácter transversal, se activará, en su caso, el Mando Componente de
+Operaciones Especiales, de acuerdo con la doctrina militar vigente
+Resolución 200/00067/24
+A propuesta del Jefe de Estado Mayor del Ejército del Arie y del Espacio, se designa al General Jefe del Mando
+Aéreo de Combate del Ejército del Aire y del Espacio como Comandante del Mando Operativo Aéreo (CMOA)
+A propuesta del Jefe de Estado Mayor del Ejército del Aire y del Espacio, se designa al General Jefe del Mando
+del Espacio del Ejército del Aire y del Espacio como Comandante del Mando Operativo Espacial (CMOESPA)
+
+3. Los Comandantes de los citados Mandos Operativos designados ejercerán el mando de las
+fuerzas puestas bajo su autoridad, de acuerdo con lo establecido en los planes en vigor y conforme
+a la doctrina militar.
+También mantendrán, en el ejercicio de sus responsabilidades, relaciones de coordinación con las
+autoridades y organismos militares y civiles, relacionadas con las citadas operaciones.
+
+173
+
+
+
+
+Octavo. Los órganos nacionales militares relacionados con organizaciones
+internacionales o multinacionales.
+Directamente subordinados al JEMAD se encuentran:
+1. Las representaciones militares.
+2. Los elementos nacionales:
+a) Elemento Nacional del Centro de Operaciones Aéreas Combinadas de Torrejón (NE-CAOCTJ,
+por sus siglas en inglés).
+b) Elemento Nacional del Centro de Excelencia Contra Artefactos Explosivos Improvisados (NECoE CIED, por sus siglas en inglés).
+3. Los elementos nacionales de apoyo (NSEs por sus siglas en inglés).
+4. Los contingentes nacionales integrados en organizaciones internacionales y
+multinacionales o formando parte de coaliciones o colaboraciones con países aliados, así
+como los oficiales de enlace destinados en el extranjero dependientes del JEMAD.
+Los órganos reflejados en los anteriores párrafos 1, 3 y 4 se ajustarán a lo dispuesto por la
+Instrucción 34/2016, de 19 de mayo, del Jefe de Estado Mayor de la Defensa, por la que se regula
+la estructura en el exterior dependiente del Jefe de Estado Mayor de la Defensa en el ámbito de las
+organizaciones internacionales y su funcionamiento, o aquella instrucción que la pueda sustituir en
+un futuro.
+
+Noveno. Relaciones internas del Estado Mayor de la Defensa.
+1. Con carácter general, los oficiales generales y jefes de Unidad, Centro u Organismo (UCO)
+dependientes directamente del JEMAD, podrán relacionarse directamente entre sí para coordinar
+sus acciones y para intercambiar información relativa a sus competencias y procesos de trabajo, en
+especial sobre aquellos asuntos que por su importancia vayan a ser sometidos a la aprobación del
+JEMAD.
+Dichas relaciones no interferirán ni quebrantarán las responsabilidades y cometidos de otras
+unidades del EMAD.
+2. En cualquier circunstancia, se mantendrá informado al superior jerárquico de las actuaciones
+realizadas en el punto anterior.
+3. La información será compartida entre las UCO del EMAD, supeditada siempre a las normas de
+seguridad de la información establecidas, con el objeto de aumentar la necesaria coordinación y
+sinergia de esfuerzos en el EMAD.
+4. El EMACON, como coordinador general de las actividades del EMAD, será informado de
+las relaciones e intercambios de información en aquellos asuntos importantes que vayan a ser
+sometidos a la aprobación del JEMAD o que pudieran afectar a sus principales responsabilidades
+al objeto de lograr la máxima unidad de acción posible.
+
+Décimo. Relaciones fuera del entorno del Estado Mayor de la Defensa.
+Las relaciones fuera del entorno del EMAD se ajustarán al ámbito de actuación de la unidad del
+EMAD y será de aplicación el párrafo 4 del apartado anterior.
+Estas relaciones NO podrán establecer vinculaciones, obligaciones o compromisos sin previa
+autorización del JEMAD.
+
+174
+
+
+
+
+CAPÍTULO II – Cuartel General del Estado Mayor de la Defensa
+SECCIÓN 1.ª GENERALIDADES
+Undécimo. El Cuartel General del Estado Mayor de la Defensa.
+1. El Cuartel General del Estado Mayor de la Defensa (CGEMAD) está compuesto por el conjunto
+de órganos que encuadran los medios humanos y materiales necesarios para asistir al JEMAD en
+el ejercicio de su mando.
+2. El CGEMAD estará constituido por los siguientes órganos:
+a) Estado Mayor Conjunto de la Defensa (EMACON).
+b) Jefatura de Recursos Humanos (JRRHH).
+c) Órganos de Asistencia y Asesoramiento al JEMAD:
+- Gabinete
+- Gabinete Técnico (GABTECJEMAD)
+- Secretaría Permanente del Consejo de Jefes de Estado Mayor (SEPERCJEM)
+- Asesoría Jurídica del Estado Mayor de la Defensa. (ASEJUEMAD)
+d) Jefatura de Asuntos Económicos (JAE).
+Además, en el Cuartel General del Estado Mayor de la Defensa se encuentra la Intervención
+Delegada del Estado Mayor de la Defensa, con dependencia orgánica y funcional de la
+Intervención General de la Defensa, que ejercerá:
+- el control interno de la gestión económico financiera mediante el ejercicio de la función
+interventora y
+- el control financiero permanente,
+- la notaría militar y
+- el asesoramiento económico-fiscal respecto de los órganos del EMAD.
+
+SECCIÓN 2. ª EL ESTADO MAYOR CONJUNTO DE LA DEFENSA
+Duodécimo. El Estado Mayor Conjunto de la Defensa.
+1. El Estado Mayor Conjunto de la Defensa (EMACON) es el órgano auxiliar de mando del JEMAD
+en el ejercicio de sus competencias y responsabilidades.
+Actuará como el principal coordinador de las actividades generales del EMAD.
+2. Apoyará y asesorará al JEMAD en:
+- la definición de la estrategia militar
+- el planeamiento militar
+- el desarrollo de la fuerza
+- la conducción estratégica de las operaciones.
+3. Liderará el Planeamiento Militar en el marco del Planeamiento de la Defensa, en
+coordinación con las autoridades del Ministerio de Defensa, los Ejércitos y la Armada y resto de
+órganos del EMAD.
+4. Liderará los procesos de transformación de las capacidades militares de las FAS.
+El Jefe del Estado Mayor Conjunto de la Defensa (JEMACON) ostentará el cargo de Jefe de
+Transformación Militar y tendrá un elemento de apoyo para ello.
+5. Apoyará al JEMAD en la realización de las acciones necesarias para asegurar la eficacia
+operativa de las FAS.
+
+175
+
+
+
+
+6. Identificará, en coordinación con los Ejércitos y la Armada, las deficiencias de la Fuerza
+Conjunta (FC) durante su proceso de preparación y empleo y analizará aquellas que pudiesen
+derivar en la necesidad de un desarrollo conceptual o en la creación o actualización de cursos
+conjuntos, o bien, en ambas necesidades a la vez.
+7. El EMACON se estructurará en:
+- Jefatura
+- Secretaría Particular
+- Secretaría General del Estado Mayor Conjunto de la Defensa (SEGEMACON)
+- División de Planes (DIVPLA)
+- División de Estrategia (DIVESTRA)
+- División de Desarrollo de la Fuerza (DIVDEF)
+- Jefatura Conjunta de Sanidad (JECOSAN)
+- Célula Nacional Contra Artefactos Explosivos Improvisados (CENCIED)
+- Unidad de Verificación (UVE)
+- Sección de Gestión de la Información y del Conocimiento (SGIC)
+- Jefatura de Seguridad y Servicios del Cuartel General del EMAD (JESES-CGEMAD)
+Para el apoyo en sus cometidos, la Jefatura podrá contar con una Unidad de Estudios.
+
+Décimo tercero. La Secretaría General del Estado Mayor Conjunto de la Defensa.
+1. La Secretaría General del Estado Mayor Conjunto de la Defensa (SEGEMACON) será el
+órgano responsable de:
+- apoyar y auxiliar directamente al JEMACON en la dirección del EMACON, así como de
+- proporcionar el apoyo técnico-administrativo a los órganos del CGEMAD para la coordinación
+de las actividades de los mismos, con el respaldo de las distintas secretarías y secretarías
+técnicas.
+Asesorará y apoyará en los asuntos que, siendo responsabilidad del EMACON, no sean específicos
+de los órganos que lo componen.
+2. Auxiliará al JEMACON en la función de coordinación de las actividades generales del EMAD.
+3. Apoyará a todos los órganos del EMAD en lo relativo a diseño gráfico y reprografía especializada.
+4. Coordinará y tramitará con las unidades implicadas la producción normativa en el ámbito del
+EMAD.
+5. Actuará como Unidad de Transparencia del EMAD.
+6. Gestionará en el ámbito del EMAD la información clasificada nacional e internacional,
+ejerciendo las funciones del Servicio General de Protección de Materias
+Clasificadas y de Servicios de Protección de información clasificada de las OISD
+y la Agencia Espacial Europea.
+7. Gestionará las Habilitaciones Personales de Seguridad de todo el personal en el ámbito del
+EMAD.
+8. Establecerá la Oficina de Protección de Datos de Carácter Personal del EMAD.
+Esta oficina dependerá:
+- FUNCIONALMENTE del Director del CIFAS como Jefe de Seguridad de la Información en
+el ámbito del EMAD
+- FUNCIONALMENTE del Delegado de Protección de Datos del Ministerio de Defensa.
+9. Constituirá el Archivo Central del EMAD.
+176
+
+
+
+
+Décimo cuarto. La División de Planes del Estado Mayor Conjunto de la Defensa.
+1. La División de Planes del Estado Mayor Conjunto de la Defensa
+(DIVPLA) será responsable de ejercer la coordinación general del
+Planeamiento de Fuerza y de Capacidades.
+En este sentido, liderará la elaboración de la Directiva de Planeamiento
+Militar.
+2. Elaborará y coordinará el Planeamiento de Fuerza y su integración en el Planeamiento de
+Defensa.
+Además, ejercerá su seguimiento a través de los informes anuales y coordinará el establecimiento
+de las necesidades de las FAS a medio y corto plazo así como el objetivo de fuerza a largo plazo.
+Asimismo, será responsable de coordinar y confeccionar el Informe de Alistamiento.
+3. Liderará las actividades relacionadas con el Planeamiento de Capacidades y su integración en el
+Planeamiento de la Defensa y proporcionará asesoramiento en todo el espectro de las capacidades
+militares.
+Para ello, actuará como interlocutor principal con otros órganos que, por su especialización, puedan
+apoyar y colaborar en el planeamiento.
+4. Impulsará los procesos de transformación de las capacidades militares de las FAS.
+Para ello coordinará, en particular con la DIVDEF, las iniciativas de innovación militar y
+transformación que se adopten en el ámbito conjunto, la definición en detalle de las capacidades
+militares identificadas en el proceso de planeamiento de Fuerza, así como la implantación de los
+nuevos conceptos conjuntos.
+Igualmente, tendrá en cuenta las iniciativas en materia de innovación, transformación y
+evaluación de tecnologías emergentes y disruptivas que se desarrollan en la Secretaría de
+Estado de Defensa (Dirección General de Armamento y Material y Centro de Sistemas y
+Tecnologías de la Información y las Comunicaciones, CESTIC).
+5. Coordinará la participación nacional en el planeamiento de capacidades militares desarrollado
+por las OISD (organizaciones internacionales de seguridad y defensa) y en el marco multilateral, así
+como la participación de los Ejércitos, la Armada y organismos competentes del EMAD en iniciativas
+de cooperación internacional relacionadas con el planeamiento de capacidades.
+Ejercerá la representación del JEMAD ante estas organizaciones en lo referente a sus cometidos
+como autoridad nacional de Planeamiento Militar.
+6. Asimismo, será responsable de elaborar y coordinar la postura de las FAS ante las OISD y foros
+multinacionales en el ámbito logístico y financiero, éste en coordinación con la Dirección General
+de Asuntos Económicos, en los que sea competente el JEMAD.
+7. Desarrollará los cometidos relacionados con el proceso de obtención de recursos materiales en
+los que el JEMAD sea competente y aquellos en los que esté involucrado, realizando el seguimiento
+y evaluación del planeamiento general de la obtención y de los procesos de baja de recursos
+materiales relacionados con las capacidades militares.
+Asimismo, contribuirá y coordinará en el proceso de obtención de capacidades militares en el marco
+de las OISD.
+8. Ejercerá, en coordinación con el MOPS y la JAE, la cuantificación de los recursos financieros
+destinados a sufragar la participación de las FAS en operaciones de paz y ayuda humanitaria
+asignados al EMAD y en aquellas otras operaciones que se determinen, así como el planeamiento
+de aquellos otros recursos financieros que se decidan.
+
+177
+
+
+
+
+9. Dirigirá y coordinará la Gestión Operativa del Programa de Inversiones de Seguridad de la
+OTAN (NATO Security Investment Programme, NSIP).
+10. Coordinará los aspectos técnicos y operativos del uso, por parte de las FAS, de combustibles,
+lubricantes y productos asociados a los mismos.
+11. Dirigirá el planeamiento de las actividades relacionadas con Apoyos de Nación Anfitriona
+(Host Nation Support, HNS) dentro del Territorio Nacional para el desarrollo de operaciones
+militares y actividades de preparación conjunto-combinadas.
+Asimismo, impulsará el establecimiento de los acuerdos o memorandos relativos a HNS para
+facilitar el sostenimiento de las fuerzas desplegadas fuera de Territorio Nacional para la ejecución
+de actividades de preparación u operaciones militares.
+12. En el ámbito del EMAD, será responsable del planeamiento de las infraestructuras,
+centralizando y proponiendo la priorización de las necesidades de inversión.
+Asimismo, efectuará el planeamiento y coordinación de la gestión ambiental y eficiencia
+energética en las instalaciones del EMAD.
+13. Realizará estudios y propuestas de organización de las estructuras dependientes del JEMAD,
+de homogeneización de la organización de las FAS, así como la unificación de los servicios cuyos
+cometidos no deban ser exclusivos de un Ejército o la Armada, y aquellos otros que favorezcan
+organizaciones conjuntas y eviten duplicidades.
+Liderará los trámites de producción normativa asociados a la organización del EMAD.
+14. Comprobará que las funciones y cometidos de los Libros de Organización Interna son
+coherentes entre todas las unidades del EMAD y con la normativa vigente, antes de su aprobación
+y modificación.
+15. La DIVPLA se estructurará en:
+- Secretaría Técnica
+- Sección de Planes de Fuerza (SEPLAFU)
+- Sección de Planes de Recursos (SEPLARE)
+- Sección de Organización (SECORG)
+
+Décimo quinto. La División de Estrategia del Estado Mayor Conjunto de la Defensa.
+1. La División de Estrategia del Estado Mayor Conjunto de la
+Defensa (DIVESTRA) será la responsable de elaborar, desarrollar
+y actualizar la estrategia militar y sus planes derivados.
+En este sentido, lidera el proceso de elaboración del Concepto de Empleo de
+las FAS, de las directivas que regulen tanto el alistamiento y empleo de la FC como el marco del
+sistema de planeamiento operativo nacional.
+2. Dirigirá el Planeamiento Operativo y su integración en el Planeamiento de la Defensa,
+dando directrices para la elaboración de los planes operativos.
+3. Llevará a cabo el planeamiento, conducción y seguimiento de las operaciones militares en el nivel
+estratégico mediante la elaboración de:
+- las Valoraciones Estratégicas Militares,
+- de las Opciones de Respuesta Militar,
+- de Planes Estratégicos y
+- la redacción de Directivas Iniciales Militares.
+178
+
+
+
+
+4. Será el responsable de los asuntos derivados de la participación del JEMAD en el Sistema de
+Seguridad Nacional, así como facilitará y coordinará la integración de las FAS en el citado sistema,
+especialmente durante las gestiones de crisis.
+5. Representará a las FAS, por delegación del JEMAD, en las OISD, foros internacionales y
+estructuras multinacionales de carácter militar, en las que el JEMAD tenga responsabilidades.
+Para ello elaborará y coordinará la postura y compromisos de las FAS sobre todos los asuntos que
+se traten en sus diferentes comités militares y participará en los procesos de planeamiento militar
+del nivel estratégico que se lleven a cabo en las mismas.
+6. Planeará y controlará, en coordinación con los Ejércitos, la Armada y órganos competentes del
+EMAD, las relaciones militares bilaterales y multilaterales que competan al JEMAD, así como
+las actividades derivadas de las mismas.
+7. Planificará la participación española en unidades en el extranjero dependientes del
+JEMAD.
+Para ello, propondrá y coordinará las líneas de actuación relativas a la participación del personal
+militar español en el extranjero dependiente del JEMAD en las OISD y estructuras multinacionales
+de carácter militar, estableciendo criterios, prioridades, entidad y grado de cobertura a alcanzar.
+8. Planeará la contribución nacional a las estructuras operativas multinacionales (proceso de
+generación de fuerzas) en el marco de las OISD, la organización de Naciones Unidas y las
+coaliciones internacionales que pudieran establecerse, coordinando con los Ejércitos, la Armada y
+el MOPS.
+9. Confeccionará la Directiva de Inteligencia Militar del JEMAD en estrecha colaboración con
+el CIFAS.
+10. Elaborará y liderará las directrices del JEMAD para la coordinación de la representación Militar
+Nacional ante las OISD, así como coordinará la contribución del EMAD a los programas bienales
+del Plan de Diplomacia de Defensa.
+11. En el contexto de la conducción estratégica, planeará, controlará y supervisará el desarrollo de
+una narrativa orientada a conseguir los efectos estratégicos oportunos de todas las actividades,
+misiones y operaciones de las FAS, en permanente coordinación con el Gabinete Técnico del
+JEMAD como responsable de la Información Pública.
+12. La DIVESTRA se estructurará en:
+- Secretaría Técnica
+- Sección de Estrategia y Planes Estratégicos (SEPLE)
+- Sección de Conducción Estratégica (SECON)
+- Sección de Relaciones Internacionales (SERINT)
+
+Décimo sexto. La División de Desarrollo de la Fuerza del Estado Mayor Conjunto de
+la Defensa.
+1. La División de Desarrollo de la Fuerza del Estado Mayor Conjunto de la
+Defensa (DIVDEF) será el órgano responsable de sincronizar los esfuerzos de
+preparación conjunta, desarrollo de conceptos e interoperabilidad necesarios para
+asegurar la eficacia operativa de las FAS.
+
+179
+
+
+
+
+2. Liderará y coordinará los procesos de preparación del ámbito conjunto y liderará el Comité
+Ejecutivo de Preparación de la FC, mediante el cual los Ejércitos y la Armada, así como los órganos
+competentes del EMAD, coordinarán la orientación de la preparación de la FC, su supervisión y
+evaluación.
+Representará y coordinará la contribución nacional a las actividades de adiestramiento
+programadas por las OISD.
+3. Contribuirá a los esfuerzos conjuntos de interoperabilidad de la FC y liderará aquellos que se
+determinen.
+4. Liderará el proceso de prospectiva, orientado a definir el marco estratégico militar, apoyándose
+para tal fin en áreas de conocimientos militares y civiles y con la concurrencia de aquellos actores
+nacionales e internacionales que se considere necesarios.
+Liderará el Comité Ejecutivo de Prospectiva.
+5. En el ámbito de sus funciones y cometidos, mantendrá una estrecha relación con el CESEDEN,
+así como con universidades, foros y centros de pensamiento académicos y especializados que
+favorezcan la colaboración con la sociedad civil en el análisis operativo y estratégico de los entornos
+de actuación de las FAS.
+6. Impulsará y dirigirá el desarrollo y la experimentación de nuevos conceptos operativos que
+promuevan soluciones a las deficiencias detectadas en la eficacia operativa de la FC con la
+concurrencia de aquellos actores nacionales e internacionales que se considere necesarios.
+Liderará el Comité Ejecutivo de Conceptos del EMAD, mediante el cual los órganos competentes
+del Ministerio de Defensa participarán del proceso de desarrollo de conceptos conjuntos.
+7. Contribuirá al proceso de enseñanza identificando y analizando las necesidades derivadas del
+proceso de preparación y del empleo de la FC que pudiesen recomendar la creación o actualización
+de cursos conjuntos.
+8. Promoverá, liderará y coordinará el estudio y desarrollo de la doctrina conjunta y combinada con
+la participación de los Ejércitos, la Armada y los órganos competentes del EMAD. Liderará el
+Comité Ejecutivo de Doctrina Conjunta.
+9. Mantendrá relaciones directas con los órganos homólogos de desarrollo de fuerza, ejerciendo la
+representación nacional en los foros internacionales que se determinen.
+Para ello, en su ámbito de responsabilidades, establecerá las relaciones de colaboración e
+intercambio con los órganos homólogos de los países de la OTAN y la UE y con los centros análogos
+pertenecientes a las OISD.
+10. Promoverá, liderará y coordinará el proceso conjunto de lecciones aprendidas y
+mejores prácticas (LAMP) y la contribución nacional a los sistemas de lecciones
+aprendidas de las OISD ante las que el JEMAD tenga responsabilidades.
+Liderará el Comité Ejecutivo de LAMP, que orientará, analizará y validará las
+observaciones en operaciones y ejercicios conjuntos.
+11. Desarrollará las actividades que corresponden al EMACON como órgano de coordinación y
+control del proceso de normalización operativa OTAN, en coordinación con los Ejércitos, la Armada
+y los órganos competentes del EMAD.
+12. La DIVDEF se articula en:
+- la Sección de Desarrollo de Fuerza (SCDF)
+- el Centro Conjunto de Desarrollo de Conceptos (CCDC)
+- la Oficina de Normalización del EMAD (ONEMAD)
+- la Secretaría Técnica (SETEC-DIVDEF)
+180
+
+
+
+
+A su vez, el CCDC se compone del:
+- Órgano de Custodia de AJP (de sus siglas en inglés Allied Joint Publication) OTAN (OC AJP)
+- Sección de Análisis y Prospectiva (SEAYP)
+- Sección de Desarrollo de Conceptos y Experimentación (SECOE)
+- Sección de Doctrina (SEDOC)
+13. El Jefe de la DIVDEF actuará como Jefe del CCDC.
+
+Décimo séptimo. La Jefatura Conjunta de Sanidad.
+1. La Jefatura Conjunta de Sanidad (JECOSAN) será responsable de dirigir y coordinar
+los aspectos relacionados con la sanidad operativa en el ámbito de sus competencias.
+2. Impartirá directrices dirigidas a orientar la preparación y empleo de las capacidades sanitarias
+operativas derivadas del Planeamiento Militar, formulando propuestas y estableciendo normas
+sobre su interoperabilidad y estandarización.
+3. En el marco de las operaciones militares, cuando así se determine y a su nivel, la JECOSAN
+constituirá la base del núcleo de asesoramiento sanitario al JEMAD, ejerciendo como autoridad de
+coordinación en las relaciones que se establezcan con otros organismos de Sanidad.
+Además, cuando así se determine, colaborará en el establecimiento de planes y procedimientos
+ágiles para el refuerzo de las capacidades sanitarias de ámbito nacional
+4. Asesorará al JEMAD en los aspectos sanitarios de defensa Nuclear,
+Biológica, Química y Radiológica (NBQ-R) relacionados con las operaciones
+militares.
+5. Participará en el desarrollo y establecimiento de las normas de acción conjunta en este ámbito y
+mantendrá las relaciones necesarias de colaboración con los organismos correspondientes de los
+países de la OTAN, de la UE y las OISD.
+6. La JECOSAN se articula en:
+- Secretaría (SEC-JECOSAN)
+- Sección de Planes (SEPLA)
+- Sección de Análisis (SEAN)
+
+Décimo octavo. La Célula Nacional Contra Artefactos Explosivos Improvisados.
+1. La Célula Nacional Contra Artefactos Explosivos Improvisados (CENCIED) impulsará y
+coordinará el desarrollo de la capacidad de lucha Contra Artefactos Explosivos
+Improvisados (C-IED, por sus siglas en inglés) en las FAS y la postura de estas
+ante las OISD en este ámbito.
+Apoyará, dentro del ámbito que se requiera, en el planeamiento y conducción de
+las operaciones militares.
+Constituirá el enlace nacional del Centro de Excelencia Contra Artefactos Explosivos Improvisados
+(CoE C-IED) con:
+- el Centro Nacional de Inteligencia (CNI) y con
+- las Fuerzas y Cuerpos de Seguridad del Estado (FCSE).
+2. Apoyará al EMAD en las responsabilidades de España, como nación marco del CoE C-IED,
+derivadas de los acuerdos entre los estados participantes y de los convenios suscritos con las FCSE
+y el CNI.
+
+181
+
+
+
+
+3. Participará en el Grupo Nacional C-IED y lo liderará por delegación del JEMACON.
+4. Coordinará con el MOPS y el CIFAS la obtención, almacenamiento y tratamiento de información
+relacionada con las redes IED.
+
+Décimo noveno. La Unidad de Verificación.
+1. La Unidad de Verificación (UVE) tendrá como responsabilidad planear, coordinar,
+controlar y ejecutar las actividades que corresponden a las FAS, en conjunción con las
+llevadas a cabo por otros órganos de la Administración, derivadas de la asunción por
+parte de España de diversos compromisos internacionales relacionados con:
+- el desarme,
+- el control de armamentos y
+- el establecimiento de medidas de fomento de la confianza y seguridad,
+- así como de la verificación de su cumplimiento por otros Estados.
+2. Llevará a cabo las inspecciones, evaluaciones, vuelos de observación u
+otras actividades de verificación en otros Estados, coordinando en los foros
+adecuados con los países aliados y con los países de la Organización para la
+Seguridad y Cooperación en Europa.
+3. Llevará a cabo las escoltas a los equipos extranjeros durante las actividades de verificación de
+otros Estados en España, coordinando con las unidades y con los organismos de la administración
+correspondientes.
+4. Recabará de los Ejércitos y la Armada la información necesaria para confeccionar los
+intercambios de información de los tratados y acuerdos correspondientes y proponerlos para su
+difusión.
+5. Mantendrá un sistema de alerta, en coordinación con los organismos implicados en el sistema de
+verificación, que permita una rápida reacción ante notificaciones de actividades de verificación que
+se reciban en España.
+
+Vigésimo. La Sección de Gestión de la Información y del Conocimiento.
+1. La Sección de Gestión de la Información y del Conocimiento (SGIC) del EMAD tendrá la
+misión de identificar y mantener actualizados los principales procesos funcionales
+y operativos del EMAD y sus productos de información asociados, planeando y
+desarrollando la estructura más adecuada de Gestión de la Información y del
+Conocimiento en el ámbito del EMAD y su implantación, como parte de la
+transformación digital.
+Asimismo, propondrá medidas de coordinación de los procesos troncales definidos por el JEMAD
+para enlazar con los procesos específicos.
+2. Coordinará a los responsables de los procesos y de los productos de información del EMAD, así
+como la relación con los originadores, propietarios, custodios y usuarios de la información.
+3. La SGIC actuará como Oficina de Control de Procesos del ámbito del EMAD, coordinándose
+y actuando bajo las directrices y dependencia FUNCIONAL de la Oficina Central de Control de
+Procesos del Ministerio de Defensa.
+4. Contará con un NEGOCIADO DE GESTIÓN DEL DATO encargado del establecimiento y
+supervisión de los planes y procedimientos de gestión y gobernanza del dato, que dependerá
+FUNCIONALMENTE del responsable corporativo del Dato del Ministerio de Defensa (Chief
+Data Officer –CDO- MDEF).
+182
+
+
+
+
+Vigésimo primero. La Jefatura de Seguridad y Servicios del Cuartel General del
+Estado Mayor de la Defensa.
+1. La Jefatura de Seguridad y Servicios del Cuartel General del Estado
+Mayor de la Defensa (JESES-CGEMAD) será la unidad responsable del
+mantenimiento de las instalaciones del CGEMAD y de aquellas unidades
+dependientes del JEMAD que se determinen.
+2. Organizará y dirigirá la seguridad del personal y dependencias del CGEMAD.
+3. Llevará a cabo las gestiones en materia medioambiental, de eficiencia energética y de prevención
+de riesgos laborales del CGEMAD.
+4. Apoyará en materia de transporte y estafeta a las unidades dependientes del EMAD.
+5. Realizará la definición, proyecto y supervisión de obras en los establecimientos e instalaciones
+de las unidades dependientes del EMAD, a petición de los responsables de las mismas.
+6. Asesorará y prestará apoyo en materia de medicina preventiva, asistencial y pericial al personal
+y dependencias del CGEMAD.
+7. Tendrán una dependencia FUNCIONAL de esta Jefatura la Sección de la Guardia Civil (UGCJESCG) y apoyará al Servicio de Asistencia Religiosa de las Fuerzas Armadas (SEAREL) asignado
+al CGEMAD.
+8. El JEMACON ejercerá las funciones de Jefe del Establecimiento del CGEMAD.
+
+SECCIÓN 3.ª LA JEFATURA DE RECURSOS HUMANOS
+Vigésimo segundo. La Jefatura de Recursos Humanos.
+1. La Jefatura de Recursos Humanos (JRRHH) será el órgano responsable
+del planeamiento, coordinación, control y gestión del personal militar y civil de
+las unidades componentes del EMAD y de aquel otro personal que se determine.
+Elaborará la propuesta de las plantillas orgánicas de las unidades del EMAD y
+las correspondientes relaciones de puestos militares y de trabajo.
+Realizará la gestión de vacantes, comisiones y destinos en las unidades del EMAD, así como en
+puestos de las OISD dependientes del JEMAD.
+Proporcionará apoyo general y administrativo al personal militar y civil de las unidades
+componentes del EMAD y aquél otro personal que se determine.
+Autorizará y controlará las comisiones de servicio del personal destinado en el EMAD,
+A EXCEPCIÓN de:
+- la Jefatura del JEMAD
+- CESEDEN
+- GABJEMAD
+- GABTECJEMAD
+según las directrices recibidas del JEMACON.
+2. Asesorará al JEMAD en el ámbito de la enseñanza que recae bajo su competencia, sincronizando
+la enseñanza de Altos Estudios de la Defensa Nacional y la enseñanza de perfeccionamiento
+conjunta con las necesidades de la estructura operativa de las FAS, en coordinación con el
+EMACON y el CESEDEN.
+
+183
+
+
+
+
+3. Asesorará al JEMAD, en coordinación con el EMACON, sobre la postura ante las OISD en el
+ámbito de su responsabilidad, así como en el planeamiento y gestión del recurso de personal de las
+unidades del EMAD y aquel otro personal que se determine, participando en los procesos de
+Planeamiento de la Defensa que se requiera.
+4. Será representante ante las OISD en los aspectos de recursos humanos del ámbito de
+responsabilidad del EMAD, elaborando y coordinando la postura de las FAS.
+5. Instruirá los expedientes asociados a la concesión de medallas de
+organizaciones internacionales y distintivos de permanencia en el
+EMAD, así como por la participación de personal en misiones y
+operaciones.
+6. La JRRHH se estructurará en:
+- Jefatura
+- Secretaría
+- Sección de Planes de Recursos Humanos (SEPLRRHH)
+- Sección de Gestión y Apoyo (SEGESAPO)
+- Sección de Asuntos Generales (SEAAGG)
+
+SECCIÓN 4. ª LOS ÓRGANOS DE ASISTENCIA Y ASESORAMIENTO
+Vigésimo tercero. Los Órganos de Asistencia y Asesoramiento.
+Los Órganos de Asistencia y Asesoramiento del JEMAD serán los siguientes:
+a) El Gabinete del JEMAD (GABJEMAD)
+b) El Gabinete Técnico del JEMAD (GABTECJEMAD)
+c) La Secretaría Permanente del Consejo de Jefes de Estado Mayor (SEPERCJEM)
+d) La Asesoría Jurídica del EMAD (ASEJUEMAD)
+
+Vigésimo cuarto. El Gabinete del Jefe de Estado Mayor de la Defensa.
+El Gabinete del Jefe de Estado Mayor de la Defensa (GABJEMAD) será un órgano de
+apoyo, asesoramiento y asistencia inmediata a dicha autoridad, con nivel orgánico de
+subdirección general.
+
+Vigésimo quinto. El Gabinete Técnico del Jefe de Estado Mayor de la Defensa.
+1. El Gabinete Técnico del Jefe de Estado Mayor de la Defensa (GABTECJEMAD) será un
+órgano de apoyo inmediato al JEMAD, al que corresponde la función genérica de estudiar, asesorar,
+canalizar y tramitar los asuntos que afecten al JEMAD como autoridad del Ministerio de Defensa,
+así como en el marco de las OISD por delegación del Ministro de Defensa y como representante
+institucional de las FAS.
+2. El GABTECJEMAD se constituirá como el órgano de apoyo al JEMAD en tareas relacionadas
+con:
+- el Sistema de Seguridad Nacional (SSN)
+- el Consejo de Defensa Nacional
+- el resto de Comités especializados del SSN
+3. Será responsable de las relaciones institucionales del JEMAD con todas las administraciones y
+organismos tanto públicos como privados.
+
+184
+
+
+
+
+4. Dirigirá, coordinará, diseñará y ejecutará todas las actividades públicas y protocolarias del JEMAD
+en España o el extranjero.
+5. Coordinará y ejecutará con los medios de comunicación y redes
+sociales todas las actividades relacionadas con la comunicación
+estratégica e información pública en el ámbito del EMAD,
+proporcionando pautas a todo el EMAD, en coordinación con el
+EMACON.
+6. El Suboficial Mayor del EMAD dependerá directamente del JEMAD y estará adscrito
+administrativamente al GABTECJEMAD.
+7. El Gabinete Técnico del JEMAD se estructurará en:
+- Secretaría Particular (SEC-GABTECJEMAD)
+- Consejería Técnica (COTEC)
+- Oficina de Relaciones Institucionales y Protocolo (ORIP)
+- Oficina de Comunicación Estratégica (OCE)
+- Oficina de Documentación Clasificada (ODC)
+- Ayudantía de Campo del JEMAD (ACJEMAD)
+
+Vigésimo sexto. La Secretaría Permanente del Consejo de Jefes de Estado Mayor.
+La Secretaría Permanente del Consejo de Jefes de Estado Mayor (SEPERCJEM) actuará como
+órgano administrativo de dicho Consejo y de aquellos otros consejos y reuniones que el JEMAD le
+encomiende.
+Contará con el apoyo técnico y administrativo del GABTECJEMAD.
+A propuesta del JEMAD, de entre el personal del ámbito del EMAD, la persona titular del Ministerio
+de Defensa designará al que ejercerá el cometido de Jefe de la Secretaría Permanente, quien
+actuará como secretario del Consejo de Jefes de Estado Mayor, con voz, pero sin voto.
+
+Vigésimo séptimo. La Asesoría Jurídica del Estado Mayor de la Defensa.
+1. La Asesoría Jurídica del Estado Mayor de la Defensa es el órgano
+consultivo y asesor, ÚNICO EN MATERIA JURÍDICA, del JEMAD y de aquellos
+otros órganos que este determine.
+
+Dependerá:
+- ORGÁNICAMENTE del JEMAD
+- FUNCIONALMENTE de la Asesoría Jurídica General de la Defensa.
+2. En ella se encuadra la Sección Jurídica Base de Retamares, que prestará funciones de
+asesoramiento jurídico directamente a todas las unidades alojadas en la Base de Retamares y a las
+unidades subordinadas a éstas, independientemente de su ubicación y localidad de destino, de
+acuerdo con las disposiciones de desarrollo que se dicten en la materia.
+Esta sección dependerá orgánica y funcionalmente del Jefe de la ASEJUEMAD.
+
+185
+
+
+
+
+SECCIÓN 5. ª JEFATURA DE ASUNTOS ECONÓMICOS
+Vigésimo octavo. La Jefatura de Asuntos Económicos.
+1. La Jefatura de Asuntos Económicos (JAE) es responsable de la dirección, gestión,
+administración y control de los recursos financieros asignados al JEMAD, a
+quien asesorará en todo lo concerniente a estas materias y a asuntos
+presupuestarios, así como de la contratación y contabilidad.
+También ejercerá, en coordinación con el EMACON y el MOPS, la
+administración de los recursos financieros destinados a financiar la participación de las FAS en las
+operaciones de paz y ayuda humanitaria asignados al EMAD y en aquellas otras operaciones que
+se determinen.
+Depende FUNCIONALMENTE de la Dirección General de Asuntos Económicos.
+2. Efectuará las estimaciones de necesidades del recurso financiero de funcionamiento y
+administración general en el ámbito del EMAD.
+3. Será responsable de la elaboración técnica del anteproyecto de presupuesto del servicio
+presupuestario 02 (SP02) «Estado Mayor de la Defensa» y la centralización de toda la
+información, tanto sobre la previsión y ejecución de los programas, como del presupuesto, así como
+efectuar su seguimiento y control del gasto, además de llevar la contabilidad.
+4. Efectuará el control y seguimiento de la financiación presupuestaria de los gastos para
+operaciones de paz y ayuda humanitaria asignados al EMAD, en aquellas otras operaciones que se
+determinen y de los créditos del SP02 gestionados por órganos externos.
+5. Apoyará a los órganos del EMAD responsables del planeamiento del resto de recursos en el
+ámbito de su competencia y proporcionará asesoramiento económico-legal en materia
+presupuestaria y en asuntos de contratación a las unidades del EMAD.
+6. La JAE dispondrá de un destacamento en la Base de Retamares.
+
+CAPÍTULO III – El Mando de Operaciones
+Vigésimo noveno. El Mando de Operaciones.
+1. El Mando de Operaciones (MOPS) será el órgano responsable a su nivel del planeamiento
+operativo, la conducción y el seguimiento de las operaciones militares, tanto de carácter
+nacional, como de aquellas operaciones multinacionales con participación española,
+cuando España asuma su liderazgo.
+También será responsable de la dirección del sostenimiento de las operaciones militares
+de carácter no permanente.
+2. Asesorará al JEMAD en el planeamiento y la conducción estratégica de las operaciones.
+3. Asesorará al JEMAD, desde el punto de vista operacional, sobre la participación de fuerzas
+españolas en operaciones y efectuará el seguimiento de su actuación y empleo por la cadena
+operativa multinacional.
+Igualmente, asesorará, desde el punto de vista operacional, sobre la participación de fuerzas
+españolas en ejercicios conjunto-combinados que no sean de responsabilidad nacional.
+
+186
+
+
+
+
+4. Realizará el planeamiento y conducción de aquellos ejercicios que se determinen y elaborará
+directrices para el adiestramiento y alistamiento de los mandos y fuerzas asignados a la estructura
+operativa, supervisando su preparación y evaluando su disponibilidad operativa, contribuyendo así
+a asegurar su eficacia operativa.
+5. El Comandante del MOPS (CMOPS) ejercerá el mando de las fuerzas puestas bajo su autoridad
+de acuerdo con lo establecido en los planes en vigor y propondrá alistar y activar el Cuartel
+General Conjunto Multinacional (ES-OHQ) cuando éste sea designado para liderar una operación
+de la Unión Europea o de otra OISD.
+6. Coordinará las necesidades de apoyo meteorológico de las Fuerzas
+Armadas, incluyendo las que se deriven de la integración de España en las
+OISD.
+Para ello, se ajustará al convenio entre el Ministerio de Defensa y la Agencia
+Estatal de Meteorología, para la prestación de apoyo meteorológico a las
+Fuerzas Armadas, publicado por resolución de 2 de enero de 2020 de la
+Subsecretaría, o a sus posteriores actualizaciones.
+7. Ejercerá, junto con el EMACON y la JAE, la coordinación en la administración de los recursos
+destinados a financiar la participación de las FAS en operaciones de paz y ayuda humanitaria
+asignados al EMAD y en aquellas otras operaciones que se determinen.
+8. Identificará e informará sobre las necesidades sobrevenidas que pudieran surgir a lo largo del
+ciclo del planeamiento de la defensa, en el ámbito de las operaciones en curso, y que estén
+vinculadas a la seguridad de la Fuerza y a su eficacia.
+9. El MOPS se articula en:
+- Comandancia
+- Segunda Comandancia
+- Estado Mayor del Mando de Operaciones (EMMOPS)
+- Mando Conjunto de Operaciones Especiales (MCOE)
+- Núcleo del Cuartel General Conjunto Multinacional (ES-OHQ)
+- Jefatura de Seguridad y Servicios de Retamares (JESES-RETAMARES)
+10. Para el apoyo a los cometidos del CMOPS, la Comandancia dispondrá de:
+- una Secretaría (SEC-MOPS)
+- una Unidad de Estudios (UE-MOPS).
+11. Quedarán ADSCRITOS al MOPS los oficiales de enlace que deban acreditarse ante el CMOPS,
+que colaborarán en cometidos operativos de representación e intercambio de información, de
+acuerdo con los términos que se establezcan.
+12. El CMOPS ejercerá las funciones de Jefe de la Base de Retamares.
+
+Trigésimo. El Estado Mayor del Mando de Operaciones.
+1. El Estado Mayor del Mando de Operaciones (EMMOPS), principal órgano auxiliar de mando del
+CMOPS, es el órgano al que corresponde la planificación, coordinación y control general de las
+actividades relacionadas con el planeamiento, seguimiento y conducción de las operaciones y
+ejercicios que se le encomienden en el NIVEL OPERACIONAL.
+2. El EMMOPS se estructura en:
+- Jefatura
+- Secretaría Técnica (SETEC-EMMOPS)
+- Área de Operaciones (AOPS)
+- Área de Apoyos (AAPO).
+187
+
+
+
+
+Trigésimo primero. La Secretaría Técnica del Estado Mayor del Mando de
+Operaciones.
+La Secretaría Técnica del Estado Mayor del Mando de Operaciones (SETEC-EMMOPS) es el
+órgano responsable de auxiliar al JEMMOPS en la dirección y coordinación de las actividades, del
+apoyo técnico administrativo al EMMOPS, y de constituir el punto de control OTAN/UE, así como
+un Servicio Local de Protección de Materias Clasificadas para la documentación nacional.
+Además, será responsable de la gestión de la información y el conocimiento en el EMMOPS.
+Asesora y apoya en los asuntos que, siendo responsabilidad del EMMOPS, no son específicos de
+ninguna otra sección de dicho Estado Mayor.
+
+Trigésimo segundo. El Área de Operaciones del Estado Mayor del Mando de
+Operaciones.
+1. Dirigirá y coordinará la inteligencia a nivel operacional, realizará la gestión de las necesidades de
+información y la coordinación de la obtención en dicho nivel.
+Desarrollará los aspectos de contrainteligencia y seguridad que afecten a las operaciones y a los
+ejercicios conjuntos.
+2. Participará en el proceso de actualización del Catálogo de Reglas de Enfrentamiento (ROE,
+por sus siglas en inglés) y solicitará la colección de ROE que considere necesaria para cada
+operación.
+3. Planeará y conducirá los ejercicios conjuntos necesarios para asegurar la eficacia operativa de
+las fuerzas de los Ejércitos y la Armada asignadas y para la evaluación de los planes operativos.
+4. Gestionará las LAMP (lecciones aprendidas y mejores prácticas) relacionadas con las
+operaciones y ejercicios conjuntos.
+5. Dirigirá el proceso de selección de objetivos (targeting) en el nivel operacional, para lo que contará
+con un Centro de Targeting Conjunto como principal herramienta del CMOPS para la dirección
+de dicho proceso.
+6. Liderará el planeamiento, conducción y coordinación de los
+procedimientos y protocolos en la lucha C-IED, en la Protección de la
+Fuerza en operaciones militares y en las Operaciones
+Electromagnéticas, para lo cual contará con un Centro de Operaciones
+Electromagnéticas.
+Determinará las necesidades relacionadas con las operaciones electromagnéticas a nivel
+operacional, coordinando con los organismos responsables de su gestión y generación para
+operaciones y ejercicios del ámbito conjunto.
+7. El Área de Operaciones (AOPS) se estructura en:
+- una Secretaría Técnica y
+- las secciones de
+- J2 (Inteligencia)
+- J3 (Operaciones)
+- J5 (Planes)
+- J7 (Ejercicios y Evaluación)
+- J9 (Influencia)
+
+188
+
+
+
+
+Trigésimo tercero. El Área de Apoyos del Estado Mayor del Mando de Operaciones.
+1. Planeará, dirigirá, coordinará y gestionará los medios necesarios para el despliegue,
+sostenimiento, repliegue y apoyo de las fuerzas asignadas a la estructura operativa de las FAS.
+2. En coordinación con los Ejércitos y la Armada, realizará la gestión y seguimiento del personal
+desplegado en operaciones dependiente del CMOPS, asesorándole además en materia de
+disciplina y recompensas.
+3. Propondrá el establecimiento de los acuerdos o memorandos necesarios a nivel internacional
+para el apoyo a las operaciones y ejercicios conjunto-combinados, en particular, los relativos al
+apoyo a prestar a las fuerzas españolas por otras naciones u organizaciones para garantizar o
+facilitar su sostenimiento.
+4. Determinará las necesidades de los Sistemas de Información y Telecomunicaciones (CIS) en el
+ámbito de sus competencias y coordinará con los organismos responsables de la gestión de los
+Sistemas y Tecnologías de la Información y Comunicaciones el sostenimiento de los medios, todo
+ello referido a aquellos empleados en las operaciones y los ejercicios de carácter conjunto.
+5. Será responsable de asesorar, planear y auxiliar en materia de sanidad en las operaciones y
+ejercicios de ámbito conjunto y conjunto-combinado y dirigir las evacuaciones médicas estratégicas.
+6. Ejercerá el control financiero de los apoyos recibidos y prestados por otros países aliados y las
+OISD que se le encomienden como consecuencia de la participación española en operaciones
+militares.
+7. El Área de Apoyos se estructura en:
+- una Secretaría Técnica y
+- las secciones de:
+- J1 (Personal y Administración)
+- J4 (Logística)
+- J6 (CIS)
+- J8 (Recursos Financieros)
+- JMED (Sanidad)
+
+Trigésimo cuarto. El Mando Conjunto de Operaciones Especiales.
+1. El Mando Conjunto de Operaciones Especiales (MCOE) será responsable de realizar
+el planeamiento, conducción y seguimiento de las operaciones especiales que se
+determinen.
+2. Asesorará al JEMAD y al CMOPS en todo lo referente a operaciones especiales.
+3. Facilitará la integración e interoperabilidad de las capacidades de operaciones especiales.
+Para ello, realizará propuestas sobre aspectos técnicos, operativos y de interoperabilidad de las
+unidades de operaciones especiales pertenecientes a la estructura orgánica de las FAS
+susceptibles de ser transferidas a la estructura operativa.
+4. Planificará y conducirá los ejercicios conjuntos necesarios para asegurar la eficacia operativa de
+las unidades de operaciones especiales que le sean asignadas.
+5. Cuando lo determine el JEMAD, activará el Cuartel General de un Mando Componente de
+Operaciones Especiales con capacidad para atender las necesidades nacionales y los
+compromisos internacionales de acuerdo con la doctrina militar vigente.
+
+189
+
+
+
+
+6. El Comandante del MCOE (CMCOE) ejercerá el mando de las fuerzas que se pongan a su
+disposición y la representación ante las OISD en el ámbito de las operaciones especiales.
+7. El MCOE se estructurará en:
+- Comandancia
+- Estado Mayor del Mando Conjunto de Operaciones Especiales (EMMCOE)
+
+Trigésimo quinto. El Núcleo del Cuartel General Conjunto Multinacional.
+1. El Núcleo del Cuartel General Conjunto Multinacional (ES-OHQ) será
+responsable de facilitar el proceso de activación de manera rápida y flexible
+del Cuartel General Conjunto Multinacional ofrecido a la Unión Europea o a
+otras organizaciones internacionales.
+2. Además, el Núcleo de ES-OHQ será responsable de garantizar su normal funcionamiento y
+mantenimiento en lo relativo a instalaciones, procedimientos y medios de los Sistemas de
+Información y Telecomunicaciones.
+3. En caso de su activación para conducir una operación, el personal del citado núcleo quedará
+INTEGRADO en el Cuartel General bajo mando del Comandante de la operación.
+
+Trigésimo sexto. La Jefatura de Seguridad y Servicios de Retamares.
+1. La Jefatura de Seguridad y Servicios de Retamares (JESES-RETAMARES) será el órgano
+responsable de mantener las instalaciones de la Base de Retamares, apoyando en materia de vida
+y funcionamiento a dicha base y a aquellas unidades dependientes del JEMAD que se determinen
+y a sus componentes.
+Responde en el ejercicio de sus funciones ante el CMOPS, como Jefe de la Base de Retamares.
+2. Organizará y dirigirá la seguridad que precise el personal destinado en la Base de Retamares y
+de sus dependencias.
+Llevará a cabo las gestiones en materia medioambiental, de eficiencia energética y de prevención
+de riesgos laborales en la Base de Retamares.
+3. Llevará a cabo la prestación de apoyo en materia de medicina preventiva, asistencial y pericial.
+Apoyará al Servicio de Asistencia Religiosa de las Fuerzas Armadas (SEAREL) asignado a la Base
+de Retamares.
+4. Proporcionará información y apoyo a todos los militares de la Base de Retamares en los asuntos
+de su interés, tanto profesional como personal.
+5. Apoyará en materia de transporte y estafeta a las unidades del EMAD en la Base de Retamares.
+6. Realizará la definición, proyecto y supervisión de obras en los establecimientos e instalaciones
+de las unidades dependientes del EMAD en la Base de Retamares.
+7. La Compañía de la Guardia Civil (UGC-JESRET) desplegada en la Base de Retamares tendrá
+una dependencia FUNCIONAL de la JESES-RETAMARES.
+8. La JESES-RETAMARES se relacionará funcionalmente con la JESES-CGEMAD en el ámbito de
+sus funciones y cometidos.
+
+190
+
+
+
+
+CAPÍTULO IV - El Centro de Inteligencia de las Fuerzas Armadas
+Trigésimo séptimo. El Centro de Inteligencia de las Fuerzas Armadas.
+1. El Centro de Inteligencia de las Fuerzas Armadas (CIFAS) será el órgano responsable
+de facilitar al Ministro de Defensa, a través del JEMAD, y a las autoridades del
+Departamento, la inteligencia militar precisa para alertar sobre situaciones
+internacionales susceptibles de generar crisis que afecten a la Defensa Nacional, así
+como de prestar el apoyo necesario, en su ámbito, a las operaciones militares.
+El JEMAD establecerá las condiciones en las que el CIFAS apoyará al MOPS en las operaciones
+militares que se determine.
+Asimismo, asesorará al JEMAD y a los Jefes de Estado Mayor de los Ejércitos y la
+Armada en materia de contrainteligencia militar y seguridad en la estructura orgánica de
+las FAS.
+Además, contribuirá al asesoramiento al JEMAD en el nivel estratégico de las operaciones militares.
+El Director del CIFAS será el Jefe de Seguridad en el ámbito del EMAD.
+2. El CIFAS dirigirá y coordinará el empleo de los sistemas conjuntos de inteligencia, vigilancia y
+reconocimiento (ISR por sus siglas en inglés), así como coordinará con las autoridades competentes
+la explotación de información de los sistemas ISR específicos.
+3. A través del JEMAD, proporcionará a los Jefes de Estado Mayor de los Ejércitos y la Armada la
+inteligencia necesaria para el desarrollo de las actividades de preparación de la Fuerza.
+4. Atenderá a las peticiones de información de inteligencia de las autoridades del Ministerio de
+Defensa, en el ámbito de sus competencias.
+5. En coordinación con el MOPS, planificará, dirigirá y, en su caso, ejecutará las actuaciones en
+materia de información geoespacial en el ámbito de la defensa para las operaciones.
+A estos efectos los órganos correspondientes de los Ejércitos y la Armada mantienen una
+dependencia FUNCIONAL con el Centro de Inteligencia de las Fuerzas Armadas.
+6. Definirá, en colaboración con el EMACON y el MCCE, los requisitos operativos de los Sistemas
+de Observación de la Tierra por su impacto en Inteligencia de Imágenes.
+
+CAPÍTULO V – El Mando Conjunto del Ciberespacio
+Trigésimo octavo. El Mando Conjunto del Ciberespacio.
+1. El Mando Conjunto del Ciberespacio (MCCE) será el órgano responsable del
+planeamiento, dirección, coordinación, control y ejecución de las acciones conducentes a
+asegurar la libertad de acción de las FAS en el ámbito ciberespacial.
+Para cumplir su misión, planeará, dirigirá, coordinará, controlará y ejecutará las
+operaciones militares en el ciberespacio, de acuerdo con los planes operativos en vigor.
+En el ámbito de estas operaciones, realizará las acciones necesarias para garantizar la
+supervivencia de los elementos físicos, lógicos y virtuales críticos para la Defensa y las FAS.
+Asimismo, prestará apoyo CIS a la estructura del EMAD y será responsable de los equipos de cifra
+y las claves cripto asignadas.
+
+191
+
+
+
+
+2. Asegurará la autoridad del JEMAD sobre la Infraestructura Integral de Información para la
+Defensa (I3D) en el ámbito operativo, en consonancia con los acuerdos específicos JEMADSecretario de Estado de la Defensa, priorizando la prestación de servicios para satisfacer las
+necesidades operativas de las FAS.
+Colaborará en la transformación digital del Ministerio de Defensa, en el ámbito del EMAD, en
+coordinación y con las directrices del EMACON.
+3. Asesorará al JEMAD en todo lo concerniente a su ámbito de responsabilidad y ejercerá la
+representación de las FAS en el ámbito de sus competencias ante las OISD, en coordinación con
+los organismos con responsabilidades relacionadas con dicho ámbito.
+4. Apoyará al EMACON en el planeamiento de capacidades de su ámbito de responsabilidad.
+Además, será responsable, en colaboración con el EMACON, de la definición de requisitos
+operativos, seguimiento de la obtención y el sostenimiento de los medios de Ciberdefensa, sistemas
+de información y comunicaciones (CIS) conjuntos de Mando y Control, de Guerra Electrónica, de
+Navegación e Identificación y de los Sistemas de Observación de la Tierra (en este caso, en
+colaboración también con el CIFAS), velando por la interoperabilidad e integración de éstos con los
+específicos de los Ejércitos y de la Armada y con los de las OISD.
+5. El MCCE incluirá el Equipo de Respuesta ante Emergencias Informáticas del Ministerio
+de Defensa, con la denominación CERT de Defensa (ESPDEF-CERT).
+6. Será el responsable de definir, dirigir y coordinar la concienciación, la formación y el
+adiestramiento conjunto en materia del ciberespacio en el ámbito de sus competencias, colaborando
+con las autoridades correspondientes.
+Asimismo, podrá proponer necesidades de formación conjunta. En materia de enseñanza
+mantendrá informado a la JRRHH y al CESEDEN.
+7. Contribuirá con los medios del MCCE en el proceso JISR (de sus siglas en inglés Joint,
+Intelligence, Surveillance and Reconnaisance) en colaboración con el MOPS y CIFAS, dentro
+del marco del Sistema de Inteligencia de las FAS y de las operaciones militares.
+8. El MCCE será responsable de gestionar el espectro electromagnético
+asignado a las FAS y de coordinar los recursos de órbita-espectro
+electromagnético de los satélites militares. Realizará auditorías de
+seguridad en las redes y sistemas de información y telecomunicaciones
+conjuntos de las Fuerzas Armadas y otras que el JEMAD le encomiende.
+9. El Comandante del Mando Conjunto del Ciberespacio (CMCCE), como representante del
+Ministerio de Defensa en el Consejo Nacional de Ciberseguridad, mantendrá informado al
+JEMAD de lo tratado en este Consejo.
+Mantendrá y fomentará la cooperación con:
+- el Departamento de Seguridad Nacional,
+- el resto de CERT de referencia nacionales (Instituto Nacional de Ciberseguridad y el Centro
+Criptológico Nacional) y
+- organismos responsables de la Ciberseguridad y Ciberinteligencia,
+en el ámbito nacional e internacional, este último en coordinación con el EMACON.
+10. El CMCCE será el responsable del Área de Seguridad de la Información en los Sistemas de
+Información y Telecomunicaciones (SEGINFOSIT) del Ministerio de Defensa, de acuerdo con las
+competencias que le otorgue la normativa en materia de Seguridad de la Información del Ministerio
+de Defensa vigente.
+
+192
+
+
+
+
+11. El MCCE se estructurará en:
+- Comandancia
+- Segunda Comandancia
+- Estado Mayor del MCCE (EMMCCE)
+- Fuerza de Operaciones en el Ciberespacio (FOCE)
+- Jefatura de Mando y Control (JMC)
+- Centro de Gestión de Enlaces de Datos Tácticos de las FAS (Torrejón de Ardoz)
+- Jefatura de Sistemas de Ciberdefensa (JSCD)
+- Jefatura de Telecomunicaciones y Guerra Electrónica (JTEW)
+- Jefatura de Administración y Servicios (JAS-MCCE)
+- Jefatura de Apoyo CIS al EMAD (JEACISEMAD)
+* Escuela Militar de Ciberoperaciones (EMCO)
+* Según la Orden DEF/100/2023 Se crea LA ESCUELA MILITAR DE CIBEROPERACIONES,
+como centro docente Militar de perfeccionamiento, dependiente del Estado Mayor de la Defensa
+a través del Mando Conjunto del Ciberespacio.
+La Escuela Militar de Ciberoperaciones tendrá la función de impartir enseñanzas de
+perfeccionamiento relacionadas con el ámbito de ciberoperaciones
+* Orden DEF/1110/2023.
+La EMCO es responsable de impartir las enseñanzas de perfeccionamiento en el ámbito de las
+ciberoperaciones y aquellas otras que se determinen relacionadas con la ciberdefensa.
+La EMCO dependerá funcionalmente del Centro Superior de Estudios de la Defensa Nacional
+(CESEDEN) para aquellos aspectos relacionados con la aprobación de los perfiles de ingreso y
+egreso, currículos y convocatorias de cursos conjuntos que formen parte de las enseñanzas de
+perfeccionamiento a impartir en esta Escuela.
+
+Trigésimo noveno. El Estado Mayor del Mando Conjunto del Ciberespacio.
+1. El Estado Mayor del Mando Conjunto del Ciberespacio (EMMCCE) será el principal órgano
+auxiliar del Comandante del MCCE, llevando a cabo las actividades de planeamiento, organización,
+coordinación, seguimiento y control del MCCE.
+2. El EMMCCE se estructurará en:
+- Jefatura y en las siguientes
+- Secciones:
+- Sección de Coordinación (C-0)
+- Personal (C-1)
+- Inteligencia (C-2)
+- Operaciones (C-3)
+- Logística (C-4)
+- Planes (C-5)
+- CIS (C-6)
+- Preparación (C-7)
+- Recursos y Finanzas (C-8)
+- Cooperación y Representación (C-9)
+
+193
+
+
+
+
+Cuadragésimo. La Fuerza de Operaciones en el Ciberespacio.
+1. La Fuerza de Operaciones en el Ciberespacio (FOCE) será responsable de la ejecución de las
+operaciones militares que aseguren la libertad de acción de las FAS en el ciberespacio, de acuerdo
+con los planes operativos en vigor.
+En el ámbito de las citadas operaciones, dirige operativa y técnicamente las actividades
+de todos los Centros de Operaciones de Ciberseguridad (COCS) de las FAS.
+Coordina con los Ejércitos, la Armada y el CESTIC las acciones que considere necesarias
+en el ámbito ciberespacial.
+Cuando se estén desarrollando operaciones en el espectro electromagnético, coordinará que la
+ejecución de las acciones ciber se realiza de forma concurrente con estas.
+2. Garantizará la confidencialidad, integridad, disponibilidad y trazabilidad de la información que
+manejan los sistemas y redes que emplean las FAS, así como otros que el JEMAD le encomiende.
+3. Ejecutará las actividades que permitan la protección, detección y defensa en las redes y servicios
+críticos de los sistemas de información y telecomunicaciones que emplean las FAS, así como otros
+que le encomiende el JEMAD.
+4. Ejecutará las actividades de obtención de información, vigilancia, reconocimiento y elaboración
+de inteligencia de ciberamenazas e incidentes en el ciberespacio, en coordinación con el CIFAS y
+en materia de operaciones militares también con el MOPS.
+5. Asimismo, será responsable de garantizar la capacidad de actuación en el ciberespacio y
+realizará las respuestas que se decidan ante amenazas o agresiones que puedan afectar a la
+Defensa Nacional, a los sistemas y redes del Ministerio de Defensa, o a aquellos otros que el
+JEMAD le encomiende.
+
+CAPÍTULO VI – El Centro Superior de Estudios de la Defensa Nacional
+Cuadragésimo primero. El Centro Superior de Estudios de la Defensa Nacional.
+1. El Centro Superior de Estudios de la Defensa Nacional (CESEDEN), principal centro
+docente militar conjunto, será responsable de planear e impartir los cursos de Altos
+Estudios de la Defensa Nacional.
+Asimismo, diseñará los currículos y perfiles de ingreso y egreso de los cursos de
+perfeccionamiento de carácter conjunto, planeará e impartirá aquellos que se
+determinen, así como planeará, coordinará y supervisará aquellos cursos conjuntos
+que se impartan en otros centros docentes militares en coordinación con los Ejércitos y la Armada.
+2. Fomentará la cooperación, mediante los convenios pertinentes, con otros ámbitos de la
+Administración y establecerá colaboraciones con las universidades, los Centros Universitarios de la
+Defensa y otras corporaciones públicas y privadas.
+Impulsará la elaboración de convenios con dichas entidades y universidades que favorezcan la
+consecución de sus cometidos.
+3. El CESEDEN será responsable de investigar y fomentar los estudios sobre temas relacionados
+con la Seguridad y la Defensa y la Historia Militar y contribuir a la Difusión de la Cultura de Defensa.
+Además, impulsará el desarrollo e implantación de procesos y tecnologías innovadoras que
+potencien la enseñanza militar y la investigación en Seguridad y Defensa.
+
+194
+
+
+
+
+4. En el desempeño de sus actividades, el CESEDEN dependerá FUNCIONALMENTE de:
+- la Subsecretaría de Defensa para los asuntos relacionados con la enseñanza militar y de
+- la Secretaría General de Política de Defensa para los asuntos relacionados con la difusión de
+la Cultura de Seguridad y Defensa.
+5. El CESEDEN se estructurará en:
+- Dirección
+- Secretaria Particular
+- Secretaría General del CESEDEN (SEGEN-CESEDEN)
+- Escuela Superior de las Fuerzas Armadas (ESFAS)
+- Instituto Español de Estudios Estratégicos (IEEE)
+- Departamento de Cultura y Diplomacia de la Defensa (DCDD)
+- Sección de Nuevas Tecnologías de la Enseñanza (SENTE)
+- Comisión Española de Historia Militar (CEHISMI)
+- Jefatura de Apoyo y Servicios (JAS-CESEDEN)
+- Sección Económico Administrativa (SEA).
+
+Cuadragésimo segundo. Secretaria General del Centro Superior de Estudios de la
+Defensa Nacional.
+1. La Secretaría General del Centro Superior de Estudios de la Defensa Nacional (SEGENCESEDEN) será el órgano responsable de auxiliar al director del CESEDEN en el ejercicio de sus
+funciones.
+Proporcionará el apoyo técnico-administrativo a los órganos y organismos subordinados del
+CESEDEN para la coordinación de sus actividades.
+2. Le corresponderá el asesoramiento, apoyo y coordinación de los asuntos que, siendo
+responsabilidad del centro, no son específicos de los organismos que lo componen.
+3. Organizará o, en su caso, coordinará los actos institucionales y actividades del Centro no
+específicamente docentes derivados de los diferentes convenios, programas y planes;
+canalizará las relaciones exteriores del CESEDEN y coordinará la Comunicación Estratégica del
+CESEDEN con el EMACON y el GABTECJEMAD (Gabinete Técnico del JEMAD).
+
+Cuadragésimo tercero. La Escuela Superior de las Fuerzas Armadas.
+1. La Escuela Superior de las Fuerzas Armadas (ESFAS), centro docente militar de Altos
+Estudios de la Defensa Nacional, será responsable de planear e impartir:
+- Cursos de Actualización para el Desempeño de los Cometidos de Oficial General
+- Curso de Estado Mayor de las FAS
+- Cursos de Alta Gestión de las FAS.
+Asimismo, será responsable de planear y dirigir los cursos de la enseñanza de perfeccionamiento
+conjunta que se determinen.
+2. Será igualmente responsable del planeamiento, coordinación y supervisión de aquellos cursos
+de la enseñanza de perfeccionamiento conjunta que pudieran desarrollarse en otros centros
+docentes militares, en coordinación con los Ejércitos y la Armada, analizando la viabilidad de dichos
+cursos y diseñando sus currículos y perfiles de ingreso y egreso, conforme a las necesidades y
+directrices que determine el JEMAD.
+195
+
+
+
+
+3. La ESFAS será responsable de organizar e impartir el módulo conjunto de los cursos de
+capacitación para ascensos del personal de las FAS y de la Guardia Civil que se determine.
+
+4. La ESFAS se estructurará en:
+- Dirección (DIESFAS)
+- Jefatura de Estudios (JEST), que se compone de:
+- Secretaría de Estudios (SEEST)
+- Sección de Planes (SEPLA)
+- Sección de Altos Estudios (SEALE)
+- Sección de Enseñanza de Perfeccionamiento Conjunta (SEEPC)
+- Sección de Acción Tutorial (SEACT)
+- Departamento de Organización y Liderazgo (DLID)
+- Departamento de Estrategia, Seguridad y Defensa (DESD)
+- Departamento de Planeamiento de la Defensa (DPLD)
+- Departamento de Operaciones (DOPE)
+- Departamento de Inteligencia (DINT)
+* Departamento de Alta Gestión de la Defensa (modificado por Res. 455/06616/24)
+
+Cuadragésimo cuarto. El Instituto Español de Estudios Estratégicos.
+1. El Instituto Español de Estudios Estratégicos (IEEE) será responsable de investigar, analizar
+y difundir los resultados sobre asuntos relacionados con la Seguridad y la Defensa en el marco de
+los ejes de investigación del CESEDEN, que serán desarrollados de forma coherente con los
+intereses nacionales y las directrices del JEMAD.
+2. Contribuirá al esfuerzo de promoción y difusión de la Cultura de Seguridad y Defensa
+a través de la divulgación de las investigaciones en estos ámbitos junto con
+colaboradores ajenos al CESEDEN.
+3. El IEEE se estructurará en:
+- Dirección (DIEEE)
+- Sección de Investigación y Análisis (SIA)
+- Sección de Divulgación y Publicación (SDP)
+
+Cuadragésimo quinto. El Departamento de Cultura y Diplomacia de Defensa.
+1. El Departamento de Cultura y Diplomacia de Defensa (DCDD) será el responsable de
+ORGANIZAR E IMPARTIR los cursos de Altos Estudios de la Defensa Nacional y otras actividades
+conducentes a la promoción y difusión de la Cultura de Seguridad y Defensa, así como organizar e
+impartir aquellos cursos que hayan sido considerados de Altos Estudios de la Defensa Nacional
+destinados a oficiales generales y oficiales, tanto nacionales como extranjeros, que indique el
+JEMAD para contribuir a la Diplomacia de Defensa.
+2. El DCDD se estructurará en:
+- Dirección (DIDCDD)
+- Secretaría (SDCDD)
+- Sección de Diplomacia de Defensa (SDD)
+- Sección de Cultura de Defensa (SCD)
+
+196
+
+
+
+
+Cuadragésimo sexto. La Sección de Nuevas Tecnologías de la Enseñanza.
+La Sección de Nuevas Tecnologías de la Enseñanza (SENTE) será responsable de impulsar el
+desarrollo e implantación de procesos y tecnologías innovadoras que potencien los Altos Estudios
+de la Defensa Nacional, la enseñanza de perfeccionamiento conjunta y la investigación en
+Seguridad y Defensa y su difusión.
+
+Cuadragésimo séptimo. La Comisión Española de Historia Militar.
+La Comisión Española de Historia Militar (CEHISMI) será un órgano colegiado que promoverá,
+impulsará y desarrollará actividades relacionadas con la Historia Militar que afecten a más de
+uno de los Ejércitos, la Armada y la Guardia Civil y ejercerá la representación nacional en los
+organismos internacionales de historia militar en los casos en que así se acuerde.
+Sus funciones y composición están recogidas en la Orden Ministerial 245/1999, de 22 de octubre,
+por la que se reorganiza la Comisión Española de Historia Militar.
+
+Cuadragésimo octavo. La Jefatura de Apoyo y Servicios.
+1. La Jefatura de Apoyo y Servicios (JAS-CESEDEN) prestará los apoyos necesarios para el
+funcionamiento y mantenimiento del CESEDEN y sus instalaciones.
+Garantizará la seguridad de las personas, medios e instalaciones del CESEDEN.
+2. Asimismo, conservará y mantendrá la infraestructura y equipamiento del CESEDEN y llevará a
+cabo las gestiones en materia de prevención de riesgos laborales, medioambiental y de eficiencia
+energética.
+3. La JAS-CESEDEN del CESEDEN se relacionará FUNCIONALMENTE con la JESES-CGEMAD
+(Jefatura de Seguridad y Servicios del Cuartel General del EMAD) en el ámbito de sus funciones y
+cometidos.
+
+Cuadragésimo noveno. La Sección Económico Administrativa.
+La Sección Económico Administrativa (SEA) será responsable de gestionar los recursos
+económicos asignados y asesorar en materia económico-financiera al director del CESEDEN.
+Depende FUNCIONALMENTE de la JAE del EMAD.
+Asimismo, actuará como elemento de apoyo y enlace entre la JAE del EMAD y el CESEDEN en
+cuestiones de contratación y gestión económico-administrativa.
+
+CAPÍTULO VII – Órganos nacionales militares relacionados con organizaciones internacionales
+o multinacionales
+Quincuagésimo. El Elemento Nacional del Centro de Operaciones Aéreas
+Combinadas de Torrejón.
+1. El Elemento Nacional del Centro de Operaciones Aéreas Combinadas de
+Torrejón (CAOCTJ) incluye al personal español destinado en las plantillas
+internacionales, así como al personal del Elemento Nacional de Apoyo (NSE, por sus
+siglas en inglés).
+2. Bajo la dependencia del JEMAD, el oficial de mayor empleo y antigüedad del Elemento
+Nacional será responsable del mando orgánico del personal nacional del CAOCTJ,
+ostentando en consecuencia la correspondiente potestad disciplinaria y administrativa
+del mismo.
+197
+
+
+
+
+3. El Jefe del Elemento Nacional de CAOCTJ representará a España en el marco del CAOCTJ y en
+el marco del Destacamento de la Agencia NCIA (de sus siglas en inglés Nato Communicatios
+and Information Agency) en Torrejón.
+4. Asumirá, a través del NSE español, la responsabilidad de información y gestión en la aplicación
+de los derechos reconocidos al personal español y extranjero destinado en el CAOCTJ, NSE ESP
+y Destacamento NCIA en el convenio entre los Estados Partes del Tratado del Atlántico Norte
+relativo al Estatuto de sus fuerzas (SOFA, por sus siglas en inglés), y en los acuerdos que lo
+complementen.
+5. Asumirá, a través del NSE (Elemento Nacional de Apoyo) español, la responsabilidad de
+información y gestión en la aplicación de los citados derechos cuando así se determine al personal
+de los países de la Alianza que participen en actividades, entidades o destacamentos militares
+internacionales en España en los que no se hayan creado Elementos Nacionales de Apoyo.
+Para los cometidos de información y de gestión de los derechos anteriormente mencionados
+dependerá FUNCIONALMENTE de la Dirección General de Política de Defensa (Oficina de
+Aplicación del SOFA).
+6. Asumirá, a través del NSE español, la representación de España como Host Nation en la gestión
+de los acuerdos de sede contenidos en el Garrison Support Arrangement (GSA) y Technical
+Agreements (TA) de desarrollo.
+7. El Elemento Nacional del CAOCTJ se estructurará en:
+- Elemento Nacional de Apoyo (NSE ESP-TJ)
+- Grupo de Personal de Plantilla (CAOC ESP), que comprende al personal español en plantilla
+internacional del:
+- CAOCTJ y del Destacamento de la NCIA (NCIA ESP).
+
+Quincuagésimo primero. El Elemento Nacional del Centro de Excelencia Contra
+Artefactos Explosivos Improvisados.
+1. El Elemento Nacional del Centro de Excelencia Contra Artefactos Explosivos Improvisados
+(CoE C-IED) incluye al personal español destinado en el CoE C-IED.
+2. Bajo la dependencia del JEMAD, el oficial Director del CoE C-IED será responsable
+del mando orgánico del personal del elemento nacional del CoE C-IED, ostentando en
+consecuencia la correspondiente potestad disciplinaria y administrativa del mismo.
+3. Adicionalmente, el Jefe del Elemento Nacional del CoE C-IED asumirá, a través del Elemento de
+Apoyo Administrativo, la responsabilidad de información y gestión en la aplicación de los derechos
+reconocidos al personal español y extranjero destinado en el CoE C-IED en el convenio entre los
+Estados Partes del Tratado del Atlántico Norte relativo al Estatuto de sus fuerzas (SOFA), y en los
+acuerdos que lo complementen.
+Dicho Elemento de Apoyo Administrativo depende FUNCIONALMENTE , a estos efectos, de la
+Oficina de Aplicación SOFA de la DIGENPOL.
+4. Apoyará, a través del Elemento de Apoyo Administrativo, en la gestión de las responsabilidades
+derivadas de los acuerdos de sede contenidos en el Memorándum de Entendimiento Operacional
+y el Memorándum de Entendimiento Funcional, firmados por las naciones miembro y el Mando
+Aliado de Transformación de la OTAN, el 24 de junio de 2010, y los acuerdos subsiguientes de
+desarrollo.
+
+198
+
+
+
+
+5. Establecerá y mantendrá, a través del personal del CNI y de las FCSE adscrito al CoE C-IED, las
+relaciones con dichos organismos establecidas mediante los acuerdos de participación de los
+mismos en el CoE C-IED, coordinando e informando previamente al JEMACON a través del
+CENCIED.
+6. El Elemento Nacional del CoE C-IED se estructurará en:
+- Elemento de Apoyo Administrativo (ADMIN-CoE CIED)
+- personal español en plantilla internacional (PERSESP-CoE CIED).
+
+Disposición final primera. Facultad de desarrollo.
+1. Se faculta a las autoridades dependientes directamente del JEMAD a desarrollar la organización
+de su UCO mediante la elaboración de Libros de Organización Interna.
+2. Se faculta al JEMACON a emitir las normas de unificación, coordinación, aprobación y
+modificación de dichos libros.
+
+Al final del libro, en la solapa, dispones de un organigrama
+en A3 con toda la organización del Estado Mayor de la
+Defensa que te será muy útil para su estudio.
+
+

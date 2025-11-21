@@ -9,16 +9,19 @@ import toast from 'react-hot-toast';
 import { PDFExportService } from '../services/pdfExportService';
 import { ICalExportService } from '../services/icalExportService';
 import { useAuth } from '../contexts/AuthContext';
+import { Header } from '../components/Header';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 // Helper para formatear horas de manera más legible
 const formatHours = (hours: number | string): string => {
   // Convertir a número si es string
   const numHours = typeof hours === 'string' ? parseFloat(hours) : hours;
-  
+
   if (isNaN(numHours)) {
     return '0 min';
   }
-  
+
   if (numHours >= 1) {
     // Si es 1 hora o más, mostrar como horas con 1 decimal
     return numHours % 1 === 0 ? `${numHours}h` : `${numHours.toFixed(1)}h`;
@@ -36,7 +39,7 @@ const tagFor = (notes?: string, sessionType?: string): string => {
   if (sessionType === 'SIMULATION') return 'Simulacro';
   if (sessionType === 'REVIEW') return 'Repaso';
   if (sessionType === 'STUDY') return 'Estudio';
-  
+
   // Fallback a las notas si no hay sessionType
   const n = (notes || '').toUpperCase();
   if (n.includes('REVIEW') || n.includes('REPASO')) return 'Repaso';
@@ -97,6 +100,64 @@ export const Sessions: React.FC = () => {
     applyFilters();
   }, [sessions, currentWeek, currentMonth, viewMode, filterStatus]);
 
+  useEffect(() => {
+    const driverObj = driver({
+      showProgress: true,
+      animate: true,
+      doneBtnText: 'Entendido',
+      nextBtnText: 'Siguiente',
+      prevBtnText: 'Anterior',
+      steps: [
+        {
+          element: '#sessions-container',
+          popover: {
+            title: 'Tu Plan de Estudio',
+            description: 'Aquí verás todas tus sesiones de estudio programadas. Puedes verlas en lista o calendario.',
+            side: 'bottom',
+            align: 'start'
+          }
+        },
+        {
+          element: '#view-toggle',
+          popover: {
+            title: 'Vistas Flexibles',
+            description: 'Cambia entre vista de lista semanal o calendario mensual según prefieras.',
+            side: 'top',
+            align: 'start'
+          }
+        },
+        {
+          element: '#status-filters',
+          popover: {
+            title: 'Filtros de Estado',
+            description: 'Filtra tus sesiones para ver qué tienes pendiente, en progreso o completado.',
+            side: 'top',
+            align: 'start'
+          }
+        },
+        {
+          element: '#export-buttons',
+          popover: {
+            title: 'Exportar Calendario',
+            description: 'Descarga tu planificación en PDF o sincronízala con tu calendario personal (Google Calendar, Outlook, etc.).',
+            side: 'bottom',
+            align: 'end'
+          }
+        }
+      ]
+    });
+
+    const hasSeenTutorial = localStorage.getItem(`onboarding:sessions:v1:${user?.id}`);
+
+    if (!hasSeenTutorial && !isLoading && sessions.length > 0) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        driverObj.drive();
+        localStorage.setItem(`onboarding:sessions:v1:${user?.id}`, 'true');
+      }, 1000);
+    }
+  }, [isLoading, sessions.length, user?.id]);
+
   const loadData = async () => {
     try {
       const plan = await studyPlanService.getActivePlan();
@@ -119,7 +180,7 @@ export const Sessions: React.FC = () => {
       // Vista de lista: filtrar por semana
       const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
       const weekEnd = endOfWeek(currentWeek, { weekStartsOn: 1 });
-      
+
       filtered = filtered.filter((session) => {
         const sessionDate = new Date(session.scheduledDate);
         return sessionDate >= weekStart && sessionDate <= weekEnd;
@@ -130,7 +191,7 @@ export const Sessions: React.FC = () => {
       const monthEnd = endOfMonth(currentMonth);
       const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
       const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
-      
+
       filtered = filtered.filter((session) => {
         const sessionDate = new Date(session.scheduledDate);
         return sessionDate >= calendarStart && sessionDate <= calendarEnd;
@@ -188,7 +249,7 @@ export const Sessions: React.FC = () => {
   const handleSkipSession = async (sessionId: number) => {
     try {
       if (!confirm('¿Estás seguro de que quieres saltar esta sesión?')) return;
-      
+
       await sessionService.skipSession(sessionId);
       toast.success('Sesión saltada');
       loadData();
@@ -296,7 +357,7 @@ export const Sessions: React.FC = () => {
 
   const groupSessionsByDay = () => {
     const grouped: { [key: string]: StudySession[] } = {};
-    
+
     filteredSessions.forEach((session) => {
       const dateKey = format(new Date(session.scheduledDate), 'yyyy-MM-dd');
       if (!grouped[dateKey]) {
@@ -318,7 +379,7 @@ export const Sessions: React.FC = () => {
   };
 
   const getSessionsForDay = (date: Date) => {
-    return filteredSessions.filter(session => 
+    return filteredSessions.filter(session =>
       isSameDay(new Date(session.scheduledDate), date)
     );
   };
@@ -351,75 +412,58 @@ export const Sessions: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      <Header title="Calendario de Sesiones" showBack={true} backPath="/dashboard">
+        {/* Botones de Exportación */}
+        <div id="export-buttons" className="flex items-center gap-3">
+          {/* Botón Exportar PDF */}
+          <button
+            onClick={handleExportToPDF}
+            disabled={isExporting || sessions.length === 0}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+          >
+            {isExporting ? (
+              <>
+                <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Volver a Inicio
-              </button>
-              <h1 className="text-2xl font-bold text-gray-900">Calendario de Sesiones</h1>
-            </div>
-            
-            {/* Botones de Exportación */}
-            <div className="flex items-center gap-3">
-              {/* Botón Exportar PDF */}
-              <button
-                onClick={handleExportToPDF}
-                disabled={isExporting || sessions.length === 0}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
-              >
-                {isExporting ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Generando...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    📄 PDF
-                  </>
-                )}
-              </button>
+                Generando...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                📄 PDF
+              </>
+            )}
+          </button>
 
-              {/* Botón Exportar iCal */}
-              <button
-                onClick={handleExportToICal}
-                disabled={isExportingICal || sessions.length === 0}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
-              >
-                {isExportingICal ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Generando...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    📅 iCal
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
+          {/* Botón Exportar iCal */}
+          <button
+            onClick={handleExportToICal}
+            disabled={isExportingICal || sessions.length === 0}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+          >
+            {isExportingICal ? (
+              <>
+                <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generando...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                📅 iCal
+              </>
+            )}
+          </button>
         </div>
-      </header>
+      </Header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Sessions List */}
@@ -429,149 +473,148 @@ export const Sessions: React.FC = () => {
               <p className="text-gray-500 text-lg">No hay sesiones programadas para esta semana</p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div id="sessions-container" className="space-y-6">
               {groupedSessions.map(([dateKey, daySessions]) => {
-              const date = new Date(dateKey);
-              const isToday = isSameDay(date, new Date());
+                const date = new Date(dateKey);
+                const isToday = isSameDay(date, new Date());
 
-              return (
-                <div key={dateKey} className="card">
-                  <div className={`flex items-center gap-2 mb-4 pb-3 border-b ${isToday ? 'border-primary-200' : 'border-gray-200'}`}>
-                    <h2 className={`text-lg font-bold ${isToday ? 'text-primary-600' : 'text-gray-900'}`}>
-                      {format(date, "EEEE, d 'de' MMMM", { locale: es })}
-                    </h2>
-                    {isToday && (
-                      <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-medium">
-                        HOY
-                      </span>
-                    )}
-                  </div>
+                return (
+                  <div key={dateKey} className="card">
+                    <div className={`flex items-center gap-2 mb-4 pb-3 border-b ${isToday ? 'border-primary-200' : 'border-gray-200'}`}>
+                      <h2 className={`text-lg font-bold ${isToday ? 'text-primary-600' : 'text-gray-900'}`}>
+                        {format(date, "EEEE, d 'de' MMMM", { locale: es })}
+                      </h2>
+                      {isToday && (
+                        <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-medium">
+                          HOY
+                        </span>
+                      )}
+                    </div>
 
-                  <div className="space-y-3">
-                    {daySessions.map((session) => (
-                      <div
-                        key={session.id}
-                        className={`p-4 rounded-lg border-2 ${
-                          session.status === 'COMPLETED'
+                    <div className="space-y-3">
+                      {daySessions.map((session) => (
+                        <div
+                          key={session.id}
+                          className={`p-4 rounded-lg border-2 ${session.status === 'COMPLETED'
                             ? 'border-green-200 bg-green-50'
                             : session.status === 'SKIPPED'
-                            ? 'border-gray-300 bg-gray-100'
-                            : 'border-gray-200 bg-white'
-                        }`}
-                      >
-                        <div className="flex justify-between items-start gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <h3 className="font-semibold text-gray-900">{displayTitle(session)}</h3>
-                              <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100">
-                                {tagFor(session.notes, session.sessionType)}
-                              </span>
-                            </div>
-                            <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                              <span>📚 Bloque: {session.theme?.block.replace('_', ' ')}</span>
-                              <span>
-                                ⏱️ {formatHours(session.scheduledHours)} programadas
-                                {session.sessionType === 'TEST' && (session.notes || '').toLowerCase().includes('fuera de horario') && (
-                                  <span className="text-red-600 font-medium"> (fuera de horario)</span>
+                              ? 'border-gray-300 bg-gray-100'
+                              : 'border-gray-200 bg-white'
+                            }`}
+                        >
+                          <div className="flex justify-between items-start gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="font-semibold text-gray-900">{displayTitle(session)}</h3>
+                                <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100">
+                                  {tagFor(session.notes, session.sessionType)}
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                                <span>📚 Bloque: {session.theme?.block.replace('_', ' ')}</span>
+                                <span>
+                                  ⏱️ {formatHours(session.scheduledHours)} programadas
+                                  {session.sessionType === 'TEST' && (session.notes || '').toLowerCase().includes('fuera de horario') && (
+                                    <span className="text-red-600 font-medium"> (fuera de horario)</span>
+                                  )}
+                                </span>
+                                {session.completedHours && (
+                                  <span className="text-green-600 font-medium">
+                                    ✓ {formatHours(session.completedHours)} completadas
+                                  </span>
                                 )}
-                              </span>
-                              {session.completedHours && (
-                                <span className="text-green-600 font-medium">
-                                  ✓ {formatHours(session.completedHours)} completadas
+                              </div>
+
+                              {/* Dificultad */}
+                              {session.status === 'COMPLETED' && (session as any).difficulty && (
+                                <div className="flex items-center gap-2 mt-2">
+                                  <span className="text-sm text-gray-600">🎯 Dificultad:</span>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <span key={star} className="text-yellow-500">
+                                        {star <= (session as any).difficulty ? '⭐' : '☆'}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Puntos Clave */}
+                              {session.status === 'COMPLETED' && (session as any).keyPoints && (
+                                <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                  <p className="text-sm font-medium text-blue-900 mb-1">📝 Puntos clave aprendidos:</p>
+                                  <p className="text-sm text-blue-800 whitespace-pre-line">{(session as any).keyPoints}</p>
+                                </div>
+                              )}
+
+                              {/* Notas */}
+                              {session.notes && (
+                                <p className="text-sm text-gray-600 mt-2 italic">💬 {session.notes}</p>
+                              )}
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                              {session.status === 'PENDING' && (
+                                <>
+                                  <button
+                                    onClick={() => handleCompleteSession(session.id)}
+                                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                  >
+                                    ✓ Completar
+                                  </button>
+                                  <button
+                                    onClick={() => handleMarkInProgress(session.id)}
+                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                  >
+                                    ⏸️ En Progreso
+                                  </button>
+                                  <button
+                                    onClick={() => handleSkipSession(session.id)}
+                                    className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                                  >
+                                    Saltar
+                                  </button>
+                                </>
+                              )}
+                              {session.status === 'IN_PROGRESS' && (
+                                <>
+                                  <div className="px-4 py-2 bg-blue-100 rounded-lg">
+                                    <p className="text-xs text-blue-800 font-medium text-center">⏸️ En Progreso</p>
+                                    <p className="text-xs text-blue-600 text-center mt-1">
+                                      {formatHours(session.completedHours || 0)} / {formatHours(session.scheduledHours)}
+                                    </p>
+                                  </div>
+                                  <button
+                                    onClick={() => handleContinueSession(session.id)}
+                                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                  >
+                                    ▶️ Continuar
+                                  </button>
+                                </>
+                              )}
+                              {session.status === 'COMPLETED' && (
+                                <span className="px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium text-center">
+                                  ✓ Completada
+                                </span>
+                              )}
+                              {session.status === 'SKIPPED' && (
+                                <span className="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm font-medium text-center">
+                                  Saltada
                                 </span>
                               )}
                             </div>
-                            
-                            {/* Dificultad */}
-                            {session.status === 'COMPLETED' && (session as any).difficulty && (
-                              <div className="flex items-center gap-2 mt-2">
-                                <span className="text-sm text-gray-600">🎯 Dificultad:</span>
-                                <div className="flex">
-                                  {[1, 2, 3, 4, 5].map((star) => (
-                                    <span key={star} className="text-yellow-500">
-                                      {star <= (session as any).difficulty ? '⭐' : '☆'}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                            
-                            {/* Puntos Clave */}
-                            {session.status === 'COMPLETED' && (session as any).keyPoints && (
-                              <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <p className="text-sm font-medium text-blue-900 mb-1">📝 Puntos clave aprendidos:</p>
-                                <p className="text-sm text-blue-800 whitespace-pre-line">{(session as any).keyPoints}</p>
-                              </div>
-                            )}
-                            
-                            {/* Notas */}
-                            {session.notes && (
-                              <p className="text-sm text-gray-600 mt-2 italic">💬 {session.notes}</p>
-                            )}
-                          </div>
-
-                          <div className="flex flex-col gap-2">
-                            {session.status === 'PENDING' && (
-                              <>
-                                <button
-                                  onClick={() => handleCompleteSession(session.id)}
-                                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
-                                >
-                                  ✓ Completar
-                                </button>
-                                <button
-                                  onClick={() => handleMarkInProgress(session.id)}
-                                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
-                                >
-                                  ⏸️ En Progreso
-                                </button>
-                                <button
-                                  onClick={() => handleSkipSession(session.id)}
-                                  className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg text-sm font-medium transition-colors"
-                                >
-                                  Saltar
-                                </button>
-                              </>
-                            )}
-                            {session.status === 'IN_PROGRESS' && (
-                              <>
-                                <div className="px-4 py-2 bg-blue-100 rounded-lg">
-                                  <p className="text-xs text-blue-800 font-medium text-center">⏸️ En Progreso</p>
-                                  <p className="text-xs text-blue-600 text-center mt-1">
-                                    {formatHours(session.completedHours || 0)} / {formatHours(session.scheduledHours)}
-                                  </p>
-                                </div>
-                                <button
-                                  onClick={() => handleContinueSession(session.id)}
-                                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
-                                >
-                                  ▶️ Continuar
-                                </button>
-                              </>
-                            )}
-                            {session.status === 'COMPLETED' && (
-                              <span className="px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium text-center">
-                                ✓ Completada
-                              </span>
-                            )}
-                            {session.status === 'SKIPPED' && (
-                              <span className="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm font-medium text-center">
-                                Saltada
-                              </span>
-                            )}
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
           )
         ) : (
           /* Vista de Calendario Mensual */
-          <div className="card">
+          <div id="sessions-container" className="card">
             {/* Encabezados de días */}
             <div className="grid grid-cols-7 gap-2 mb-2">
               {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
@@ -591,20 +634,18 @@ export const Sessions: React.FC = () => {
                 return (
                   <div
                     key={idx}
-                    className={`min-h-[120px] p-2 rounded-lg border ${
-                      isToday
-                        ? 'border-primary-500 bg-primary-50'
-                        : isCurrentMonth
+                    className={`min-h-[120px] p-2 rounded-lg border ${isToday
+                      ? 'border-primary-500 bg-primary-50'
+                      : isCurrentMonth
                         ? 'border-gray-200 bg-white'
                         : 'border-gray-100 bg-gray-50'
-                    }`}
+                      }`}
                   >
-                    <div className={`text-sm font-medium mb-1 ${
-                      isToday ? 'text-primary-700' : isCurrentMonth ? 'text-gray-900' : 'text-gray-400'
-                    }`}>
+                    <div className={`text-sm font-medium mb-1 ${isToday ? 'text-primary-700' : isCurrentMonth ? 'text-gray-900' : 'text-gray-400'
+                      }`}>
                       {format(day, 'd')}
                     </div>
-                    
+
                     <div className="space-y-1">
                       {daySessions.slice(0, 3).map((session) => (
                         <div
@@ -616,9 +657,8 @@ export const Sessions: React.FC = () => {
                               handleContinueSession(session.id);
                             }
                           }}
-                          className={`text-xs p-1.5 rounded border cursor-pointer hover:shadow-sm transition-shadow ${
-                            getStatusColor(session.status)
-                          }`}
+                          className={`text-xs p-1.5 rounded border cursor-pointer hover:shadow-sm transition-shadow ${getStatusColor(session.status)
+                            }`}
                         >
                           <div className="font-medium truncate" title={displayTitle(session)}>
                             {displayTitle(session)}
@@ -655,24 +695,22 @@ export const Sessions: React.FC = () => {
             <div className="flex flex-col gap-4">
               {/* View Mode Toggle */}
               <div className="flex items-center justify-between">
-                <div className="flex gap-2">
+                <div id="view-toggle" className="flex gap-2">
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewMode === 'list'
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    }`}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'list'
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
                   >
                     📝 Vista de Lista
                   </button>
                   <button
                     onClick={() => setViewMode('calendar')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewMode === 'calendar'
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    }`}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === 'calendar'
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
                   >
                     🗓️ Vista de Calendario
                   </button>
@@ -720,44 +758,40 @@ export const Sessions: React.FC = () => {
               )}
 
               {/* Status Filter */}
-              <div className="flex gap-2 flex-wrap justify-center">
+              <div id="status-filters" className="flex gap-2 flex-wrap justify-center">
                 <button
                   onClick={() => setFilterStatus('ALL')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filterStatus === 'ALL'
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterStatus === 'ALL'
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
                 >
                   Todas
                 </button>
                 <button
                   onClick={() => setFilterStatus('PENDING')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filterStatus === 'PENDING'
-                      ? 'bg-yellow-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterStatus === 'PENDING'
+                    ? 'bg-yellow-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
                 >
                   Pendientes
                 </button>
                 <button
                   onClick={() => setFilterStatus('IN_PROGRESS')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filterStatus === 'IN_PROGRESS'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterStatus === 'IN_PROGRESS'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
                 >
                   En Progreso
                 </button>
                 <button
                   onClick={() => setFilterStatus('COMPLETED')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filterStatus === 'COMPLETED'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterStatus === 'COMPLETED'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
                 >
                   Completadas
                 </button>
@@ -768,336 +802,341 @@ export const Sessions: React.FC = () => {
       </div>
 
       {/* Modal de Completar Sesión */}
-      {showCompleteModal && selectedSession && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                ✅ Completar Sesión
-              </h2>
-
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-gray-900">{displayTitle(selectedSession)}</h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  📚 Bloque: {selectedSession.theme?.block.replace('_', ' ')}
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {/* Horas Completadas */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ⏱️ ¿Cuántas horas estudiaste?
-                  </label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    min="0"
-                    max="24"
-                    value={completionData.hours}
-                    onChange={(e) => setCompletionData({ ...completionData, hours: e.target.value })}
-                    className="input-field"
-                    placeholder="Ej: 2.5"
-                  />
-                </div>
-
-                {/* Dificultad */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    🎯 ¿Qué tan difícil fue?
-                  </label>
-                  <div className="flex items-center gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setCompletionData({ ...completionData, difficulty: star })}
-                        className="text-3xl transition-transform hover:scale-110"
-                      >
-                        {star <= completionData.difficulty ? '⭐' : '☆'}
-                      </button>
-                    ))}
-                    <span className="ml-2 text-sm text-gray-600">
-                      {completionData.difficulty === 1 && 'Muy fácil'}
-                      {completionData.difficulty === 2 && 'Fácil'}
-                      {completionData.difficulty === 3 && 'Normal'}
-                      {completionData.difficulty === 4 && 'Difícil'}
-                      {completionData.difficulty === 5 && 'Muy difícil'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Puntos Clave */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    📝 Puntos clave aprendidos (opcional)
-                  </label>
-                  <textarea
-                    value={completionData.keyPoints}
-                    onChange={(e) => setCompletionData({ ...completionData, keyPoints: e.target.value })}
-                    className="input-field"
-                    rows={3}
-                    placeholder="Ej: Estructura de las Fuerzas Armadas, cadena de mando..."
-                  />
-                </div>
-
-                {/* Notas Adicionales */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    💬 Notas adicionales (opcional)
-                  </label>
-                  <textarea
-                    value={completionData.notes}
-                    onChange={(e) => setCompletionData({ ...completionData, notes: e.target.value })}
-                    className="input-field"
-                    rows={2}
-                    placeholder="Ej: Necesito repasar la sección 3..."
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => {
-                    setShowCompleteModal(false);
-                    setSelectedSession(null);
-                  }}
-                  className="flex-1 btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={submitCompleteSession}
-                  className="flex-1 btn-primary"
-                >
+      {
+        showCompleteModal && selectedSession && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
                   ✅ Completar Sesión
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+                </h2>
 
-      {/* Modal de Marcar En Progreso */}
-      {showInProgressModal && selectedSession && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-lg w-full">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                ⏸️ Marcar como En Progreso
-              </h2>
-
-              <div className="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-200">
-                <h3 className="font-semibold text-gray-900">{displayTitle(selectedSession)}</h3>
-                <p className="text-sm text-blue-600 mt-1">
-                  📚 Bloque: {selectedSession.theme?.block.replace('_', ' ')}
-                </p>
-                <p className="text-sm text-blue-600 mt-1">
-                  ⏱️ Total programado: {formatHours(selectedSession.scheduledHours)}
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {/* Horas Estudiadas */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ⏱️ ¿Cuántas horas has estudiado hasta ahora?
-                  </label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    min="0"
-                    max={selectedSession.scheduledHours}
-                    value={inProgressData.hours}
-                    onChange={(e) => setInProgressData({ ...inProgressData, hours: e.target.value })}
-                    className="input-field"
-                    placeholder="Ej: 1.5"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Máximo: {formatHours(selectedSession.scheduledHours)}. Si completaste todo, usa "Completar" en su lugar.
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <h3 className="font-semibold text-gray-900">{displayTitle(selectedSession)}</h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    📚 Bloque: {selectedSession.theme?.block.replace('_', ' ')}
                   </p>
                 </div>
 
-                {/* Notas */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    💬 Notas sobre el progreso (opcional)
-                  </label>
-                  <textarea
-                    value={inProgressData.notes}
-                    onChange={(e) => setInProgressData({ ...inProgressData, notes: e.target.value })}
-                    className="input-field"
-                    rows={3}
-                    placeholder="Ej: Completé las primeras secciones, necesito continuar mañana..."
-                  />
-                </div>
-              </div>
+                <div className="space-y-4">
+                  {/* Horas Completadas */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      ⏱️ ¿Cuántas horas estudiaste?
+                    </label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="0"
+                      max="24"
+                      value={completionData.hours}
+                      onChange={(e) => setCompletionData({ ...completionData, hours: e.target.value })}
+                      className="input-field"
+                      placeholder="Ej: 2.5"
+                    />
+                  </div>
 
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
-                <p className="text-xs text-yellow-800">
-                  💡 <strong>Tip:</strong> Podrás continuar con esta sesión después usando el botón "▶️ Continuar".
-                </p>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => {
-                    setShowInProgressModal(false);
-                    setSelectedSession(null);
-                  }}
-                  className="flex-1 btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={submitInProgress}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                >
-                  ⏸️ Marcar En Progreso
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Detalles del Día */}
-      {showDayDetailsModal && selectedDayDate && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  📅 {format(selectedDayDate, "EEEE, d 'de' MMMM yyyy", { locale: es })}
-                </h2>
-                <button
-                  onClick={() => {
-                    setShowDayDetailsModal(false);
-                    setSelectedDaySessions([]);
-                    setSelectedDayDate(null);
-                  }}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
-                <span>📋 {selectedDaySessions.length} sesiones programadas</span>
-                <span>•</span>
-                <span>⏱️ {formatHours(selectedDaySessions.reduce((sum, s) => sum + s.scheduledHours, 0))} totales</span>
-              </div>
-
-              <div className="space-y-3">
-                {selectedDaySessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className={`p-4 rounded-lg border-2 ${
-                      session.status === 'COMPLETED'
-                        ? 'border-green-200 bg-green-50'
-                        : session.status === 'IN_PROGRESS'
-                        ? 'border-blue-200 bg-blue-50'
-                        : session.status === 'SKIPPED'
-                        ? 'border-gray-300 bg-gray-100'
-                        : 'border-gray-200 bg-white'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-gray-900">{displayTitle(session)}</h3>
-                        <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100">
-                          {tagFor(session.notes, session.sessionType)}
-                        </span>
-                      </div>
-                      <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                        <span>📚 Bloque: {session.theme?.block.replace('_', ' ')}</span>
-                        <span>⏱️ {formatHours(session.scheduledHours)}</span>
-                        {session.completedHours && (
-                          <span className="text-green-600 font-medium">
-                            ✓ {formatHours(session.completedHours)} completadas
-                          </span>
-                        )}
-                      </div>
-                        {session.notes && (
-                          <p className="text-sm text-gray-600 mt-2 italic">💬 {session.notes}</p>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        {session.status === 'PENDING' && (
-                          <>
-                            <button
-                              onClick={() => {
-                                setShowDayDetailsModal(false);
-                                handleCompleteSession(session.id);
-                              }}
-                              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
-                            >
-                              ✓ Completar
-                            </button>
-                            <button
-                              onClick={() => {
-                                setShowDayDetailsModal(false);
-                                handleMarkInProgress(session.id);
-                              }}
-                              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
-                            >
-                              ⏸️ En Progreso
-                            </button>
-                          </>
-                        )}
-                        {session.status === 'IN_PROGRESS' && (
-                          <>
-                            <div className="px-4 py-2 bg-blue-100 rounded-lg">
-                              <p className="text-xs text-blue-800 font-medium text-center">⏸️ En Progreso</p>
-                              <p className="text-xs text-blue-600 text-center mt-1">
-                                {formatHours(session.completedHours || 0)} / {formatHours(session.scheduledHours)}
-                              </p>
-                            </div>
-                            <button
-                              onClick={() => {
-                                setShowDayDetailsModal(false);
-                                handleContinueSession(session.id);
-                              }}
-                              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
-                            >
-                              ▶️ Continuar
-                            </button>
-                          </>
-                        )}
-                        {session.status === 'COMPLETED' && (
-                          <span className="px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium text-center">
-                            ✓ Completada
-                          </span>
-                        )}
-                        {session.status === 'SKIPPED' && (
-                          <span className="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm font-medium text-center">
-                            Saltada
-                          </span>
-                        )}
-                      </div>
+                  {/* Dificultad */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      🎯 ¿Qué tan difícil fue?
+                    </label>
+                    <div className="flex items-center gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setCompletionData({ ...completionData, difficulty: star })}
+                          className="text-3xl transition-transform hover:scale-110"
+                        >
+                          {star <= completionData.difficulty ? '⭐' : '☆'}
+                        </button>
+                      ))}
+                      <span className="ml-2 text-sm text-gray-600">
+                        {completionData.difficulty === 1 && 'Muy fácil'}
+                        {completionData.difficulty === 2 && 'Fácil'}
+                        {completionData.difficulty === 3 && 'Normal'}
+                        {completionData.difficulty === 4 && 'Difícil'}
+                        {completionData.difficulty === 5 && 'Muy difícil'}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
 
-              <div className="flex justify-end mt-6">
-                <button
-                  onClick={() => {
-                    setShowDayDetailsModal(false);
-                    setSelectedDaySessions([]);
-                    setSelectedDayDate(null);
-                  }}
-                  className="btn-secondary"
-                >
-                  Cerrar
-                </button>
+                  {/* Puntos Clave */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      📝 Puntos clave aprendidos (opcional)
+                    </label>
+                    <textarea
+                      value={completionData.keyPoints}
+                      onChange={(e) => setCompletionData({ ...completionData, keyPoints: e.target.value })}
+                      className="input-field"
+                      rows={3}
+                      placeholder="Ej: Estructura de las Fuerzas Armadas, cadena de mando..."
+                    />
+                  </div>
+
+                  {/* Notas Adicionales */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      💬 Notas adicionales (opcional)
+                    </label>
+                    <textarea
+                      value={completionData.notes}
+                      onChange={(e) => setCompletionData({ ...completionData, notes: e.target.value })}
+                      className="input-field"
+                      rows={2}
+                      placeholder="Ej: Necesito repasar la sección 3..."
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => {
+                      setShowCompleteModal(false);
+                      setSelectedSession(null);
+                    }}
+                    className="flex-1 btn-secondary"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={submitCompleteSession}
+                    className="flex-1 btn-primary"
+                  >
+                    ✅ Completar Sesión
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+
+      {/* Modal de Marcar En Progreso */}
+      {
+        showInProgressModal && selectedSession && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-lg w-full">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  ⏸️ Marcar como En Progreso
+                </h2>
+
+                <div className="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-200">
+                  <h3 className="font-semibold text-gray-900">{displayTitle(selectedSession)}</h3>
+                  <p className="text-sm text-blue-600 mt-1">
+                    📚 Bloque: {selectedSession.theme?.block.replace('_', ' ')}
+                  </p>
+                  <p className="text-sm text-blue-600 mt-1">
+                    ⏱️ Total programado: {formatHours(selectedSession.scheduledHours)}
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Horas Estudiadas */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      ⏱️ ¿Cuántas horas has estudiado hasta ahora?
+                    </label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="0"
+                      max={selectedSession.scheduledHours}
+                      value={inProgressData.hours}
+                      onChange={(e) => setInProgressData({ ...inProgressData, hours: e.target.value })}
+                      className="input-field"
+                      placeholder="Ej: 1.5"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Máximo: {formatHours(selectedSession.scheduledHours)}. Si completaste todo, usa "Completar" en su lugar.
+                    </p>
+                  </div>
+
+                  {/* Notas */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      💬 Notas sobre el progreso (opcional)
+                    </label>
+                    <textarea
+                      value={inProgressData.notes}
+                      onChange={(e) => setInProgressData({ ...inProgressData, notes: e.target.value })}
+                      className="input-field"
+                      rows={3}
+                      placeholder="Ej: Completé las primeras secciones, necesito continuar mañana..."
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
+                  <p className="text-xs text-yellow-800">
+                    💡 <strong>Tip:</strong> Podrás continuar con esta sesión después usando el botón "▶️ Continuar".
+                  </p>
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={() => {
+                      setShowInProgressModal(false);
+                      setSelectedSession(null);
+                    }}
+                    className="flex-1 btn-secondary"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={submitInProgress}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                  >
+                    ⏸️ Marcar En Progreso
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Modal de Detalles del Día */}
+      {
+        showDayDetailsModal && selectedDayDate && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    📅 {format(selectedDayDate, "EEEE, d 'de' MMMM yyyy", { locale: es })}
+                  </h2>
+                  <button
+                    onClick={() => {
+                      setShowDayDetailsModal(false);
+                      setSelectedDaySessions([]);
+                      setSelectedDayDate(null);
+                    }}
+                    className="text-gray-400 hover:text-gray-600 text-2xl"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
+                  <span>📋 {selectedDaySessions.length} sesiones programadas</span>
+                  <span>•</span>
+                  <span>⏱️ {formatHours(selectedDaySessions.reduce((sum, s) => sum + s.scheduledHours, 0))} totales</span>
+                </div>
+
+                <div className="space-y-3">
+                  {selectedDaySessions.map((session) => (
+                    <div
+                      key={session.id}
+                      className={`p-4 rounded-lg border-2 ${session.status === 'COMPLETED'
+                        ? 'border-green-200 bg-green-50'
+                        : session.status === 'IN_PROGRESS'
+                          ? 'border-blue-200 bg-blue-50'
+                          : session.status === 'SKIPPED'
+                            ? 'border-gray-300 bg-gray-100'
+                            : 'border-gray-200 bg-white'
+                        }`}
+                    >
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-gray-900">{displayTitle(session)}</h3>
+                            <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100">
+                              {tagFor(session.notes, session.sessionType)}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                            <span>📚 Bloque: {session.theme?.block.replace('_', ' ')}</span>
+                            <span>⏱️ {formatHours(session.scheduledHours)}</span>
+                            {session.completedHours && (
+                              <span className="text-green-600 font-medium">
+                                ✓ {formatHours(session.completedHours)} completadas
+                              </span>
+                            )}
+                          </div>
+                          {session.notes && (
+                            <p className="text-sm text-gray-600 mt-2 italic">💬 {session.notes}</p>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          {session.status === 'PENDING' && (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setShowDayDetailsModal(false);
+                                  handleCompleteSession(session.id);
+                                }}
+                                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                              >
+                                ✓ Completar
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setShowDayDetailsModal(false);
+                                  handleMarkInProgress(session.id);
+                                }}
+                                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                              >
+                                ⏸️ En Progreso
+                              </button>
+                            </>
+                          )}
+                          {session.status === 'IN_PROGRESS' && (
+                            <>
+                              <div className="px-4 py-2 bg-blue-100 rounded-lg">
+                                <p className="text-xs text-blue-800 font-medium text-center">⏸️ En Progreso</p>
+                                <p className="text-xs text-blue-600 text-center mt-1">
+                                  {formatHours(session.completedHours || 0)} / {formatHours(session.scheduledHours)}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  setShowDayDetailsModal(false);
+                                  handleContinueSession(session.id);
+                                }}
+                                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                              >
+                                ▶️ Continuar
+                              </button>
+                            </>
+                          )}
+                          {session.status === 'COMPLETED' && (
+                            <span className="px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium text-center">
+                              ✓ Completada
+                            </span>
+                          )}
+                          {session.status === 'SKIPPED' && (
+                            <span className="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg text-sm font-medium text-center">
+                              Saltada
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-end mt-6">
+                  <button
+                    onClick={() => {
+                      setShowDayDetailsModal(false);
+                      setSelectedDaySessions([]);
+                      setSelectedDayDate(null);
+                    }}
+                    className="btn-secondary"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div >
   );
 };

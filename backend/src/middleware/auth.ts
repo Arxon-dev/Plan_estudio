@@ -2,10 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
-  user?: {
-    id: number;
-    email: string;
-  };
+  user?: any;
 }
 
 export const authMiddleware = async (
@@ -26,7 +23,16 @@ export const authMiddleware = async (
       email: string;
     };
 
-    req.user = decoded;
+    // Buscar usuario en la base de datos para tener datos actualizados (isPremium, etc)
+    const { User } = require('../models'); // Importación dinámica para evitar ciclos
+    const user = await User.findByPk(decoded.id);
+
+    if (!user) {
+      res.status(401).json({ error: 'Usuario no encontrado' });
+      return;
+    }
+
+    req.user = user;
     next();
   } catch (error) {
     res.status(401).json({ error: 'Token inválido o expirado' });

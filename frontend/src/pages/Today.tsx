@@ -5,6 +5,9 @@ import { es } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 import { studyPlanService } from '../services/studyPlanService';
 import { sessionService } from '../services/sessionService';
+import { Header } from '../components/Header';
+import { SparklesIcon } from '@heroicons/react/24/solid';
+import { useAuth } from '../contexts/AuthContext';
 
 interface AgendaData {
   date: string;
@@ -29,7 +32,7 @@ const tagFor = (notes?: string, sessionType?: string) => {
   if (sessionType === 'SIMULATION') return 'Simulacro';
   if (sessionType === 'REVIEW') return 'Repaso';
   if (sessionType === 'STUDY') return 'Estudio';
-  
+
   // Fallback a las notas si no hay sessionType
   const n = (notes || '').toUpperCase();
   if (n.includes('REVIEW') || n.includes('REPASO')) return 'Repaso';
@@ -55,6 +58,8 @@ export const Today: React.FC = () => {
   const [themeStats, setThemeStats] = useState<ThemeStat[]>([]);
   const [difficultyBySession, setDifficultyBySession] = useState<Record<number, number>>({});
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isPremium = user?.isPremium;
 
   const todayStr = format(new Date(), 'yyyy-MM-dd');
 
@@ -182,27 +187,28 @@ export const Today: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Agenda de Hoy</h1>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-600">{format(new Date(agenda.date), 'PPP', { locale: es })}</div>
-            <button 
-              onClick={() => navigate('/dashboard')} 
-              className="btn-secondary text-sm"
-            >
-              Inicio
-            </button>
-            <button 
-              onClick={() => navigate('/profile')} 
-              className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors font-medium"
-              title="Ver mi perfil"
-            >
-              👤 Mi Perfil
-            </button>
-          </div>
+      <Header title="Agenda de Hoy" showBack={true} backPath="/dashboard">
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-gray-600 hidden md:block">{agenda ? format(new Date(agenda.date), 'PPP', { locale: es }) : ''}</div>
+          <button
+            onClick={() => navigate('/profile')}
+            className={`px-3 py-1.5 text-sm rounded-lg transition-all duration-200 font-medium flex items-center gap-2 ${isPremium
+              ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5'
+              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              }`}
+            title="Ver mi perfil"
+          >
+            {isPremium ? (
+              <>
+                <SparklesIcon className="w-4 h-4 text-amber-100" />
+                Mi Perfil
+              </>
+            ) : (
+              '👤 Mi Perfil'
+            )}
+          </button>
         </div>
-      </header>
+      </Header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Resumen de capacidad */}
@@ -258,7 +264,7 @@ export const Today: React.FC = () => {
                         <span className="ml-1 inline-block w-5 h-5 text-xs bg-gray-200 rounded-full text-gray-700 text-center align-middle cursor-help">?</span>
                         <div className="hidden group-hover:block absolute z-10 mt-1 p-2 bg-white border rounded shadow text-xs w-64">
                           <p className="font-semibold mb-1">Guía de valores</p>
-                          {([0,1,2,3,4,5] as number[]).map(v => (
+                          {([0, 1, 2, 3, 4, 5] as number[]).map(v => (
                             <div key={v} className="flex gap-2">
                               <span className="font-medium w-4">{v}</span>
                               <span className="text-gray-700">{DIFFICULTY_INFO[v]}</span>
@@ -271,7 +277,7 @@ export const Today: React.FC = () => {
                         value={difficultyBySession[s.id] ?? 3}
                         onChange={e => handleDifficultyChange(s.id, e.target.value)}
                       >
-                        {[0,1,2,3,4,5].map(v => (
+                        {[0, 1, 2, 3, 4, 5].map(v => (
                           <option key={v} value={v}>{v}</option>
                         ))}
                       </select>

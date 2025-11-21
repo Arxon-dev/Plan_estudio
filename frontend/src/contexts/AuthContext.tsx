@@ -9,6 +9,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
   logout: () => void;
+  refreshProfile: () => Promise<User | null>;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -34,10 +35,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string) => {
     const response = await authService.login({ email, password });
+    console.log('🔍 AuthContext - Respuesta login:', response);
+    console.log('🔍 AuthContext - Usuario recibido:', response.user);
+    console.log('🔍 AuthContext - isAdmin:', response.user.isAdmin);
     setUser(response.user);
     setToken(response.token);
     localStorage.setItem('token', response.token);
     localStorage.setItem('user', JSON.stringify(response.user));
+    console.log('✅ AuthContext - Usuario guardado en localStorage');
   };
 
   const register = async (email: string, password: string, firstName: string, lastName: string) => {
@@ -54,6 +59,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setToken(null);
   };
 
+  const refreshProfile = async () => {
+    try {
+      const { user: updatedUser } = await authService.getProfile();
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      console.log('✅ AuthContext - Perfil actualizado:', updatedUser);
+      return updatedUser;
+    } catch (error) {
+      console.error('❌ AuthContext - Error al actualizar perfil:', error);
+      return null;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -62,6 +80,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         login,
         register,
         logout,
+        refreshProfile,
         isAuthenticated: !!token,
         isLoading,
       }}

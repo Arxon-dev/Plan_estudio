@@ -11,9 +11,14 @@ interface UserAttributes {
   isAdmin?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  isPremium?: boolean;
+  stripeCustomerId?: string | null;
+  subscriptionStatus?: 'active' | 'canceled' | 'past_due' | 'trialing' | 'incomplete' | 'incomplete_expired' | 'unpaid' | 'paused' | null;
+  subscriptionEndDate?: Date | null;
+  hasUsedTrial?: boolean;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
@@ -24,6 +29,11 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public isAdmin!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+  public isPremium!: boolean;
+  public stripeCustomerId!: string | null;
+  public subscriptionStatus!: 'active' | 'canceled' | 'past_due' | 'trialing' | 'incomplete' | 'incomplete_expired' | 'unpaid' | 'paused' | null;
+  public subscriptionEndDate!: Date | null;
+  public hasUsedTrial!: boolean;
 
   // Método para validar contraseña
   public async validatePassword(password: string): Promise<boolean> {
@@ -64,6 +74,28 @@ User.init(
       allowNull: false,
     },
     isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    isPremium: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    stripeCustomerId: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    subscriptionStatus: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    subscriptionEndDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    hasUsedTrial: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,

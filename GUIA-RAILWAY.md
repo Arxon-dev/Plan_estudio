@@ -214,3 +214,56 @@ Si tienes problemas:
 ---
 
 **¡Tu aplicación debería estar funcionando en Railway!** 🎉
+
+---
+
+## 🌐 CONFIGURACIÓN DE DOMINIO PERSONALIZADO
+
+Si deseas usar tu propio dominio (ej. `opomelilla.com`), sigue estos pasos con atención.
+
+### 1️⃣ Configurar Dominios en Railway
+
+1.  **Frontend**:
+    -   Ve a tu servicio de **Frontend** > **Settings** > **Domains**.
+    -   Añade tu dominio, por ejemplo: `app.opomelilla.com`.
+    -   Railway te dará unos registros DNS (CNAME) que debes añadir en tu proveedor de dominio (donde compraste el dominio).
+
+2.  **Backend**:
+    -   Ve a tu servicio de **Backend** > **Settings** > **Domains**.
+    -   Añade tu subdominio para la API, por ejemplo: `api.opomelilla.com`.
+    -   Configura el DNS correspondiente.
+
+### 2️⃣ Actualizar Variables de Entorno (CRÍTICO)
+
+Una vez que tus dominios estén activos, debes actualizar las variables. **Es fundamental incluir `https://`**.
+
+#### En el servicio FRONTEND:
+Cambia `VITE_API_URL` para que apunte a tu nuevo dominio de backend.
+```
+VITE_API_URL=https://api.opomelilla.com/api
+```
+❌ **MAL:** `api.opomelilla.com/api` (Esto causará errores de ruta relativa)
+✅ **BIEN:** `https://api.opomelilla.com/api`
+
+#### En el servicio BACKEND:
+Cambia `CORS_ORIGIN` para autorizar a tu nuevo dominio de frontend.
+```
+CORS_ORIGIN=https://app.opomelilla.com
+```
+❌ **MAL:** `app.opomelilla.com` (El navegador bloqueará la petición)
+✅ **BIEN:** `https://app.opomelilla.com`
+
+---
+
+## ❗ SOLUCIÓN DE PROBLEMAS COMUNES
+
+### Error 405 Method Not Allowed / URL extraña
+Si ves un error como `POST https://app.opomelilla.com/api.opomelilla.com/api/...` en la consola:
+-   **Causa**: Te falta el `https://` en la variable `VITE_API_URL`.
+-   **Solución**: Pon la URL completa: `https://api.opomelilla.com/api`.
+
+### Error de CORS (Bloqueo de acceso)
+Si la consola dice "Access to XMLHttpRequest... has been blocked by CORS policy":
+-   **Causa**: El backend no reconoce el origen `https://app.opomelilla.com`.
+-   **Solución**: Asegúrate de que `CORS_ORIGIN` en el backend sea EXACTAMENTE `https://app.opomelilla.com` (sin barra al final).
+

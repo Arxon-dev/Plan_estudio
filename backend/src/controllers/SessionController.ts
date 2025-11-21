@@ -4,6 +4,7 @@ import { StudyPlanService } from '@services/StudyPlanService';
 import { addDays } from 'date-fns';
 import { AuthRequest } from '@middleware/auth';
 import { Op } from 'sequelize';
+import UnlockService from '@services/UnlockService';
 
 export class SessionController {
   // Agenda del día: prioriza repasos y respeta capacidad diaria
@@ -130,6 +131,17 @@ export class SessionController {
         difficulty: difficulty || session.difficulty,
         keyPoints: keyPoints || session.keyPoints,
       });
+
+      // 🔓 Desbloquear tema para tests si es sesión de STUDY
+      const userId = req.user!.id;
+      if (session.sessionType === 'STUDY') {
+        try {
+          await UnlockService.unlockByStudySession(userId, session.themeId);
+          console.log(`🔓 Tema ${session.themeId} desbloqueado para tests (usuario ${userId})`);
+        } catch (unlockErr) {
+          console.warn('⚠️ Error al desbloquear tema:', unlockErr);
+        }
+      }
 
       // Programar próximo repaso automático y actualizar estadísticas por tema (SM-2 simplificado)
       try {

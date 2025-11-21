@@ -4,6 +4,7 @@ import themeRoutes from './themes';
 import studyPlanRoutes from './studyPlans';
 import sessionRoutes from './sessions';
 import adminRoutes from './admin';
+import testRoutes from './tests';
 
 const router = Router();
 
@@ -19,8 +20,15 @@ router.use('/study-plans', studyPlanRoutes);
 // Rutas de sesiones
 router.use('/sessions', sessionRoutes);
 
+// Rutas de tests
+router.use('/tests', testRoutes);
+
 // Rutas de administración
 router.use('/admin', adminRoutes);
+
+// Rutas de pagos
+import paymentRoutes from './payments';
+router.use('/payments', paymentRoutes);
 
 // Health check
 router.get('/health', (req, res) => {

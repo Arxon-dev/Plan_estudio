@@ -1,0 +1,363 @@
+# PROMPT PARA GENERAR PREGUNTAS ESTILO EXAMEN OFICIAL
+## OPOSICIONES PERMANENCIA EJÉRCITO - ESPAÑA
+
+---
+
+## 🎯 OBJETIVO PRINCIPAL
+
+Generar preguntas tipo test que **repliquen fielmente** el estilo, estructura y nivel de dificultad de los exámenes oficiales de permanencia del Ejército de Tierra español.
+
+---
+
+## 📋 CONTEXTO DEL EXAMEN OFICIAL
+
+### Características observadas en exámenes reales:
+
+1. **ENFOQUE EN LO FUNDAMENTAL Y ESTRUCTURAL**
+   - Competencias de órganos superiores y directivos.
+   - Estructura organizativa hasta nivel de División/Brigada en Instrucciones específicas.
+   - Principios generales, definiciones clave y plazos básicos.
+   - Relaciones de dependencia orgánica y funcional.
+
+2. **ESTILO DE REDACCIÓN**
+   - **Contextualizado:** Cita Norma + Artículo + TEMA del artículo antes de la pregunta.
+   - **Directo:** Preguntas claras y concisas.
+   - **Formatos específicos:** "Señale la falsa" (en mayúsculas y paréntesis al final), completar frases.
+
+3. **TIPOS DE PREGUNTA** (distribución real)
+   - 50% → Pregunta directa simple
+   - 25% → Completar espacios en blanco
+   - 20% → Señalar la FALSA
+   - 5% → Otras
+
+"Instrucción 14/2021. Artículo 25 sobre la División San Marcial. ¿Dónde se encuentra 
+encuadrada la Brigada Extremadura XI?"
+
+❌ MAL (demasiado específico):
+"Instrucción 14/2021. Artículo 25. ¿Quién es el jefe de la Sección de Personal 
+de la Brigada Extremadura XI?"
+```
+
+---
+
+### NIVEL 2: FORMULACIÓN DE LA PREGUNTA
+
+#### FORMATO OBLIGATORIO DEL ENUNCIADO:
+
+El examen real SIEMPRE cita el artículo y a menudo su título o tema antes de la pregunta.
+
+```
+[Ley/Normativa]. Artículo [Nº] sobre [Título/Tema]. [PREGUNTA]
+```
+
+#### PATRONES DE REDACCIÓN (por frecuencia de uso):
+
+**1. PREGUNTA DIRECTA (50%)**
+```
+Ley 39/2007. Artículo 16.1 sobre efectivos. ¿Cuál será el número máximo 
+de militares profesionales fijado en servicio activo?
+```
+
+**2. COMPLETAR ESPACIOS (25%)**
+```
+Ley 39/2007. Artículo 7 sobre el juramento. Todo militar tiene _______ 
+de prestar ante la Bandera juramento o promesa de defender a España.
+```
+
+**3. SEÑALAR LA FALSA (20%)** - (Usar mayúsculas y paréntesis al final)
+```
+Ley 39/2007. Artículo 118.2 sobre finalización de compromisos. Durante los 
+tres primeros años, éste se resolverá por alguna de las siguientes causas: 
+(SEÑALE LA FALSA)
+```
+
+#### ⚠️ PROHIBICIONES ABSOLUTAS:
+
+❌ **NUNCA uses:**
+- "Según el artículo X, señale cuál de las siguientes..."
+- "De acuerdo con lo establecido en..."
+- "Conforme a lo dispuesto en..."
+
+✅ **USA siempre:**
+- Cita artículo + tema + pregunta directa.
+- Lenguaje conversacional y natural.
+
+---
+
+### NIVEL 3: CONSTRUCCIÓN DE OPCIONES
+
+#### REGLAS DE ORO:
+
+1. **EQUILIBRIO DE LONGITUD** (CRÍTICO)
+   - Todas las opciones: ±15% de caracteres.
+   - Si la correcta tiene 40 caracteres → todas entre 34-46.
+
+2. **DISTRACTORES CREÍBLES**
+   - Mismo nivel jerárquico.
+   - Conceptos del mismo ámbito temático.
+   - Cifras cercanas pero incorrectas.
+
+3. **EVITA PATRONES OBVIOS**
+   - ❌ "Únicamente", "Solamente", "Exclusivamente" → Suelen ser falsas.
+   - ❌ "Siempre", "Nunca", "Todos", "Ninguno" → Muy sospechosas.
+
+---
+
+## 🏷️ ETIQUETADO DE PREGUNTAS (OBLIGATORIO)
+
+Debes incluir etiquetas de metadatos ANTES de cada pregunta para clasificarla correctamente.
+
+### 1. ETIQUETA DE PARTE (# PARTE X)
+Solo añade esta etiqueta si el contenido pertenece a uno de los siguientes temas multi-parte:
+
+**TEMA 6 (Instrucciones):**
+- `# PARTE 1` → Instrucción 55/2021 (EMAD)
+- `# PARTE 2` → Instrucción 14/2021 (Ejército de Tierra)
+- `# PARTE 3` → Instrucción 15/2021 (Armada)
+- `# PARTE 4` → Instrucción 6/2025 (Ejército del Aire)
+
+**TEMA 7 (Leyes de Personal):**
+- `# PARTE 1` → Ley 8/2006 (Tropa y Marinería)
+- `# PARTE 2` → Ley 39/2007 (Carrera Militar)
+
+**TEMA 15 (Seguridad Nacional):**
+- `# PARTE 1` → Ley 36/2015 (Seguridad Nacional)
+- `# PARTE 2` → RD 1150/2021 (Estrategia Seguridad Nacional)
+
+*Para cualquier otro tema, NO incluyas la etiqueta # PARTE.*
+
+### 2. ETIQUETA DE NIVEL (# NIVEL X)
+Añade SIEMPRE una etiqueta de dificultad basada en el contenido:
+
+- `# NIVEL FACIL` → Conceptos básicos, definiciones principales, plazos muy comunes.
+- `# NIVEL MEDIO` → Relaciones entre órganos, funciones específicas, excepciones comunes.
+- `# NIVEL DIFICIL` → Detalles procedimentales, plazos menos comunes, excepciones complejas.
+
+---
+
+## 📝 FORMATO DE SALIDA OBLIGATORIO
+
+### ESTRUCTURA EXACTA (sin variaciones):
+
+```
+[# PARTE X] [# NIVEL X]
+<b>[Normativa/Ley]</b><br><br>
+Artículo [Nº] sobre [Título/Tema]. [Texto de la pregunta] {
+=[Opción correcta]
+~%-33.33333%[Opción incorrecta 1]
+~%-33.33333%[Opción incorrecta 2]
+~%-33.33333%[Opción incorrecta 3]
+#### RETROALIMENTACIÓN:<br><br>
+<b>Artículo [Nº]. [Título del artículo]</b><br>
+"[Texto LITERAL del artículo con parte relevante en <b>negrita</b>]"<br><br>
+[Explicación sin mencionar letras a,b,c,d - usa contenidos específicos]
+}
+```
+
+### ⚠️ REGLAS CRÍTICAS DEL FORMATO:
+
+1. **NO NUMERES** las preguntas.
+2. **NO USES SEPARADORES** entre preguntas.
+3. **NO MENCIONES LETRAS** (a, b, c, d) en la retroalimentación.
+4. **LLAVE DE APERTURA {** en la misma línea que termina la pregunta.
+5. **LLAVE DE CIERRE }** sola en su línea después de retroalimentación.
+6. **LÍNEA EN BLANCO** entre cada pregunta completa.
+
+---
+
+## 🎓 REDACCIÓN DE RETROALIMENTACIÓN
+
+### 🚨 PROHIBICIÓN ABSOLUTA: NO MENCIONAR LETRAS
+
+**❌ INCORRECTO:**
+```
+La opción a) es correcta porque...
+```
+
+**✅ CORRECTO:**
+```
+El Gobierno es el órgano correcto porque según el artículo...
+```
+
+### ESTRUCTURA DE RETROALIMENTACIÓN:
+
+1. **Cita LITERAL del artículo completo** (con negrita en parte relevante).
+2. **Explica el concepto correcto** usando su contenido específico.
+3. **Aclara por qué las incorrectas lo son**.
+
+---
+
+## 🎯 EJEMPLOS COMPLETOS POR TIPO
+
+### TIPO 1: PREGUNTA DIRECTA (50% de las preguntas)
+
+```
+# NIVEL MEDIO
+<b>Constitución Española</b><br><br>
+Artículo 117.6 sobre tribunales prohibidos. ¿Qué tipo de tribunales se prohíben expresamente? {
+=Los Tribunales de excepción.
+~%-33.33333%Los Tribunales sumarísimos.
+~%-33.33333%Los Tribunales de orden público.
+~%-33.33333%Los Tribunales consuetudinarios.
+#### RETROALIMENTACIÓN:<br><br>
+<b>Artículo 117.6</b><br>
+"Se prohíben <b>los Tribunales de excepción</b>."<br><br>
+La Constitución prohíbe expresamente los Tribunales de excepción 
+para garantizar el derecho fundamental a un juez ordinario 
+predeterminado por la ley. Los tribunales sumarísimos, de orden 
+público y consuetudinarios no son objeto de prohibición específica 
+en este artículo, aunque los de orden público fueron suprimidos 
+por otras vías normativas tras la Constitución.
+}
+```
+
+### TIPO 2: COMPLETAR ESPACIOS (25% de las preguntas)
+
+```
+# NIVEL FACIL
+<b>Ley Orgánica 5/2005</b><br><br>
+Artículo 5 sobre la Defensa Nacional. El _______ ejerce su autoridad para ordenar, coordinar 
+y dirigir la actuación de las Fuerzas Armadas. {
+=Gobierno
+~%-33.33333%Consejo de Defensa Nacional
+~%-33.33333%Rey
+~%-33.33333%Presidente del Gobierno
+#### RETROALIMENTACIÓN:<br><br>
+<b>Artículo 5. El Gobierno</b><br>
+"Corresponde al Gobierno: determinar la política de defensa y 
+asegurar su ejecución, <b>ejercer su autoridad para ordenar, 
+coordinar y dirigir la actuación de las Fuerzas Armadas</b>, así 
+como disponer su empleo."<br><br>
+El Gobierno es el órgano constitucional que dirige la política de 
+defensa y tiene autoridad directa sobre las Fuerzas Armadas. El 
+Consejo de Defensa Nacional no existe como tal en la normativa 
+española. El Rey tiene el mando supremo simbólico pero no ejerce 
+esta función ejecutiva. El Presidente del Gobierno dirige al 
+Gobierno pero es este órgano colegiado el que ostenta formalmente 
+estas competencias.
+}
+```
+
+### TIPO 3: SEÑALAR LA FALSA (20% de las preguntas)
+
+```
+# NIVEL MEDIO
+<b>Real Decreto 96/2009</b><br><br>
+Artículo 58 sobre la capacidad para el combate. El mando será consciente de que la capacidad 
+para el combate depende en gran medida de: (SEÑALE LA FALSA) {
+=La moral de victoria.
+~%-33.33333%La eficacia de la instrucción y adiestramiento.
+~%-33.33333%La motivación.
+~%-33.33333%La preparación.
+#### RETROALIMENTACIÓN:<br><br>
+<b>Artículo 58. Capacidad para el combate</b><br>
+"El mando será consciente de que la capacidad para el combate 
+depende en gran medida de <b>la motivación, de la eficacia de la 
+instrucción y adiestramiento</b> y de la protección y seguridad 
+del personal a sus órdenes."<br><br>
+La "moral de victoria" no aparece mencionada en este artículo 
+como factor del que depende la capacidad de combate. El artículo 
+establece expresamente que depende de la motivación, la eficacia 
+de la instrucción y adiestramiento, y la preparación (entendida 
+como protección y seguridad). La moral de victoria es un concepto 
+diferente que se trata en otras partes de las Reales Ordenanzas.
+}
+```
+
+---
+
+## ✅ CHECKLIST DE VALIDACIÓN
+
+### ANTES DE ENTREGAR CADA PREGUNTA:
+
+#### CONTENIDO:
+- [ ] ¿La pregunta trata sobre aspectos FUNDAMENTALES?
+- [ ] ¿Evito órganos secundarios/subdirecciones?
+- [ ] ¿La pregunta es DIRECTA y NATURAL?
+- [ ] ¿Evito "Según el artículo X, señale cuál..."?
+- [ ] ¿Las 4 opciones tienen longitud similar (±15%)?
+- [ ] ¿Los distractores son creíbles y del mismo nivel?
+- [ ] ¿NO uso "únicamente", "solamente" sin necesidad?
+
+#### RETROALIMENTACIÓN:
+- [ ] ¿Incluye el texto LITERAL del artículo?
+- [ ] ¿Marco en negrita la parte relevante?
+- [ ] ¿NO menciono NUNCA letras (a, b, c, d)?
+- [ ] ¿Explico usando CONTENIDOS específicos?
+
+#### FORMATO:
+- [ ] ¿Uso = y ~%-33.33333% correctamente?
+- [ ] ¿La llave { está en la línea de la pregunta?
+- [ ] ¿La llave } está sola después de retroalimentación?
+- [ ] ¿NO incluyo numeración "PREGUNTA 1"?
+- [ ] ¿NO incluyo separadores "---"?
+- [ ] ¿Dejo línea en blanco entre preguntas?
+
+---
+
+## 🚨 ERRORES CRÍTICOS A EVITAR
+
+### NIVEL 1: ERRORES DE CONTENIDO
+❌ Preguntar sobre subdirecciones específicas  
+❌ Preguntar sobre secciones o negociados  
+❌ Usar órganos inventados como distractores  
+❌ Mezclar niveles jerárquicos muy diferentes  
+
+### NIVEL 2: ERRORES DE REDACCIÓN
+❌ "Según el artículo X, señale..."  
+❌ Opciones de longitud muy desigual  
+❌ Distractores con "siempre", "nunca", "todos"  
+❌ Opciones absurdamente incorrectas  
+
+### NIVEL 3: ERRORES DE FORMATO (CRÍTICOS)
+❌ Mencionar letras (a, b, c, d) en retroalimentación  
+❌ Numerar preguntas: "PREGUNTA 1"  
+❌ Usar separadores "---" entre preguntas  
+❌ No usar llaves { } correctamente  
+❌ No usar = y ~%-33.33333%  
+
+---
+
+## 📚 DISTRIBUCIÓN POR TEMARIO
+
+Genera preguntas proporcionalmente según la importancia de cada bloque:
+
+**BLOQUE 1 - ORGANIZACIÓN (35% preguntas)**
+- Constitución Española (énfasis en Títulos III, IV, V)
+- LO 5/2005 Defensa Nacional
+- Ley 40/2015 Régimen Jurídico
+- RD 205/2024 MINISDEF
+- RD 521/2020 Organización FAS
+- Instrucciones organizativas (55/2021, 14/2021, 15/2021, 6/2025)
+
+**BLOQUE 2 - JURÍDICO-SOCIAL (40% preguntas)**
+- Ley 8/2006 y Ley 39/2007 (Carrera Militar)
+- RD 96/2009 Reales Ordenanzas
+- LO 9/2011 Derechos y Deberes FAS
+- LO 8/2014 Régimen Disciplinario
+- Ley 39/2015 Procedimiento Administrativo
+- LO 3/2007 Igualdad
+
+**BLOQUE 3 - SEGURIDAD NACIONAL (25% preguntas)**
+- Ley 36/2015 y RD 1150/2021 (Seguridad Nacional)
+- PDC-01(B) Doctrina FAS
+- ONU, OTAN, OSCE, UE
+- Misiones Internacionales
+
+---
+
+## 🎯 INSTRUCCIÓN FINAL
+
+**OBJETIVO**: Que un opositor lea la pregunta y piense: 
+*"Esto podría estar en el examen oficial"*
+
+**CLAVES DEL ÉXITO:**
+1. **NATURALIDAD** → Pregunta directa, sin rodeos
+2. **CLARIDAD** → Se entiende en una sola lectura
+3. **FUNDAMENTALIDAD** → Aspectos clave, no detalles secundarios
+4. **EQUILIBRIO** → Todas las opciones igual de largas y creíbles
+
+Distribución: X preguntas directas, X completar espacios, 0 señalar la falsa. 
+X = cantidad de preguntas necesarias para lograr cubrir con exito el texto fuente proporcionado.
+
+**GENERA AHORA** preguntas sobre el contenido que te proporcionen, siguiendo estrictamente estas instrucciones.

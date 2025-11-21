@@ -7,16 +7,18 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
+import { SparklesIcon } from '@heroicons/react/24/solid';
+import { Header } from '../components/Header';
 
 // Helper para formatear horas de manera más legible
 const formatHours = (hours: number | string): string => {
   // Convertir a número si es string
   const numHours = typeof hours === 'string' ? parseFloat(hours) : hours;
-  
+
   if (isNaN(numHours)) {
     return '0 min';
   }
-  
+
   if (numHours >= 1) {
     return numHours % 1 === 0 ? `${numHours}h` : `${numHours.toFixed(1)}h`;
   } else {
@@ -33,19 +35,20 @@ export const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const isPremium = user?.isPremium;
 
   // Calcular información del buffer
   const calculateBufferInfo = () => {
     if (!plan) return null;
-    
+
     const bufferDays = 30;
     const examDate = new Date(plan.examDate);
     const bufferStartDate = new Date(examDate);
     bufferStartDate.setDate(bufferStartDate.getDate() - bufferDays);
-    
+
     const today = new Date();
     const daysUntilBuffer = Math.ceil((bufferStartDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    
+
     return {
       bufferStartDate,
       daysUntilBuffer: Math.max(0, daysUntilBuffer),
@@ -69,17 +72,19 @@ export const Dashboard: React.FC = () => {
     const hasPlan = !!(plan && progress);
     const steps = hasPlan
       ? [
-          { element: '#tour-dashboard-title', popover: { title: 'Inicio', description: 'Estado general de tu plan.' } },
-          { element: '#tour-agenda-btn', popover: { title: 'Agenda de hoy', description: 'Accede a tus sesiones de hoy.' } },
-          { element: '#tour-sessions-card', popover: { title: 'Sesiones', description: 'Calendario completo de estudio.' } },
-          { element: '#tour-themes-card', popover: { title: 'Temas', description: 'Explora los 21 temas.' } },
-          { element: '#tour-manual-card', popover: { title: 'Editor manual', description: 'Reorganiza sesiones a tu manera.' } },
-          { element: '#tour-smart-card', popover: { title: 'Calendario inteligente', description: 'Genera un plan optimizado.' } },
-        ]
+        { element: '#tour-dashboard-title', popover: { title: 'Inicio', description: 'Estado general de tu plan.' } },
+        { element: '#tour-profile-btn', popover: { title: 'Mi Perfil', description: 'Gestiona tu cuenta y preferencias.' } },
+        { element: '#tour-agenda-btn', popover: { title: 'Agenda de hoy', description: 'Accede a tus sesiones de hoy.' } },
+        { element: '#tour-tests-card', popover: { title: 'Tests', description: 'Evalúa tu conocimiento y practica.' } },
+        { element: '#tour-sessions-card', popover: { title: 'Sesiones', description: 'Calendario completo de estudio.' } },
+        { element: '#tour-themes-card', popover: { title: 'Temas', description: 'Explora los 21 temas.' } },
+        { element: '#tour-manual-card', popover: { title: 'Editor manual', description: 'Reorganiza sesiones a tu manera.' } },
+        { element: '#tour-smart-card', popover: { title: 'Calendario inteligente', description: 'Genera un plan optimizado.' } },
+      ]
       : [
-          { element: '#tour-dashboard-title', popover: { title: 'Bienvenido', description: 'Aquí verás tu progreso cuando tengas plan.' } },
-          { element: '#tour-smart-card', popover: { title: 'Crear calendario', description: 'Empieza creando tu calendario inteligente.' } },
-        ];
+        { element: '#tour-dashboard-title', popover: { title: 'Bienvenido', description: 'Aquí verás tu progreso cuando tengas plan.' } },
+        { element: '#tour-smart-card', popover: { title: 'Crear calendario', description: 'Empieza creando tu calendario inteligente.' } },
+      ];
     const d = driver({ steps, showProgress: true, allowClose: true });
     d.drive();
     localStorage.setItem(key, 'done');
@@ -96,11 +101,11 @@ export const Dashboard: React.FC = () => {
       try {
         planProgress = await studyPlanService.getPlanProgress(activePlan.id);
         setProgress(planProgress);
-      } catch {}
+      } catch { }
 
       try {
         sessions = await studyPlanService.getPlanSessions(activePlan.id);
-      } catch {}
+      } catch { }
 
       const today = format(new Date(), 'yyyy-MM-dd');
       const todaySessionsFiltered = sessions.filter((session: StudySession) =>
@@ -135,6 +140,17 @@ export const Dashboard: React.FC = () => {
     navigate('/login');
   };
 
+  const displayTitle = (s: any): string => {
+    const base = s.theme?.title || `Tema ${s.themeId}`;
+    const n = (s.notes || '').toString();
+    const idx = n.indexOf('— Parte');
+    if (idx > -1) {
+      const part = n.substring(idx);
+      return `${base} ${part}`;
+    }
+    return base;
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -148,19 +164,7 @@ export const Dashboard: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 id="tour-dashboard-title" className="text-2xl font-bold text-gray-900">Plan de Estudio</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">
-                ¡Hola, {user?.firstName}!
-              </span>
-              <button onClick={handleLogout} className="btn-secondary text-sm">
-                Cerrar Sesión
-              </button>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* No Plan Message */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -171,56 +175,55 @@ export const Dashboard: React.FC = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Aún no tienes un plan de estudio
             </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Crea tu primer plan de estudio personalizado con nuestro Calendario Inteligente.
-            <br />
-            Te ayudaremos a organizar tu tiempo y maximizar tu aprendizaje.
-          </p>
-          <button
-            onClick={() => navigate('/smart-calendar')}
-            id="tour-smart-card"
-            className="btn-primary text-lg px-8 py-3"
-          >
-            🧠 Crear Mi Calendario Inteligente
-          </button>
-        </div>
-      </main>
-    </div>
+            <p className="text-lg text-gray-600 mb-8">
+              Crea tu primer plan de estudio personalizado con nuestro Calendario Inteligente.
+              <br />
+              Te ayudaremos a organizar tu tiempo y maximizar tu aprendizaje.
+            </p>
+            <button
+              onClick={() => navigate('/smart-calendar')}
+              id="tour-smart-card"
+              className="btn-primary text-lg px-8 py-3"
+            >
+              🧠 Crear Mi Calendario Inteligente
+            </button>
+          </div>
+        </main>
+      </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 id="tour-dashboard-title" className="text-2xl font-bold text-gray-900">Plan de Estudio</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
-              ¡Hola, {user?.firstName}!
-            </span>
-            <button
-              onClick={() => navigate('/today')}
-              id="tour-agenda-btn"
-              className="px-3 py-1.5 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors font-medium"
-              title="Ver agenda de hoy"
-            >
-              📅 Agenda de Hoy
-            </button>
-            <button 
-              onClick={() => navigate('/profile')} 
-              id="tour-profile-btn"
-              className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors font-medium"
-              title="Ver mi perfil"
-            >
-              👤 Mi Perfil
-            </button>
-            <button onClick={handleLogout} className="btn-secondary text-sm">
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header>
+        <button
+          onClick={() => navigate('/today')}
+          id="tour-agenda-btn"
+          className="px-3 py-1.5 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors font-medium"
+          title="Ver agenda de hoy"
+        >
+          📅 Agenda de Hoy
+        </button>
+        <button
+          onClick={() => navigate('/profile')}
+          id="tour-profile-btn"
+          className={`px-3 py-1.5 text-sm rounded-lg transition-all duration-200 font-medium flex items-center gap-2 ${isPremium
+            ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5'
+            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            }`}
+          title="Ver mi perfil"
+        >
+          {isPremium ? (
+            <>
+              <SparklesIcon className="w-4 h-4 text-amber-100" />
+              Mi Perfil
+            </>
+          ) : (
+            '👤 Mi Perfil'
+          )}
+        </button>
+      </Header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -239,7 +242,7 @@ export const Dashboard: React.FC = () => {
         {(() => {
           const bufferInfo = calculateBufferInfo();
           if (!bufferInfo) return null;
-          
+
           if (bufferInfo.isInBufferPeriod) {
             return (
               <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -248,11 +251,11 @@ export const Dashboard: React.FC = () => {
                   <div>
                     <h3 className="text-sm font-medium text-yellow-800 mb-1">📅 Período de Preparación Libre</h3>
                     <p className="text-sm text-yellow-700 mb-2">
-                      Estás en el período de preparación final (últimos 30 días antes del examen). 
+                      Estás en el período de preparación final (últimos 30 días antes del examen).
                       Aprovecha para repasar temas clave, hacer simulacros y consolidar conocimientos.
                     </p>
                     <p className="text-xs text-yellow-600">
-                      📅 Examen: {format(new Date(plan.examDate), 'dd/MM/yyyy')} • 
+                      📅 Examen: {format(new Date(plan.examDate), 'dd/MM/yyyy')} •
                       🎯 Días restantes: {bufferInfo.daysUntilBuffer} días
                     </p>
                   </div>
@@ -267,11 +270,7 @@ export const Dashboard: React.FC = () => {
                   <div>
                     <h3 className="text-sm font-medium text-blue-800 mb-1">📅 Tiempo para preparación final</h3>
                     <p className="text-sm text-blue-700 mb-2">
-                      Las sesiones programadas terminan el {format(bufferInfo.bufferStartDate, 'dd/MM/yyyy')} 
-                      (30 días antes del examen) para que puedas preparar los temas que necesites y hacer simulacros.
-                    </p>
-                    <p className="text-xs text-blue-600">
-                      📅 Quedan {bufferInfo.daysUntilBuffer} días hasta el período de preparación libre
+                      Faltan {bufferInfo.daysUntilBuffer} días para que comience tu período de repaso libre (30 días antes del examen).
                     </p>
                   </div>
                 </div>
@@ -279,144 +278,153 @@ export const Dashboard: React.FC = () => {
             );
           }
         })()}
+
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="card">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Progreso General</h3>
-            <div className="flex items-end gap-2">
-              <p className="text-3xl font-bold text-primary-600">{progress.progressPercentage}%</p>
-              <p className="text-sm text-gray-500 mb-1">completado</p>
-            </div>
-            <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Progreso Total</h3>
+            <p className="text-2xl font-bold text-gray-900">{progress.progressPercentage.toFixed(1)}%</p>
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
               <div
-                className="bg-primary-600 h-2 rounded-full"
+                className="bg-primary-600 h-2.5 rounded-full"
                 style={{ width: `${progress.progressPercentage}%` }}
               ></div>
             </div>
           </div>
-
           <div className="card">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Días Restantes</h3>
-            <p className="text-3xl font-bold text-gray-900">{progress.daysRemaining}</p>
-            <p className="text-sm text-gray-500 mt-1">
-              hasta el {format(new Date(plan.examDate), 'dd/MM/yyyy')}
-            </p>
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Horas Estudiadas</h3>
+            <p className="text-2xl font-bold text-gray-900">{formatHours(progress.totalStudyHours)}</p>
           </div>
-
           <div className="card">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Sesiones Completadas</h3>
-            <p className="text-3xl font-bold text-green-600">{progress.completedSessions}</p>
-            <p className="text-sm text-gray-500 mt-1">
-              de {progress.totalSessions} sesiones
-            </p>
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Sesiones Completadas</h3>
+            <p className="text-2xl font-bold text-gray-900">{progress.completedSessions}</p>
           </div>
-
           <div className="card">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Horas de Estudio</h3>
-            <p className="text-3xl font-bold text-gray-900">{progress.totalHoursCompleted.toFixed(1)}h</p>
-            <p className="text-sm text-gray-500 mt-1">
-              de {progress.totalHoursScheduled.toFixed(1)}h totales
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Días Restantes</h3>
+            <p className="text-2xl font-bold text-gray-900">
+              {Math.ceil((new Date(plan.examDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
             </p>
           </div>
         </div>
 
-        {/* Today's Sessions */}
-        <div className="card mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900">📅 Sesiones de Hoy</h2>
-            <span className="text-sm text-gray-500">
-              {format(new Date(), "EEEE, d 'de' MMMM", { locale: es })}
-            </span>
+        {/* Main Actions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Tests Card */}
+          <div
+            onClick={() => navigate('/tests')}
+            id="tour-tests-card"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
+                <span className="text-2xl">📝</span>
+              </div>
+              <span className="text-sm text-gray-500">Practicar</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Tests y Simulacros</h3>
+            <p className="text-gray-600 text-sm">
+              Pon a prueba tus conocimientos con tests por temas o simulacros completos.
+            </p>
           </div>
 
-          {todaySessions.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <p>No tienes sesiones programadas para hoy</p>
-              <p className="text-sm mt-2">¡Disfruta tu día de descanso! 🎉</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {todaySessions.map((session) => (
-                <div
-                  key={session.id}
-                  className={`p-4 rounded-lg border-2 ${
-                    session.status === 'COMPLETED'
-                      ? 'border-green-200 bg-green-50'
-                      : 'border-gray-200 bg-white'
-                  }`}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{displayTitle(session)}</h3>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {formatHours(session.scheduledHours)}
-                        {session.sessionType === 'TEST' && (session.notes || '').toLowerCase().includes('fuera de horario') && (
-                          <span className="text-red-600 font-medium"> (fuera de horario)</span>
-                        )}
-                        {' '}• Bloque: {session.theme?.block}
-                      </p>
-                      {session.notes && (
-                        <p className="text-sm text-gray-600 mt-2 italic">{session.notes}</p>
-                      )}
-                    </div>
-                    {session.status === 'COMPLETED' ? (
-                      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                        ✓ Completada
-                      </span>
-                    ) : (
-                      <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                        Pendiente
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <button
+          {/* Sessions Card */}
+          <div
             onClick={() => navigate('/sessions')}
             id="tour-sessions-card"
-            className="card hover:shadow-lg transition-shadow cursor-pointer text-left"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">📚 Ver Todas las Sesiones</h3>
-            <p className="text-sm text-gray-600">Consulta tu calendario completo de estudio</p>
-          </button>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                <span className="text-2xl">📅</span>
+              </div>
+              <span className="text-sm text-gray-500">Planificación</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Calendario de Sesiones</h3>
+            <p className="text-gray-600 text-sm">
+              Visualiza y gestiona todas tus sesiones de estudio programadas.
+            </p>
+          </div>
 
-          <button
+          {/* Themes Card */}
+          <div
             onClick={() => navigate('/themes')}
             id="tour-themes-card"
-            className="card hover:shadow-lg transition-shadow cursor-pointer text-left"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">📖 Ver Temas</h3>
-            <p className="text-sm text-gray-600">Revisa el contenido de los 21 temas</p>
-          </button>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
+                <span className="text-2xl">📚</span>
+              </div>
+              <span className="text-sm text-gray-500">Contenido</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Temas y Progreso</h3>
+            <p className="text-gray-600 text-sm">
+              Consulta el estado de cada tema y tus estadísticas de dominio.
+            </p>
+          </div>
 
-
-          <button
-            onClick={() => navigate(`/manual-planner?planId=${plan.id}`)}
+          {/* Manual Planner Card */}
+          <div
+            onClick={() => navigate('/manual-planner')}
             id="tour-manual-card"
-            className="card hover:shadow-lg transition-shadow cursor-pointer text-left bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">✏️ Editar Manualmente</h3>
-            <p className="text-sm text-gray-600">Organiza tus sesiones a tu manera</p>
-          </button>
-          
-          <button
-            onClick={() => navigate('/smart-calendar')}
-            id="tour-smart-card"
-            className="card hover:shadow-lg transition-shadow cursor-pointer text-left bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">🧠 Calendario Inteligente</h3>
-            <p className="text-sm text-gray-600">Genera un plan con rotación de temas y repetición espaciada</p>
-          </button>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                <span className="text-2xl">✏️</span>
+              </div>
+              <span className="text-sm text-gray-500">Edición</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Editor Manual</h3>
+            <p className="text-gray-600 text-sm">
+              Ajusta tu plan manualmente arrastrando y soltando sesiones.
+            </p>
+          </div>
         </div>
 
-        {/* Premium Features Section */}
-        <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white mb-8">
+        {/* Today's Sessions Preview */}
+        <div className="card">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Sesiones de Hoy</h3>
+            <button
+              onClick={() => navigate('/today')}
+              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            >
+              Ver todo →
+            </button>
+          </div>
+          <div className="space-y-3">
+            {todaySessions.length === 0 ? (
+              <p className="text-gray-500 text-sm text-center py-4">
+                No hay sesiones programadas para hoy.
+              </p>
+            ) : (
+              todaySessions.slice(0, 3).map((session, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full ${session.status === 'COMPLETED' ? 'bg-green-500' : 'bg-blue-500'
+                      }`} />
+                    <div>
+                      <p className="font-medium text-gray-900">{displayTitle(session)}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatHours(session.scheduledHours)} • {session.sessionType === 'STUDY' ? 'Estudio' : 'Repaso'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded ${session.status === 'COMPLETED'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-blue-100 text-blue-700'
+                    }`}>
+                    {session.status === 'COMPLETED' ? 'Completado' : 'Pendiente'}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Premium Banner */}
+        <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white mb-8 mt-8">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h2 className="text-3xl font-bold mb-4">✨ ¿Quieres Más?</h2>
@@ -436,7 +444,7 @@ export const Dashboard: React.FC = () => {
                 >
                   <span className="flex items-center justify-center gap-2">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z" />
                     </svg>
                     Unirme a Telegram
                   </span>
@@ -450,12 +458,7 @@ export const Dashboard: React.FC = () => {
                 <div className="text-sm opacity-90">Recomendaciones personalizadas</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-3xl mb-2">🎯</div>
-                <div className="font-bold">Ilimitado</div>
-                <div className="text-sm opacity-90">Miles de preguntas</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="text-3xl mb-2">🎮</div>
+                <div className="text-3xl mb-2">🏆</div>
                 <div className="font-bold">Gamificación</div>
                 <div className="text-sm opacity-90">Duelos y torneos</div>
               </div>
@@ -471,13 +474,3 @@ export const Dashboard: React.FC = () => {
     </div>
   );
 };
-  const displayTitle = (s: any): string => {
-    const base = s.theme?.title || `Tema ${s.themeId}`;
-    const n = (s.notes || '').toString();
-    const idx = n.indexOf('— Parte');
-    if (idx > -1) {
-      const part = n.substring(idx);
-      return `${base} ${part}`;
-    }
-    return base;
-  };

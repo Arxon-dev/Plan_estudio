@@ -44,6 +44,11 @@ export class AuthController {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          isPremium: user.isPremium,
+          isAdmin: user.isAdmin,
+          stripeCustomerId: user.stripeCustomerId,
+          subscriptionStatus: user.subscriptionStatus,
+          subscriptionEndDate: user.subscriptionEndDate,
         },
         token,
       });
@@ -92,6 +97,11 @@ export class AuthController {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          isPremium: user.isPremium,
+          isAdmin: user.isAdmin,
+          stripeCustomerId: user.stripeCustomerId,
+          subscriptionStatus: user.subscriptionStatus,
+          subscriptionEndDate: user.subscriptionEndDate,
         },
         token,
       });
@@ -105,7 +115,19 @@ export class AuthController {
   static async getProfile(req: any, res: Response): Promise<void> {
     try {
       const user = await User.findByPk(req.user.id, {
-        attributes: ['id', 'email', 'firstName', 'lastName', 'createdAt'],
+        attributes: [
+          'id',
+          'email',
+          'firstName',
+          'lastName',
+          'createdAt',
+          'isPremium',
+          'isAdmin',
+          'stripeCustomerId',
+          'subscriptionStatus',
+          'subscriptionEndDate',
+          'hasUsedTrial'
+        ],
       });
 
       if (!user) {
