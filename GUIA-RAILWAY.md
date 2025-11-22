@@ -115,6 +115,8 @@ Ve a **Variables** y añade:
 ```
 VITE_API_URL=https://tu-app-backend.up.railway.app/api
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+VITE_STRIPE_PREMIUM_PRICE_ID=price_... (ID del precio en Stripe)
+
 
 ```
 
@@ -256,6 +258,8 @@ Cambia `VITE_API_URL` para que apunte a tu nuevo dominio de backend.
 ```
 VITE_API_URL=https://api.opomelilla.com/api
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+VITE_STRIPE_PREMIUM_PRICE_ID=price_...
+
 
 ```
 ❌ **MAL:** `api.opomelilla.com/api` (Esto causará errores de ruta relativa)

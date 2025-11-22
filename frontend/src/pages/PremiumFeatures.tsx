@@ -35,8 +35,13 @@ export const PremiumFeatures: React.FC = () => {
       if (!stripe) throw new Error('Stripe failed to load');
 
       // Create checkout session
+      const priceId = import.meta.env.VITE_STRIPE_PREMIUM_PRICE_ID;
+      if (!priceId) {
+        throw new Error('El ID del precio no está configurado (VITE_STRIPE_PREMIUM_PRICE_ID)');
+      }
+
       const { data } = await apiClient.post('/payments/checkout', {
-        priceId: 'price_1SVboCC2DnDZoulrycCaR70z' // ID de Precio Test (10€/mes)
+        priceId
       });
 
       // Redirect to checkout
