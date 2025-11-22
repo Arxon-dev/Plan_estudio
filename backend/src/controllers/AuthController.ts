@@ -49,6 +49,7 @@ export class AuthController {
           stripeCustomerId: user.stripeCustomerId,
           subscriptionStatus: user.subscriptionStatus,
           subscriptionEndDate: user.subscriptionEndDate,
+          cancelAtPeriodEnd: user.cancelAtPeriodEnd,
         },
         token,
       });
@@ -102,6 +103,7 @@ export class AuthController {
           stripeCustomerId: user.stripeCustomerId,
           subscriptionStatus: user.subscriptionStatus,
           subscriptionEndDate: user.subscriptionEndDate,
+          cancelAtPeriodEnd: user.cancelAtPeriodEnd,
         },
         token,
       });
@@ -126,7 +128,8 @@ export class AuthController {
           'stripeCustomerId',
           'subscriptionStatus',
           'subscriptionEndDate',
-          'hasUsedTrial'
+          'hasUsedTrial',
+          'cancelAtPeriodEnd'
         ],
       });
 
