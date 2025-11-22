@@ -164,6 +164,39 @@ export const Profile: React.FC = () => {
                 </button>
               </div>
             )}
+
+            {/* Información de Suscripción */}
+            {user?.isPremium && user?.subscriptionEndDate && (
+              <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Estado:</span>
+                    <span className={`font-medium ${user.cancelAtPeriodEnd ? 'text-amber-600' : 'text-green-600'}`}>
+                      {user.cancelAtPeriodEnd ? 'Cancelación programada' : 'Activa'}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">
+                      {user.cancelAtPeriodEnd ? 'Acceso hasta:' : 'Próxima renovación:'}
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {new Date(user.subscriptionEndDate).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </span>
+                  </div>
+
+                  {user.cancelAtPeriodEnd && (
+                    <p className="text-xs text-amber-700 mt-1">
+                      Tu suscripción se cancelará automáticamente al final del periodo actual.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

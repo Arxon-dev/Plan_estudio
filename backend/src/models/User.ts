@@ -16,6 +16,7 @@ interface UserAttributes {
   subscriptionStatus?: 'active' | 'canceled' | 'past_due' | 'trialing' | 'incomplete' | 'incomplete_expired' | 'unpaid' | 'paused' | null;
   subscriptionEndDate?: Date | null;
   hasUsedTrial?: boolean;
+  cancelAtPeriodEnd?: boolean;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
@@ -34,6 +35,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public subscriptionStatus!: 'active' | 'canceled' | 'past_due' | 'trialing' | 'incomplete' | 'incomplete_expired' | 'unpaid' | 'paused' | null;
   public subscriptionEndDate!: Date | null;
   public hasUsedTrial!: boolean;
+  public cancelAtPeriodEnd!: boolean;
 
   // Método para validar contraseña
   public async validatePassword(password: string): Promise<boolean> {
@@ -96,6 +98,11 @@ User.init(
       allowNull: true,
     },
     hasUsedTrial: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    cancelAtPeriodEnd: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,

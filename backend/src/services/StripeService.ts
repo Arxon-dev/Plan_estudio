@@ -152,6 +152,7 @@ export class StripeService {
 
         user.subscriptionStatus = subscription.status as any;
         user.subscriptionEndDate = new Date((subscription as any).current_period_end * 1000);
+        user.cancelAtPeriodEnd = subscription.cancel_at_period_end;
 
         if (subscription.status === 'active' || subscription.status === 'trialing') {
             user.isPremium = true;
