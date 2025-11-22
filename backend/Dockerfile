@@ -20,7 +20,7 @@ RUN npm run build
 RUN npm prune --production
 
 # Exponer puerto
-EXPOSE 3000
+EXPOSE 8080
 
 # Comando para iniciar
 CMD ["npm", "start"]

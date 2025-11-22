@@ -456,6 +456,20 @@ export const PremiumFeatures: React.FC = () => {
                   <span>Estadísticas Avanzadas</span>
                 </li>
               </ul>
+
+              {!isEligibleForTrial && user?.hasUsedTrial && (
+                <div className="bg-white/10 border border-yellow-300/50 rounded-lg p-4 mb-6 text-left backdrop-blur-sm">
+                  <div className="flex items-start gap-3">
+                    <span className="text-yellow-300 text-xl">⚠️</span>
+                    <div>
+                      <p className="font-bold text-yellow-300 text-sm">Periodo de prueba agotado</p>
+                      <p className="text-white/90 text-xs mt-1">
+                        Ya has utilizado tu prueba gratuita de 7 días anteriormente. Se aplicará el precio estándar.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={handleSubscribe}
                 disabled={isLoading}
