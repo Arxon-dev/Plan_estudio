@@ -29,6 +29,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
+
+      // Background refresh to ensure data is up to date (e.g. Premium status)
+      authService.getProfile()
+        .then(({ user: updatedUser }) => {
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          console.log('🔄 AuthContext - Perfil sincronizado en segundo plano');
+        })
+        .catch(err => console.error('⚠️ Error sincronizando perfil:', err));
     }
     setIsLoading(false);
   }, []);

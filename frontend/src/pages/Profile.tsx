@@ -116,7 +116,14 @@ export const Profile: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-              <p className="text-lg text-gray-900">{user?.firstName} {user?.lastName}</p>
+              <p className="text-lg text-gray-900 flex items-center gap-2">
+                {user?.firstName} {user?.lastName}
+                {user?.isPremium && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                    PREMIUM
+                  </span>
+                )}
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
