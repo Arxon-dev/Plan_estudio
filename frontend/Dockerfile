@@ -1,4 +1,4 @@
-# Dockerfile para Frontend
+# Dockerfile para Frontend - Updated 2025-11-22
 FROM node:18-alpine as build
 
 # Declarar ARG para recibir variables de build
