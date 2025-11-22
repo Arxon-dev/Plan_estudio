@@ -179,8 +179,8 @@ class TestController {
       // Iniciar test
       const result = await TestService.startTest({
         userId,
-        themeId,
-        themePart,  // Incluir parte del tema
+        themeId: themeId ? parseInt(themeId) : undefined,
+        themePart: themePart ? parseInt(themePart) : undefined,
         testType,
         questionCount,
         difficulty,

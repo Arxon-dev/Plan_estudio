@@ -34,11 +34,48 @@ const ImportQuestions: React.FC = () => {
   const [importType, setImportType] = useState<'single' | 'mixed'>('single');
   const [skipDuplicates, setSkipDuplicates] = useState<boolean>(true);
   const [overwriteExisting, setOverwriteExisting] = useState<boolean>(false);
-  
+
   const [preview, setPreview] = useState<PreviewData | null>(null);
   const [result, setResult] = useState<ImportResult | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      if (!droppedFile.name.endsWith('.gift') && !droppedFile.name.endsWith('.txt')) {
+        setError('Por favor sube un archivo válido (.gift o .txt)');
+        return;
+      }
+
+      setFile(droppedFile);
+      setError('');
+      setPreview(null);
+      setResult(null);
+
+      // Leer contenido del archivo
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content = event.target?.result as string;
+        setFileContent(content);
+      };
+      reader.readAsText(droppedFile);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -101,7 +138,7 @@ const ImportQuestions: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      
+
       let endpoint = '';
       let payload: any = { giftContent: fileContent };
 
@@ -207,7 +244,7 @@ const ImportQuestions: React.FC = () => {
                   placeholder="Ej: 1 (Constitución Española)"
                   min="1"
                 />
-                
+
                 {/* Tabla de IDs de Temas */}
                 <div className="mt-3 bg-blue-50 rounded-lg p-4 max-h-64 overflow-y-auto">
                   <p className="text-xs font-semibold text-blue-800 mb-2">🎯 IDs de Temas Principales:</p>
@@ -216,13 +253,40 @@ const ImportQuestions: React.FC = () => {
                       <span className="font-bold text-blue-600">1</span> - Constitución Española 1978
                     </div>
                     <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">2</span> - Ley Orgánica 5/2005, Defensa Nacional
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">3</span> - Ley 40/2015, Régimen Jurídico Sector Público
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">4</span> - RD 205/2024, Ministerio de Defensa
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">5</span> - RD 521/2020, Organización Básica FAS
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">6</span> - Instrucciones EMAD, ET, ARMADA y EA
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
                       <span className="font-bold text-blue-600">7</span> - Ley 8/2006 Tropa / Ley 39/2007 Carrera Militar
                     </div>
                     <div className="bg-white rounded px-2 py-1">
                       <span className="font-bold text-blue-600">8</span> - RD 96/2009 Reales Ordenanzas FAS
                     </div>
                     <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">9</span> - Ley Orgánica 9/2011, Derechos y Deberes FAS
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">10</span> - Ley Orgánica 8/2014, Régimen Disciplinario FAS
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">11</span> - RD 176/2014, Iniciativas y Quejas
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
                       <span className="font-bold text-blue-600">12</span> - Ley Orgánica 3/2007 Igualdad Efectiva
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">13</span> - Observatorio militar para la igualdad
                     </div>
                     <div className="bg-white rounded px-2 py-1">
                       <span className="font-bold text-blue-600">14</span> - Ley 39/2015 Procedimiento Administrativo
@@ -231,18 +295,60 @@ const ImportQuestions: React.FC = () => {
                       <span className="font-bold text-blue-600">15</span> - Ley 36/2015 Seguridad Nacional
                     </div>
                     <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">16</span> - PDC-01(B) Doctrina empleo FAS
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
                       <span className="font-bold text-blue-600">17</span> - ONU (Naciones Unidas)
                     </div>
                     <div className="bg-white rounded px-2 py-1">
                       <span className="font-bold text-blue-600">18</span> - OTAN (Tratado Atlántico Norte)
                     </div>
                     <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">19</span> - OSCE (Seguridad y Cooperación Europa)
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
                       <span className="font-bold text-blue-600">20</span> - UE (Unión Europea)
+                    </div>
+                    <div className="bg-white rounded px-2 py-1">
+                      <span className="font-bold text-blue-600">21</span> - Misiones Internacionales
                     </div>
                   </div>
                   <p className="text-xs text-gray-600 mt-2 italic">
                     📝 Lista completa en el manual (MANUAL_IMPORTADOR_GIFT.md)
                   </p>
+                </div>
+
+                {/* Información sobre Partes */}
+                <div className="mt-3 bg-yellow-50 rounded-lg p-4 border border-yellow-100">
+                  <p className="text-xs font-semibold text-yellow-800 mb-2">⚠️ Temas con Múltiples Partes:</p>
+                  <p className="text-xs text-yellow-700 mb-2">
+                    El sistema detecta automáticamente la parte por palabras clave o etiquetas (ej: # PARTE 1).
+                  </p>
+                  <div className="grid grid-cols-1 gap-2 text-xs">
+                    <div className="bg-white rounded px-2 py-1 border border-yellow-100">
+                      <span className="font-bold text-blue-600">ID 6</span>:
+                      <ul className="list-disc list-inside ml-2 text-gray-600">
+                        <li>Parte 1: EMAD (Instr. 55/2021)</li>
+                        <li>Parte 2: ET (Instr. 14/2021)</li>
+                        <li>Parte 3: ARMADA (Instr. 15/2021)</li>
+                        <li>Parte 4: EA (Instr. 6/2025)</li>
+                      </ul>
+                    </div>
+                    <div className="bg-white rounded px-2 py-1 border border-yellow-100">
+                      <span className="font-bold text-blue-600">ID 7</span>:
+                      <ul className="list-disc list-inside ml-2 text-gray-600">
+                        <li>Parte 1: Ley 8/2006 (Tropa)</li>
+                        <li>Parte 2: Ley 39/2007 (Carrera)</li>
+                      </ul>
+                    </div>
+                    <div className="bg-white rounded px-2 py-1 border border-yellow-100">
+                      <span className="font-bold text-blue-600">ID 15</span>:
+                      <ul className="list-disc list-inside ml-2 text-gray-600">
+                        <li>Parte 1: Ley 36/2015 (Seguridad)</li>
+                        <li>Parte 2: RD 1150/2021 (Estrategia)</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -280,7 +386,13 @@ const ImportQuestions: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Archivo GIFT
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition">
+              <div
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-500'
+                  }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
                 <input
                   type="file"
                   accept=".gift,.txt"
@@ -290,39 +402,41 @@ const ImportQuestions: React.FC = () => {
                 />
                 <label
                   htmlFor="file-upload"
-                  className="cursor-pointer inline-flex items-center gap-2"
+                  className="cursor-pointer inline-flex items-center gap-2 w-full justify-center h-full"
                 >
-                  <svg
-                    className="w-12 h-12 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                    />
-                  </svg>
-                  <div>
-                    <p className="text-sm text-gray-600">
-                      {file ? (
-                        <span className="text-blue-600 font-medium">
-                          {file.name} ({Math.round(file.size / 1024)} KB)
-                        </span>
-                      ) : (
-                        <>
+                  <div className="flex flex-col items-center">
+                    <svg
+                      className={`w-12 h-12 mb-2 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        {file ? (
                           <span className="text-blue-600 font-medium">
-                            Haz clic para subir
-                          </span>{' '}
-                          o arrastra el archivo aquí
-                        </>
-                      )}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Formatos: .gift, .txt
-                    </p>
+                            {file.name} ({Math.round(file.size / 1024)} KB)
+                          </span>
+                        ) : (
+                          <>
+                            <span className="text-blue-600 font-medium">
+                              Haz clic para subir
+                            </span>{' '}
+                            o arrastra el archivo aquí
+                          </>
+                        )}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Formatos: .gift, .txt
+                      </p>
+                    </div>
                   </div>
                 </label>
               </div>
@@ -367,7 +481,7 @@ const ImportQuestions: React.FC = () => {
             <h2 className="text-xl font-bold text-gray-800 mb-4">
               👁️ Vista Previa
             </h2>
-            
+
             <div className="bg-blue-50 rounded-lg p-4 mb-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -405,11 +519,10 @@ const ImportQuestions: React.FC = () => {
                       <div className="flex gap-4 text-xs text-gray-600">
                         <span>📝 {q.optionsCount} opciones</span>
                         <span>💡 {q.hasExplanation ? 'Con' : 'Sin'} explicación</span>
-                        <span className={`font-semibold ${
-                          q.difficulty === 'EASY' ? 'text-green-600' :
+                        <span className={`font-semibold ${q.difficulty === 'EASY' ? 'text-green-600' :
                           q.difficulty === 'HARD' ? 'text-red-600' :
-                          'text-yellow-600'
-                        }`}>
+                            'text-yellow-600'
+                          }`}>
                           {q.difficulty}
                         </span>
                       </div>
@@ -468,11 +581,10 @@ const ImportQuestions: React.FC = () => {
                     <p className="text-sm text-gray-700">
                       <span className="font-semibold">ID {q.id}:</span> {q.question}
                     </p>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      q.difficulty === 'EASY' ? 'bg-green-200 text-green-800' :
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${q.difficulty === 'EASY' ? 'bg-green-200 text-green-800' :
                       q.difficulty === 'HARD' ? 'bg-red-200 text-red-800' :
-                      'bg-yellow-200 text-yellow-800'
-                    }`}>
+                        'bg-yellow-200 text-yellow-800'
+                      }`}>
                       {q.difficulty}
                     </span>
                   </div>

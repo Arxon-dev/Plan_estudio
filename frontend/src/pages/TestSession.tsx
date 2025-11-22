@@ -75,6 +75,9 @@ const TestSession: React.FC = () => {
       setStartTime(Date.now());
     } catch (error: any) {
       console.error('Error al iniciar test:', error);
+      if (error.response) {
+        console.error('Detalles del error:', error.response.data);
+      }
       setAlertMessage({
         title: 'Error',
         message: error.response?.data?.message || 'Error al iniciar el test',
