@@ -23,6 +23,21 @@ export class PaymentController {
         }
     }
 
+    static async createPortalSession(req: Request, res: Response) {
+        try {
+            const userId = (req as any).user?.id;
+            if (!userId) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+
+            const sessionUrl = await StripeService.createPortalSession(userId);
+            res.json({ url: sessionUrl });
+        } catch (error: any) {
+            console.error('Error creating portal session:', error);
+            res.status(500).json({ message: error.message });
+        }
+    }
+
     static async handleWebhook(req: Request, res: Response) {
         const signature = req.headers['stripe-signature'] as string;
 

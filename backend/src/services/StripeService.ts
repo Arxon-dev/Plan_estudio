@@ -71,6 +71,23 @@ export class StripeService {
     }
 
     /**
+     * Create a portal session for customer to manage subscription
+     */
+    static async createPortalSession(userId: number): Promise<string> {
+        const user = await User.findByPk(userId);
+        if (!user || !user.stripeCustomerId) {
+            throw new Error('User has no associated Stripe customer');
+        }
+
+        const session = await stripe.billingPortal.sessions.create({
+            customer: user.stripeCustomerId,
+            return_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/profile`,
+        });
+
+        return session.url;
+    }
+
+    /**
      * Handle Stripe webhooks
      */
     static async handleWebhook(signature: string, payload: Buffer): Promise<void> {

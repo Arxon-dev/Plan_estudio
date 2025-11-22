@@ -27,6 +27,14 @@ export const PremiumFeatures: React.FC = () => {
     try {
       setIsLoading(true);
 
+      if (user?.isPremium) {
+        const { data } = await apiClient.post('/payments/portal');
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+
       if (!stripePromise) {
         throw new Error('La clave de Stripe no está configurada en el frontend.');
       }
@@ -104,7 +112,7 @@ export const PremiumFeatures: React.FC = () => {
                 disabled={isLoading}
                 className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Procesando...' : (isEligibleForTrial ? '🎁 Probar 7 Días GRATIS' : '🚀 Suscribirse Ahora')}
+                {isLoading ? 'Procesando...' : (user?.isPremium ? '⚙️ Gestionar Suscripción' : (isEligibleForTrial ? '🎁 Probar 7 Días GRATIS' : '🚀 Suscribirse Ahora'))}
                 {!isLoading && <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">→</span>}
               </button>
 
@@ -478,7 +486,7 @@ export const PremiumFeatures: React.FC = () => {
                   : 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300'
                   }`}
               >
-                {isLoading ? 'Procesando...' : (isEligibleForTrial ? 'Empezar Prueba de 7 Días' : '¡Quiero ser Premium!')}
+                {isLoading ? 'Procesando...' : (user?.isPremium ? '⚙️ Gestionar Suscripción' : (isEligibleForTrial ? 'Empezar Prueba de 7 Días' : '¡Quiero ser Premium!'))}
               </button>
             </div>
           </div>
@@ -489,7 +497,7 @@ export const PremiumFeatures: React.FC = () => {
               disabled={isLoading}
               className="inline-block px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Procesando...' : '🚀 Suscribirse Ahora'}
+              {isLoading ? 'Procesando...' : (user?.isPremium ? '⚙️ Gestionar Suscripción' : '🚀 Suscribirse Ahora')}
             </button>
           </div>
         </div>
@@ -510,7 +518,7 @@ export const PremiumFeatures: React.FC = () => {
               disabled={isLoading}
               className="px-10 py-5 bg-white text-blue-600 rounded-xl font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Procesando...' : 'Suscribirse Ahora'}
+              {isLoading ? 'Procesando...' : (user?.isPremium ? 'Gestionar Suscripción' : 'Suscribirse Ahora')}
             </button>
             <button
               onClick={() => navigate('/dashboard')}
