@@ -19,6 +19,7 @@ import { TelegramCommunity } from './pages/TelegramCommunity';
 import { AdminPanel } from './pages/AdminPanel';
 import ImportQuestions from './pages/ImportQuestions';
 import ManageQuestions from './pages/ManageQuestions';
+import GenerateQuestions from './pages/GenerateQuestions';
 import Tests from './pages/Tests';
 import TestSession from './pages/TestSession';
 import TestResults from './pages/TestResults';
@@ -160,6 +161,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ManageQuestions />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/generate-questions"
+              element={
+                <ProtectedRoute>
+                  <GenerateQuestions />
                 </ProtectedRoute>
               }
             />

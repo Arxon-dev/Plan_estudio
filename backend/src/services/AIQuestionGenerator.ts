@@ -18,7 +18,7 @@ class AIQuestionGenerator {
   constructor() {
     this.apiKey = process.env.Z_AI_API_KEY || '';
     this.apiUrl = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-    this.model = process.env.Z_AI_MODEL || 'glm-4-flash';
+    this.model = process.env.Z_AI_MODEL || 'glm-4.5';
   }
 
   /**
@@ -98,7 +98,7 @@ class AIQuestionGenerator {
     config?: { difficulty?: QuestionDifficulty }
   ): Promise<TestQuestion[]> {
     const questions: TestQuestion[] = [];
-    const difficulties = config?.difficulty 
+    const difficulties = config?.difficulty
       ? [this.mapLevelToDifficulty(config.difficulty)]
       : [3, 5, 8]; // EASY, MEDIUM, HARD
 
@@ -107,7 +107,7 @@ class AIQuestionGenerator {
       try {
         const question = await this.generateQuestion(themeId, difficulty);
         questions.push(question);
-        
+
         // Pequeña pausa para no saturar la API
         await this.sleep(1000);
       } catch (error) {
@@ -214,7 +214,7 @@ FORMATO DE RESPUESTA: JSON según estructura especificada`;
   private parseAndValidate(aiResponse: string): GeneratedQuestion {
     // Limpiar el texto para extraer solo el JSON
     let jsonText = aiResponse.trim();
-    
+
     // Buscar entre ```json y ``` si está presente
     const jsonMatch = jsonText.match(/```json\s*([\s\S]*?)\s*```/);
     if (jsonMatch) {
@@ -246,9 +246,9 @@ FORMATO DE RESPUESTA: JSON según estructura especificada`;
       errors.push('Debe tener exactamente 4 opciones');
     }
 
-    if (typeof parsed.correctAnswer !== 'number' || 
-        parsed.correctAnswer < 0 || 
-        parsed.correctAnswer > 3) {
+    if (typeof parsed.correctAnswer !== 'number' ||
+      parsed.correctAnswer < 0 ||
+      parsed.correctAnswer > 3) {
       errors.push('Respuesta correcta debe ser 0, 1, 2 o 3');
     }
 

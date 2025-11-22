@@ -361,6 +361,7 @@ class TestController {
         message: `Importación exitosa: ${result.imported} preguntas importadas, ${result.skipped} omitidas`,
         imported: result.imported,
         skipped: result.skipped,
+        skippedDetails: result.skippedDetails,
         errors: result.errors,
         questions: result.questions.map(q => ({
           id: q.id,
@@ -399,6 +400,7 @@ class TestController {
         message: `Importación exitosa: ${result.imported} preguntas importadas, ${result.skipped} omitidas`,
         imported: result.imported,
         skipped: result.skipped,
+        skippedDetails: result.skippedDetails,
         errors: result.errors,
       });
     } catch (error: any) {

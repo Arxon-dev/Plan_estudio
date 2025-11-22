@@ -6,6 +6,7 @@ interface ImportResult {
   imported: number;
   skipped: number;
   errors: string[];
+  skippedDetails?: Array<{ question: string; reason: string }>;
   questions: Array<{
     id: number;
     question: string;
@@ -571,6 +572,23 @@ const ImportQuestions: React.FC = () => {
                     <li key={i}>{err}</li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* Skipped Details */}
+            {result.skipped > 0 && result.skippedDetails && result.skippedDetails.length > 0 && (
+              <div className="bg-orange-50 rounded-lg p-4 mb-4">
+                <h3 className="font-semibold text-orange-800 mb-2">
+                  ⚠️ Preguntas Omitidas
+                </h3>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {result.skippedDetails.map((detail, i) => (
+                    <div key={i} className="text-sm text-orange-700 border-b border-orange-100 last:border-0 pb-2 last:pb-0">
+                      <p className="font-medium">{detail.reason}</p>
+                      <p className="text-xs opacity-80 truncate">{detail.question}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

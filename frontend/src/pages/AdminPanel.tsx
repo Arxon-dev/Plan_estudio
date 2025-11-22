@@ -150,6 +150,19 @@ export const AdminPanel: React.FC = () => {
             </button>
 
             <button
+              onClick={() => navigate('/admin/generate-questions')}
+              className="flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition shadow-md"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <div className="text-left">
+                <p className="font-semibold">🤖 Generar con IA</p>
+                <p className="text-xs text-indigo-100">Crear preguntas nuevas</p>
+              </div>
+            </button>
+
+            <button
               onClick={() => navigate('/tests')}
               className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition shadow-md"
             >

@@ -29,8 +29,8 @@ class AIAnalysisService {
 
   constructor() {
     this.apiKey = process.env.GEMINI_API_KEY || '';
-    this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
-    this.model = 'gemini-flash-latest';
+    this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent';
+    this.model = 'gemini-2.5-pro';
   }
 
   /**

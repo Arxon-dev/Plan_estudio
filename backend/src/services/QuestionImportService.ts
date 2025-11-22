@@ -9,6 +9,7 @@ interface ImportResult {
   imported: number;
   skipped: number;
   errors: string[];
+  skippedDetails: Array<{ question: string; reason: string }>;
   questions: TestQuestion[];
 }
 
@@ -31,6 +32,7 @@ class QuestionImportService {
       imported: 0,
       skipped: 0,
       errors: [],
+      skippedDetails: [],
       questions: [],
     };
 
@@ -70,7 +72,7 @@ class QuestionImportService {
     try {
       for (const parsed of parsedQuestions) {
         try {
-          const imported = await this.importSingleQuestion(
+          const { question: imported, skipReason } = await this.importSingleQuestion(
             parsed,
             options,
             transaction
@@ -81,6 +83,12 @@ class QuestionImportService {
             result.questions.push(imported);
           } else {
             result.skipped++;
+            if (skipReason) {
+              result.skippedDetails.push({
+                question: parsed.question.substring(0, 100),
+                reason: skipReason
+              });
+            }
           }
         } catch (error: any) {
           result.errors.push(
@@ -107,7 +115,7 @@ class QuestionImportService {
     parsed: ParsedQuestion,
     options: ImportOptions,
     transaction: Transaction
-  ): Promise<TestQuestion | null> {
+  ): Promise<{ question: TestQuestion | null; skipReason?: string }> {
     // Verificar duplicados si está habilitado
     if (options.skipDuplicates) {
       const existing = await TestQuestion.findOne({
@@ -122,7 +130,7 @@ class QuestionImportService {
         if (options.overwriteExisting) {
           await existing.destroy({ transaction });
         } else {
-          return null; // Saltar duplicado
+          return { question: null, skipReason: 'Pregunta duplicada' }; // Saltar duplicado
         }
       }
     }
@@ -177,7 +185,7 @@ class QuestionImportService {
       { transaction }
     );
 
-    return question;
+    return { question };
   }
 
   /**
@@ -190,6 +198,7 @@ class QuestionImportService {
       imported: 0,
       skipped: 0,
       errors: [],
+      skippedDetails: [],
       questions: [],
     };
 
@@ -249,14 +258,17 @@ class QuestionImportService {
           }
 
           if (!themeId) {
-            result.errors.push(
-              `No se pudo detectar tema para pregunta: "${parsed.question.substring(0, 50)}..."`
-            );
+            const reason = `No se pudo detectar tema para pregunta: "${parsed.question.substring(0, 50)}..."`;
+            result.errors.push(reason);
             result.skipped++;
+            result.skippedDetails.push({
+              question: parsed.question.substring(0, 100),
+              reason: "No se pudo detectar el tema"
+            });
             continue;
           }
 
-          const imported = await this.importSingleQuestion(
+          const { question: imported, skipReason } = await this.importSingleQuestion(
             parsed,
             { themeId, skipDuplicates: true },
             transaction
@@ -267,6 +279,12 @@ class QuestionImportService {
             result.questions.push(imported);
           } else {
             result.skipped++;
+            if (skipReason) {
+              result.skippedDetails.push({
+                question: parsed.question.substring(0, 100),
+                reason: skipReason
+              });
+            }
           }
         } catch (error: any) {
           result.errors.push(
