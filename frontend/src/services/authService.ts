@@ -24,6 +24,7 @@ export interface User {
   subscriptionStatus?: string;
   subscriptionEndDate?: string;
   hasUsedTrial?: boolean;
+  cancelAtPeriodEnd?: boolean;
 }
 
 export interface AuthResponse {
