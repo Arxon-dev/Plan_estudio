@@ -135,6 +135,35 @@ export const Profile: React.FC = () => {
                 {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('es-ES') : 'Fecha no disponible'}
               </p>
             </div>
+            {user?.isPremium && (
+              <div className="pt-2">
+                <button
+                  onClick={async () => {
+                    try {
+                      const response = await fetch(`${import.meta.env.VITE_API_URL}/payments/portal`, {
+                        method: 'POST',
+                        headers: {
+                          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                          'Content-Type': 'application/json'
+                        }
+                      });
+                      const data = await response.json();
+                      if (data.url) {
+                        window.location.href = data.url;
+                      } else {
+                        toast.error('Error al redirigir al portal de suscripción');
+                      }
+                    } catch (error) {
+                      console.error('Error accessing portal:', error);
+                      toast.error('Error al acceder al portal de suscripción');
+                    }
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                >
+                  <span>⚙️</span> Gestionar Suscripción
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
