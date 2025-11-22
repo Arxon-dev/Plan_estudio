@@ -23,21 +23,6 @@
    - Luego podrás subir el código manualmente
 
 #### 2️⃣ Configurar el Backend
-
-**A. Railway Config File:**
-- **NO** necesitas seleccionar ningún archivo especial
-- Railway detectará automáticamente el `Dockerfile` en la carpeta `backend/`
-
-**B. Root Directory:**
-- En la configuración del servicio, ve a **Settings**
-- En **Root Directory**, escribe: `backend`
-- Esto indica que el código del backend está en esa carpeta
-
-**C. Variables de Entorno:**
-Ve a la pestaña **Variables** y añade las siguientes:
-
-```
-NODE_ENV=production
 PORT=3000
 
 # Database (usa tus valores actuales)
@@ -123,8 +108,9 @@ VITE_STRIPE_PREMIUM_PRICE_ID=price_... (ID del precio en Stripe)
 **⚠️ IMPORTANTE:** Reemplaza `tu-app-backend.up.railway.app` con la URL real que Railway asignó a tu backend.
 
 **C. Builder:**
-- Railway detectará automáticamente el `Dockerfile` en `frontend/`
-- **NO** necesitas configurar nada adicional
+- **Dockerfile Path:** `Dockerfile` (Relativo al Root Directory, NO pongas `/frontend/Dockerfile`)
+- Railway detectará automáticamente el `Dockerfile` dentro de la carpeta `frontend/`
+
 
 **D. Configuración adicional:**
 - En **Settings** → **Networking** → asegúrate que el puerto es **80** (puerto de nginx)
