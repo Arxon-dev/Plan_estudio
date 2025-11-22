@@ -3,9 +3,11 @@ FROM node:18-alpine as build
 
 # Declarar ARG para recibir variables de build
 ARG VITE_API_URL
+ARG VITE_STRIPE_PUBLISHABLE_KEY
 
 # Convertir ARG a ENV para que esté disponible durante el build
 ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_STRIPE_PUBLISHABLE_KEY=$VITE_STRIPE_PUBLISHABLE_KEY
 
 WORKDIR /app
 
