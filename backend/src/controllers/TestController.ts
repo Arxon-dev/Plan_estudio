@@ -152,6 +152,7 @@ class TestController {
   async startTest(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.id;
+      console.log('🔵 [TEST CREATE] User:', userId, 'Request body:', req.body);
 
       const { themeId, themePart, testType, questionCount, difficulty } = req.body;
 
@@ -175,6 +176,53 @@ class TestController {
           message: 'Has alcanzado el límite mensual de tests gratuitos. Actualiza a Premium para tests ilimitados.'
         });
       }
+      // === VALIDACIÓN DE LÍMITE DIARIO ===
+      const user = req.user!;
+      const { Op } = require('sequelize');
+      const SettingsService = (await import('../services/SettingsService')).default;
+
+      // Obtener límites
+      const freeLimit = await SettingsService.get('TEST_DAILY_LIMIT_FREE', 10);
+      const premiumLimit = await SettingsService.get('TEST_DAILY_LIMIT_PREMIUM', 999);
+      const limit = user.isPremium ? premiumLimit : freeLimit;
+
+      // Contar tests de hoy
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const testsToday = await TestAttempt.count({
+        where: {
+          userId,
+          createdAt: {
+            [Op.gte]: today
+          }
+        }
+      });
+
+      console.log('=== VALIDACIÓN DE LÍMITE DE TESTS ===');
+      console.log('User ID:', userId);
+      console.log('User email:', user.email);
+      console.log('Is Premium:', user.isPremium);
+      console.log('Is Admin:', user.isAdmin);
+      console.log('Tests today:', testsToday);
+      console.log('Free limit:', freeLimit);
+      console.log('Premium limit:', premiumLimit);
+      console.log('Effective limit:', limit);
+      console.log('Should block:', testsToday >= limit);
+      console.log('=====================================');
+
+      // Validar (Admins bypass)
+      if (testsToday >= limit && !user.isAdmin) {
+        return res.status(403).json({
+          message: user.isPremium
+            ? `Has alcanzado el límite diario de ${limit} tests`
+            : "Has alcanzado el límite diario de tests gratuitos. Actualiza a Premium para tests ilimitados",
+          testsToday,
+          limit,
+          isPremium: user.isPremium
+        });
+      }
+      // ===================================
 
       // Iniciar test
       const result = await TestService.startTest({
@@ -186,6 +234,7 @@ class TestController {
         difficulty,
       });
 
+      console.log('✅ [TEST CREATED] Test ID:', result.attemptId);
       return res.json(result);
     } catch (error: any) {
       console.error('Error en startTest:', error);
@@ -306,10 +355,31 @@ class TestController {
   async getStats(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.id;
+      const user = req.user!;
+      const { Op } = require('sequelize');
+      const SettingsService = (await import('../services/SettingsService')).default;
 
       const stats = await UserTestStats.findOne({
         where: { userId },
       });
+
+      // Calcular tests de hoy
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const testsToday = await TestAttempt.count({
+        where: {
+          userId,
+          createdAt: {
+            [Op.gte]: today
+          }
+        }
+      });
+
+      // Obtener límite
+      const freeLimit = await SettingsService.get('TEST_DAILY_LIMIT_FREE', 10);
+      const premiumLimit = await SettingsService.get('TEST_DAILY_LIMIT_PREMIUM', 999);
+      const dailyLimit = user.isPremium ? premiumLimit : freeLimit;
 
       if (!stats) {
         return res.json({
@@ -322,10 +392,16 @@ class TestController {
           examReadinessScore: 0,
           averageTestSpeed: 0,
           consistencyScore: 0,
+          testsToday,
+          dailyLimit
         });
       }
 
-      return res.json(stats);
+      return res.json({
+        ...stats.toJSON(),
+        testsToday,
+        dailyLimit
+      });
     } catch (error) {
       console.error('Error en getStats:', error);
       return res.status(500).json({ message: 'Error al obtener estadísticas' });

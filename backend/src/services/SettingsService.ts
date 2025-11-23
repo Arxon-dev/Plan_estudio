@@ -10,6 +10,18 @@ class SettingsService {
     // Definiciones por defecto con metadatos
     private readonly DEFINITIONS: Record<string, { value: any, category: string, description: string, type: 'string' | 'number' | 'boolean' | 'json' }> = {
         // Límites
+        'TEST_DAILY_LIMIT_FREE': {
+            value: 10,
+            category: 'limits',
+            description: 'Límite de tests diarios para usuarios gratuitos',
+            type: 'number'
+        },
+        'TEST_DAILY_LIMIT_PREMIUM': {
+            value: 999,
+            category: 'limits',
+            description: 'Límite de tests diarios para usuarios Premium',
+            type: 'number'
+        },
         'TEST_MONTHLY_LIMIT_FREE': {
             value: 10,
             category: 'limits',

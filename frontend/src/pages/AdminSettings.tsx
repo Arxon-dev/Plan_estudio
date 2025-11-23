@@ -26,8 +26,10 @@ const SETTING_LABELS: Record<string, string> = {
     'ANNOUNCEMENT_BANNER': 'Banner de Anuncios',
 
     // Límites
-    'TEST_MONTHLY_LIMIT_FREE': 'Límite Diario de Tests (Gratuito)',
-    'TEST_MONTHLY_LIMIT_PREMIUM': 'Límite Diario de Tests (Premium)',
+    'TEST_DAILY_LIMIT_FREE': 'Límite Diario de Tests (Gratuito)',
+    'TEST_DAILY_LIMIT_PREMIUM': 'Límite Diario de Tests (Premium)',
+    'TEST_MONTHLY_LIMIT_FREE': 'Límite Mensual de Tests (Gratuito)',
+    'TEST_MONTHLY_LIMIT_PREMIUM': 'Límite Mensual de Tests (Premium)',
     'TEST_TIME_LIMIT': 'Tiempo por Test (minutos)',
     'TEST_QUESTIONS_LIMIT': 'Preguntas por Test',
     'TEST_PASS_THRESHOLD': 'Nota de Corte para Aprobar (%)',
@@ -41,7 +43,9 @@ const SETTING_LABELS: Record<string, string> = {
 };
 
 const HELP_TEXTS: Record<string, string> = {
-    'TEST_MONTHLY_LIMIT_FREE': 'Tests diarios para usuarios gratuitos (ej: 3)',
+    'TEST_DAILY_LIMIT_FREE': 'Tests diarios para usuarios gratuitos (ej: 10)',
+    'TEST_DAILY_LIMIT_PREMIUM': 'Para Premium (999 = ilimitado)',
+    'TEST_MONTHLY_LIMIT_FREE': 'Tests mensuales para usuarios gratuitos (ej: 30)',
     'TEST_MONTHLY_LIMIT_PREMIUM': 'Para Premium (999 = ilimitado)',
     'TEST_TIME_LIMIT': 'Minutos máximos (0 = sin límite)',
     'TEST_QUESTIONS_LIMIT': 'Cantidad en cada test generado (ej: 20)',

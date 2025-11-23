@@ -12,6 +12,8 @@ interface TestStats {
   globalSuccessRate: number;
   examReadinessScore: number;
   monthlyPracticeTests: number;
+  testsToday?: number;
+  dailyLimit?: number;
 }
 
 interface ThemeProgress {
@@ -309,6 +311,49 @@ const Tests: React.FC = () => {
       </Header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Aviso de Límite Diario */}
+        {stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && (
+          <div className={`mb-6 p-4 rounded-xl border ${!user?.isPremium && stats.testsToday >= stats.dailyLimit
+              ? 'bg-red-50 border-red-200'
+              : 'bg-blue-50 border-blue-200'
+            }`}>
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-full ${!user?.isPremium && stats.testsToday >= stats.dailyLimit
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-blue-100 text-blue-600'
+                  }`}>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className={`font-bold ${!user?.isPremium && stats.testsToday >= stats.dailyLimit
+                      ? 'text-red-800'
+                      : 'text-blue-900'
+                    }`}>
+                    Tests realizados hoy: {stats.testsToday} / {stats.dailyLimit}
+                  </h3>
+                  {!user?.isPremium && stats.testsToday >= stats.dailyLimit && (
+                    <p className="text-sm text-red-600 mt-1">
+                      Has alcanzado tu límite diario gratuito.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {!user?.isPremium && stats.testsToday >= stats.dailyLimit && (
+                <button
+                  onClick={() => navigate('/premium')}
+                  className="px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-lg hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+                >
+                  ⭐ Actualizar a Premium
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Dashboard Premium (Nuevo) */}
         <div id="premium-dashboard">
           <PremiumAnalysisDashboard isPremium={!!user?.isPremium} />
@@ -450,9 +495,16 @@ const Tests: React.FC = () => {
 
               <button
                 onClick={() => startTest(theme.themeId, theme.part, theme.name)}
-                className="w-full py-2 bg-white border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-colors"
+                disabled={!user?.isPremium && stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && stats.testsToday >= stats.dailyLimit}
+                className={`w-full py-2 border-2 font-bold rounded-lg transition-colors ${!user?.isPremium && stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && stats.testsToday >= stats.dailyLimit
+                    ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-white border-blue-600 text-blue-600 hover:bg-blue-50'
+                  }`}
               >
-                Iniciar Test
+                {(!user?.isPremium && stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && stats.testsToday >= stats.dailyLimit)
+                  ? 'Límite Diario Alcanzado'
+                  : 'Iniciar Test'
+                }
               </button>
             </div>
           ))}

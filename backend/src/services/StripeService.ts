@@ -65,9 +65,24 @@ export class StripeService {
             };
         }
 
-        const session = await stripe.checkout.sessions.create(sessionConfig);
+        try {
+            const session = await stripe.checkout.sessions.create(sessionConfig);
+            return session.url || '';
+        } catch (error: any) {
+            // If customer is missing/deleted in Stripe but exists in DB, recreate it
+            if (error.code === 'resource_missing' && error.param === 'customer') {
+                console.log('⚠️ Stripe customer missing, recreating...');
+                customerId = await this.createCustomer(user.email, `${user.firstName} ${user.lastName}`);
+                user.stripeCustomerId = customerId;
+                await user.save();
 
-        return session.url || '';
+                // Update config with new customer ID
+                sessionConfig.customer = customerId;
+                const session = await stripe.checkout.sessions.create(sessionConfig);
+                return session.url || '';
+            }
+            throw error;
+        }
     }
 
     /**
@@ -79,12 +94,28 @@ export class StripeService {
             throw new Error('User has no associated Stripe customer');
         }
 
-        const session = await stripe.billingPortal.sessions.create({
-            customer: user.stripeCustomerId,
-            return_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/profile`,
-        });
+        try {
+            const session = await stripe.billingPortal.sessions.create({
+                customer: user.stripeCustomerId,
+                return_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/profile`,
+            });
+            return session.url;
+        } catch (error: any) {
+            if (error.code === 'resource_missing' && error.param === 'customer') {
+                console.log('⚠️ Stripe customer missing in portal session, recreating...');
+                const customerId = await this.createCustomer(user.email, `${user.firstName} ${user.lastName}`);
+                user.stripeCustomerId = customerId;
+                await user.save();
 
-        return session.url;
+                // Retry with new customer ID
+                const session = await stripe.billingPortal.sessions.create({
+                    customer: customerId,
+                    return_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/profile`,
+                });
+                return session.url;
+            }
+            throw error;
+        }
     }
 
     /**

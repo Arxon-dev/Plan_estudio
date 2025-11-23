@@ -359,7 +359,7 @@ export class SessionController {
         const weekly = (plan as any).weeklySchedule as WeeklySchedule;
         const examDay = new Date((plan as any).examDate);
         const bufferEnd = addDays(examDay, -1);
-        
+
         // Buscar el siguiente día disponible con capacidad
         const nextDay = await this.findNextAvailableDay(
           session.studyPlanId,
@@ -469,7 +469,7 @@ export class SessionController {
         const sameThemeSessions = sessionsInDay.filter(
           (sess: any) => sess.themeId === themeId
         );
-        
+
         if (sameThemeSessions.length < 2) {
           // Día válido encontrado
           return new Date(currentDate);
@@ -549,6 +549,7 @@ export class SessionController {
           scheduledDate: new Date(session.scheduledDate),
           scheduledHours: session.scheduledHours,
           status: SessionStatus.PENDING,
+          sessionType: session.sessionType || 'STUDY'
         }))
       );
 
@@ -583,7 +584,7 @@ export class SessionController {
       const today = new Date();
       await StudyPlanService.rebalanceFromDate(Number(planId), today);
 
-      res.json({ 
+      res.json({
         message: 'Calendario rebalanceado exitosamente',
         messageDetail: 'Las sesiones se han redistribuido para optimizar el uso del tiempo'
       });

@@ -45,10 +45,23 @@ const TestSession: React.FC = () => {
     localStorage.setItem('test_auto_advance', JSON.stringify(autoAdvance));
   }, [autoAdvance]);
 
+  // Ref para prevenir doble ejecución en StrictMode
+  const startingRef = React.useRef(false);
+
   const startTest = async () => {
+    // Prevenir doble ejecución
+    if (startingRef.current) {
+      console.log('🟡 [FRONTEND] Test start blocked (already starting)');
+      return;
+    }
+
     try {
+      startingRef.current = true;
+      console.log('🟢 [FRONTEND] Iniciando test...');
+
       // Si ya tenemos los datos del test (ej. test de debilidades), usarlos directamente
       if (initialAttemptId && initialQuestions) {
+        console.log('🟢 [FRONTEND] Usando datos iniciales:', initialAttemptId);
         setAttemptId(initialAttemptId);
         setQuestions(initialQuestions);
         setStartTime(Date.now());
@@ -70,6 +83,7 @@ const TestSession: React.FC = () => {
         }
       );
 
+      console.log('✅ [FRONTEND] Test iniciado:', response.data);
       setAttemptId(response.data.attemptId);
       setQuestions(response.data.questions);
       setStartTime(Date.now());
@@ -78,14 +92,21 @@ const TestSession: React.FC = () => {
       if (error.response) {
         console.error('Detalles del error:', error.response.data);
       }
+
+      const errorMessage = error.response?.data?.message || 'Error al iniciar el test';
+      const isLimitError = error.response?.status === 403;
+
       setAlertMessage({
-        title: 'Error',
-        message: error.response?.data?.message || 'Error al iniciar el test',
+        title: isLimitError ? 'Límite alcanzado' : 'Error',
+        message: errorMessage,
         type: 'error'
       });
-      navigate('/tests');
+
+      // Si es error de límite, redirigir después de cerrar el modal
+      // (Esto se maneja en el botón "Entendido" del modal)
     } finally {
       setLoading(false);
+      startingRef.current = false;
     }
   };
 
@@ -628,7 +649,13 @@ const TestSession: React.FC = () => {
               </p>
 
               <button
-                onClick={() => setAlertMessage(null)}
+                onClick={() => {
+                  setAlertMessage(null);
+                  // Si el mensaje indica límite alcanzado o error crítico, volver a tests
+                  if (alertMessage.type === 'error') {
+                    navigate('/tests');
+                  }
+                }}
                 className={`w-full px-4 py-3 text-white rounded-lg font-medium transition-colors ${alertMessage.type === 'error'
                   ? 'bg-red-600 hover:bg-red-700'
                   : 'bg-blue-600 hover:bg-blue-700'
