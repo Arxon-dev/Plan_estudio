@@ -1,6 +1,7 @@
 import axios from 'axios';
 import TestQuestion, { QuestionDifficulty, QuestionSource } from '../models/TestQuestion';
 import Theme from '../models/Theme';
+import SettingsService from './SettingsService';
 
 interface GeneratedQuestion {
   question: string;
@@ -11,27 +12,22 @@ interface GeneratedQuestion {
 }
 
 class AIQuestionGenerator {
-  private apiKey: string;
-  private apiUrl: string;
-  private model: string;
-
-  constructor() {
-    this.apiKey = process.env.Z_AI_API_KEY || '';
-    this.apiUrl = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-    this.model = process.env.Z_AI_MODEL || 'glm-4.5';
-  }
 
   /**
-   * Generar una pregunta de test con IA
+   * Generar una pregunta de test con IA usando el proveedor activo
    */
   async generateQuestion(themeId: number, difficulty: number): Promise<TestQuestion> {
-    if (!this.apiKey) {
-      throw new Error('API key de Z.AI no configurada');
-    }
-
     const theme = await Theme.findByPk(themeId);
     if (!theme) {
       throw new Error('Tema no encontrado');
+    }
+
+    // Obtener configuración
+    const provider = await SettingsService.getAIProvider();
+    const { apiKey, model } = await SettingsService.getAIConfig(provider);
+
+    if (!apiKey) {
+      throw new Error(`API Key no configurada para el proveedor ${provider}`);
     }
 
     // Obtener preguntas existentes para evitar duplicados
@@ -41,30 +37,30 @@ class AIQuestionGenerator {
       limit: 50,
     });
 
-    const systemPrompt = this.buildSystemPrompt();
+    const systemPrompt = await SettingsService.get('AI_SYSTEM_PROMPT', this.buildSystemPrompt());
+    const creativity = await SettingsService.get('AI_CREATIVITY', 0.7);
     const userPrompt = this.buildUserPrompt(theme, difficulty, existingQuestions);
 
-    try {
-      const response = await axios.post(
-        this.apiUrl,
-        {
-          model: this.model,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt },
-          ],
-          temperature: 0.7,
-          top_p: 0.9,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+    let generatedText = '';
 
-      const generatedText = response.data.choices[0].message.content;
+    try {
+      switch (provider) {
+        case 'openai':
+        case 'deepseek':
+        case 'perplexity':
+        case 'glm': // Zhipu AI usa formato compatible con OpenAI
+          generatedText = await this.callOpenAICompatible(provider, apiKey, model, systemPrompt, userPrompt, creativity);
+          break;
+        case 'claude':
+          generatedText = await this.callClaude(apiKey, model, systemPrompt, userPrompt, creativity);
+          break;
+        case 'gemini':
+          generatedText = await this.callGemini(apiKey, model, systemPrompt, userPrompt, creativity);
+          break;
+        default:
+          throw new Error(`Proveedor de IA no soportado: ${provider}`);
+      }
+
       const parsed = this.parseAndValidate(generatedText);
 
       // Crear pregunta en la BD
@@ -76,7 +72,7 @@ class AIQuestionGenerator {
         explanation: parsed.explanation,
         difficulty: this.mapDifficultyToLevel(difficulty),
         source: QuestionSource.AI_GENERATED,
-        aiModel: this.model,
+        aiModel: `${provider}:${model}`,
         usageCount: 0,
         successRate: 0,
         tags: parsed.tags,
@@ -84,9 +80,117 @@ class AIQuestionGenerator {
 
       return question;
     } catch (error: any) {
-      console.error('Error al generar pregunta con IA:', error.response?.data || error.message);
-      throw new Error('Error al generar pregunta con IA');
+      console.error(`Error al generar pregunta con ${provider}:`, error.response?.data || error.message);
+      throw new Error(`Error al generar pregunta con IA (${provider}): ${error.message}`);
     }
+  }
+
+  /**
+   * Llamada genérica a APIs compatibles con OpenAI (OpenAI, DeepSeek, GLM, Perplexity)
+   */
+  private async callOpenAICompatible(
+    provider: string,
+    apiKey: string,
+    model: string,
+    systemPrompt: string,
+    userPrompt: string,
+    temperature: number
+  ): Promise<string> {
+    let apiUrl = 'https://api.openai.com/v1/chat/completions';
+
+    if (provider === 'deepseek') apiUrl = 'https://api.deepseek.com/chat/completions';
+    if (provider === 'glm') apiUrl = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+    if (provider === 'perplexity') apiUrl = 'https://api.perplexity.ai/chat/completions';
+
+    const response = await axios.post(
+      apiUrl,
+      {
+        model: model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: temperature,
+        // Perplexity y algunos modelos requieren max_tokens o tienen límites específicos
+        ...(provider === 'perplexity' ? { return_citations: false } : {})
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response.data.choices[0].message.content;
+  }
+
+  /**
+   * Llamada a API de Anthropic (Claude)
+   */
+  private async callClaude(
+    apiKey: string,
+    model: string,
+    systemPrompt: string,
+    userPrompt: string,
+    temperature: number
+  ): Promise<string> {
+    const response = await axios.post(
+      'https://api.anthropic.com/v1/messages',
+      {
+        model: model,
+        system: systemPrompt,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: temperature,
+        max_tokens: 4000
+      },
+      {
+        headers: {
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response.data.content[0].text;
+  }
+
+  /**
+   * Llamada a API de Google Gemini
+   */
+  private async callGemini(
+    apiKey: string,
+    model: string,
+    systemPrompt: string,
+    userPrompt: string,
+    temperature: number
+  ): Promise<string> {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const response = await axios.post(
+      url,
+      {
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] // Gemini no tiene rol 'system' separado en la API básica
+          }
+        ],
+        generationConfig: {
+          temperature: temperature,
+        }
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response.data.candidates[0].content.parts[0].text;
   }
 
   /**
@@ -97,6 +201,13 @@ class AIQuestionGenerator {
     count: number,
     config?: { difficulty?: QuestionDifficulty }
   ): Promise<TestQuestion[]> {
+
+    // Verificar límite global
+    const maxQuestions = await SettingsService.get('AI_QUESTIONS_LIMIT', 50);
+    if (count > maxQuestions) {
+      throw new Error(`No se pueden generar más de ${maxQuestions} preguntas a la vez.`);
+    }
+
     const questions: TestQuestion[] = [];
     const difficulties = config?.difficulty
       ? [this.mapLevelToDifficulty(config.difficulty)]
@@ -258,6 +369,10 @@ FORMATO DE RESPUESTA: JSON según estructura especificada`;
 
     if (parsed.options && new Set(parsed.options).size !== 4) {
       errors.push('Las opciones deben ser diferentes entre sí');
+    }
+
+    if (parsed.options.some((opt: string) => !opt || opt.trim().length === 0)) {
+      errors.push('Las opciones no pueden estar vacías');
     }
 
     if (!Array.isArray(parsed.tags)) {

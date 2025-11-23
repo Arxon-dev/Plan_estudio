@@ -1,5 +1,6 @@
 import User from './User';
 import Theme from './Theme';
+import Block from './Block';
 import StudyPlan from './StudyPlan';
 import WeeklySchedule from './WeeklySchedule';
 import StudySession from './StudySession';
@@ -10,11 +11,16 @@ import TestAttempt from './TestAttempt';
 import ThemeProgress from './ThemeProgress';
 import UserTestStats from './UserTestStats';
 import AITestSession from './AITestSession';
+import SubscriptionPlan from './SubscriptionPlan';
+import MarketingSection from './MarketingSection';
+import Announcement from './Announcement';
+import SystemLog from './SystemLog';
 
 // Exportar todos los modelos
 export {
   User,
   Theme,
+  Block,
   StudyPlan,
   WeeklySchedule,
   StudySession,
@@ -25,6 +31,10 @@ export {
   ThemeProgress,
   UserTestStats,
   AITestSession,
+  SubscriptionPlan,
+  MarketingSection,
+  Announcement,
+  SystemLog,
 };
 
 // Exportar enums

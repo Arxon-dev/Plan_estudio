@@ -17,6 +17,9 @@ interface UserAttributes {
   subscriptionEndDate?: Date | null;
   hasUsedTrial?: boolean;
   cancelAtPeriodEnd?: boolean;
+  adminNotes?: string | null;
+  isBanned?: boolean;
+  banReason?: string | null;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
@@ -36,6 +39,9 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public subscriptionEndDate!: Date | null;
   public hasUsedTrial!: boolean;
   public cancelAtPeriodEnd!: boolean;
+  public adminNotes!: string | null;
+  public isBanned!: boolean;
+  public banReason!: string | null;
 
   // Método para validar contraseña
   public async validatePassword(password: string): Promise<boolean> {
@@ -106,6 +112,19 @@ User.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    adminNotes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    isBanned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    banReason: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

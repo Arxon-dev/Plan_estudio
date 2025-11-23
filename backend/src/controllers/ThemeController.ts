@@ -79,18 +79,26 @@ export class ThemeController {
   // Obtener temas agrupados por bloque
   static async getThemesByBlock(req: Request, res: Response): Promise<void> {
     try {
+      const { Block } = await import('@models/index'); // Dynamic import to avoid circular deps if any
+
       const themes = await Theme.findAll({
+        include: [{ model: Block, as: 'blockData' }],
         order: [
-          ['block', 'ASC'],
+          ['blockData', 'order', 'ASC'],
           ['themeNumber', 'ASC'],
         ],
       });
 
-      const themesByBlock = {
-        [ThemeBlock.ORGANIZACION]: themes.filter(t => t.block === ThemeBlock.ORGANIZACION),
-        [ThemeBlock.JURIDICO_SOCIAL]: themes.filter(t => t.block === ThemeBlock.JURIDICO_SOCIAL),
-        [ThemeBlock.SEGURIDAD_NACIONAL]: themes.filter(t => t.block === ThemeBlock.SEGURIDAD_NACIONAL),
-      };
+      // Group by block code to maintain backward compatibility
+      const themesByBlock: any = {};
+
+      themes.forEach((theme: any) => {
+        const blockCode = theme.blockData?.code || theme.block; // Fallback to legacy block column
+        if (!themesByBlock[blockCode]) {
+          themesByBlock[blockCode] = [];
+        }
+        themesByBlock[blockCode].push(theme);
+      });
 
       res.json({ themesByBlock });
     } catch (error) {
@@ -103,7 +111,7 @@ export class ThemeController {
   static async updateThemesComplexity(req: Request, res: Response): Promise<void> {
     try {
       const { ThemeComplexity } = await import('../models/Theme');
-      
+
       // Datos de complejidad por bloque y número de tema
       const complexityData = {
         [ThemeBlock.ORGANIZACION]: {

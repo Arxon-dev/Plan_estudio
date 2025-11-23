@@ -4,6 +4,7 @@ import ThemeProgress, { ThemeLevel } from '../models/ThemeProgress';
 import UserTestStats from '../models/UserTestStats';
 import User from '../models/User';
 import Theme from '../models/Theme';
+import SettingsService from './SettingsService';
 import { Op, fn, col, literal } from 'sequelize';
 
 interface StartTestOptions {
@@ -573,17 +574,25 @@ class TestService {
       return true;
     }
 
+    // Obtener usuario para verificar rol
+    const user = await User.findByPk(userId);
+    if (!user) return false;
+
+    // Admins y Premium no tienen límites
+    if (user.isAdmin || user.isPremium) {
+      return true;
+    }
+
     const stats = await UserTestStats.findOne({
       where: { userId },
     });
 
     if (!stats) return true;
 
-    // TODO: Verificar si es usuario premium (cuando implementemos pagos)
-    // Por ahora, limitar a 10 tests/mes para todos
-    const MONTHLY_LIMIT = 10;
+    // Obtener límite desde configuración (default: 10)
+    const monthlyLimit = await SettingsService.get('TEST_MONTHLY_LIMIT_FREE', 10);
 
-    return stats.monthlyPracticeTests < MONTHLY_LIMIT;
+    return stats.monthlyPracticeTests < monthlyLimit;
   }
 
   /**

@@ -37,6 +37,14 @@ apiClient.interceptors.response.use(
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
+
+    if (error.response?.status === 503 && error.response?.data?.maintenance) {
+      // Evitar redirección si ya estamos en la página de mantenimiento
+      if (window.location.pathname !== '/maintenance') {
+        window.location.href = '/maintenance';
+      }
+    }
+
     return Promise.reject(error);
   }
 );

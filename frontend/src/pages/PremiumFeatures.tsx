@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import apiClient from '../services/api';
@@ -16,14 +16,48 @@ if (!STRIPE_KEY) {
 
 const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
+interface SubscriptionPlan {
+  id: number;
+  name: string;
+  price: number;
+  features: string[];
+  isFeatured: boolean;
+  isActive: boolean;
+  buttonText: string;
+  stripePriceId?: string;
+}
+
+interface MarketingData {
+  plans: SubscriptionPlan[];
+  sections: Record<string, any>;
+}
+
 export const PremiumFeatures: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<MarketingData | null>(null);
+  const [loadingData, setLoadingData] = useState(true);
 
   const isEligibleForTrial = !user?.isPremium && !user?.hasUsedTrial;
 
-  const handleSubscribe = async () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await apiClient.get('/marketing/pricing');
+      setData(response.data);
+    } catch (error) {
+      console.error('Error loading pricing data:', error);
+      toast.error('Error al cargar la información de precios');
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const handleSubscribe = async (priceId?: string) => {
     try {
       setIsLoading(true);
 
@@ -42,18 +76,34 @@ export const PremiumFeatures: React.FC = () => {
       const stripe = await stripePromise;
       if (!stripe) throw new Error('Stripe failed to load');
 
-      // Create checkout session
-      const priceId = import.meta.env.VITE_STRIPE_PREMIUM_PRICE_ID;
-      if (!priceId) {
-        throw new Error('El ID del precio no está configurado (VITE_STRIPE_PREMIUM_PRICE_ID)');
+      // Use the provided priceId or fallback to env var (legacy support)
+      // Use the provided priceId or fallback to env var (legacy support)
+      let finalPriceId = priceId || import.meta.env.VITE_STRIPE_PREMIUM_PRICE_ID;
+
+      // If still no ID, try to find the featured plan from loaded data
+      if (!finalPriceId && data?.plans) {
+        const featuredPlan = data.plans.find((p: SubscriptionPlan) => p.isFeatured && p.price > 0 && p.stripePriceId);
+        if (featuredPlan) {
+          finalPriceId = featuredPlan.stripePriceId as string;
+        } else {
+          // Fallback to first paid plan
+          const firstPaidPlan = data.plans.find((p: SubscriptionPlan) => p.price > 0 && p.stripePriceId);
+          if (firstPaidPlan) {
+            finalPriceId = firstPaidPlan.stripePriceId as string;
+          }
+        }
       }
 
-      const { data } = await apiClient.post('/payments/checkout', {
-        priceId
+      if (!finalPriceId) {
+        throw new Error('El ID del precio no está configurado. Por favor, contacta con soporte.');
+      }
+
+      const { data: checkoutData } = await apiClient.post('/payments/checkout', {
+        priceId: finalPriceId
       });
 
       // Redirect to checkout
-      window.location.href = data.url;
+      window.location.href = checkoutData.url;
     } catch (error: any) {
       console.error('Error:', error);
       toast.error(error.message || 'Error al iniciar el pago. Por favor, inténtalo de nuevo.');
@@ -61,6 +111,19 @@ export const PremiumFeatures: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  if (loadingData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  const { sections, plans } = data || { sections: {}, plans: [] };
+  const hero = sections.hero || {};
+  const featuresIntro = sections.features_intro || {};
+  const finalCta = sections.final_cta || {};
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -83,36 +146,37 @@ export const PremiumFeatures: React.FC = () => {
 
           <div className="max-w-4xl mx-auto text-center space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
-              <span className="text-xl">✨</span>
-              Convocatoria 2026 - Preparación Permanencia FAS
-            </div>
+            {hero.badge && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+                <span className="text-xl">✨</span>
+                {hero.badge}
+              </div>
+            )}
 
             {/* Main Headline */}
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
               <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Tu Plaza de Permanencia
+                {hero.title?.split(' ').slice(0, -2).join(' ')}
               </span>
               <br />
               <span className="text-slate-900">
-                Comienza Aquí
+                {hero.title?.split(' ').slice(-2).join(' ')}
               </span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              La plataforma de preparación más avanzada para la Permanencia en las Fuerzas Armadas.
-              <span className="font-semibold text-slate-900"> Tecnología IA + Sistema comprobado = Tu éxito garantizado</span>
+              {hero.subtitle}
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
               <button
-                onClick={handleSubscribe}
+                onClick={() => handleSubscribe()}
                 disabled={isLoading}
                 className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Procesando...' : (user?.isPremium ? '⚙️ Gestionar Suscripción' : (isEligibleForTrial ? '🎁 Probar 7 Días GRATIS' : '🚀 Suscribirse Ahora'))}
+                {isLoading ? 'Procesando...' : (user?.isPremium ? '⚙️ Gestionar Suscripción' : (isEligibleForTrial ? '🎁 Probar 7 Días GRATIS' : (hero.ctaPrimary || 'Suscribirse Ahora')))}
                 {!isLoading && <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">→</span>}
               </button>
 
@@ -120,7 +184,7 @@ export const PremiumFeatures: React.FC = () => {
                 href="#caracteristicas"
                 className="px-8 py-4 bg-white border-2 border-slate-300 text-slate-700 rounded-xl font-bold text-lg hover:border-blue-500 hover:text-blue-600 transition-all duration-300"
               >
-                Ver Características
+                {hero.ctaSecondary || 'Ver Características'}
               </a>
             </div>
 
@@ -148,10 +212,10 @@ export const PremiumFeatures: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-              ¿Por qué OpoMelilla?
+              {featuresIntro.title || '¿Por qué OpoMelilla?'}
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              La plataforma más completa con tecnología de vanguardia para tu éxito
+              {featuresIntro.subtitle || 'La plataforma más completa con tecnología de vanguardia para tu éxito'}
             </p>
           </div>
 
@@ -225,154 +289,6 @@ export const PremiumFeatures: React.FC = () => {
         </div>
       </section>
 
-      {/* Premium Features Detailed Explanation */}
-      <section className="py-20 bg-gradient-to-b from-white to-slate-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-              ¿Qué Incluye Premium?
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Descubre en detalle cómo cada funcionalidad te ayudará a conseguir tu plaza
-            </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto space-y-8">
-            {/* Feature 1: Tests Enfocados en Debilidades */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-600">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">
-                  🎯
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Tests Enfocados en Debilidades</h3>
-                  <p className="text-slate-600 mb-4">
-                    El sistema analiza automáticamente tu historial de tests y identifica los temas y bloques donde tienes más dificultades.
-                    Luego genera tests personalizados que se centran específicamente en esas áreas débiles.
-                  </p>
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <p className="text-sm text-blue-900">
-                      <strong>Ejemplo:</strong> Si has fallado más preguntas de "Derecho Constitucional" y "Organización del Estado",
-                      el sistema creará un test con preguntas exclusivamente de esos temas para que los refuerces.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 2: Tests Adaptativos con IA */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-purple-600">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-2xl">
-                  🤖
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Tests Adaptativos con IA</h3>
-                  <p className="text-slate-600 mb-4">
-                    Tests inteligentes que ajustan la dificultad de las preguntas en tiempo real según tu rendimiento.
-                    Si aciertas, la siguiente pregunta será más difícil. Si fallas, será más fácil. Esto maximiza tu aprendizaje.
-                  </p>
-                  <div className="bg-purple-50 rounded-lg p-4">
-                    <p className="text-sm text-purple-900">
-                      <strong>Beneficio:</strong> Estudias al nivel exacto que necesitas, sin perder tiempo con preguntas demasiado fáciles
-                      ni frustrarte con preguntas imposibles para tu nivel actual.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 3: Análisis de Rendimiento con IA */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-green-600">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">
-                  📊
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Análisis de Rendimiento con IA</h3>
-                  <p className="text-slate-600 mb-4">
-                    La IA analiza tu historial completo de tests para identificar patrones: tus fortalezas, debilidades,
-                    velocidad de respuesta, consistencia, y áreas de mejora específicas.
-                  </p>
-                  <div className="bg-green-50 rounded-lg p-4">
-                    <p className="text-sm text-green-900">
-                      <strong>Incluye:</strong> Tasa de éxito global, temas más fuertes y más débiles, bloques problemáticos,
-                      y análisis de tu evolución temporal.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 4: Recomendaciones Personalizadas */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-orange-600">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-2xl">
-                  💡
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Recomendaciones Personalizadas</h3>
-                  <p className="text-slate-600 mb-4">
-                    Basándose en tu rendimiento, la IA te da consejos específicos de estudio: qué temas repasar,
-                    cuánto tiempo dedicar a cada bloque, y estrategias para mejorar tu velocidad y precisión.
-                  </p>
-                  <div className="bg-orange-50 rounded-lg p-4">
-                    <p className="text-sm text-orange-900">
-                      <strong>Ejemplo:</strong> "Dedica más tiempo al estudio antes de hacer tests" o
-                      "Practica para mejorar tu velocidad en el examen real".
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 5: Predicción de Nota de Examen */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-yellow-600">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center text-2xl">
-                  🏆
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Predicción de Nota de Examen</h3>
-                  <p className="text-slate-600 mb-4">
-                    El sistema calcula una estimación de tu rendimiento esperado en el examen real basándose en tu
-                    tasa de éxito actual, consistencia, y progreso en los diferentes temas.
-                  </p>
-                  <div className="bg-yellow-50 rounded-lg p-4">
-                    <p className="text-sm text-yellow-900">
-                      <strong>Utilidad:</strong> Sabrás si estás listo para el examen o si necesitas más preparación.
-                      Te ayuda a planificar tu estudio de forma realista.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 6: Estadísticas Avanzadas */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-cyan-600">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center text-2xl">
-                  📈
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Estadísticas Avanzadas</h3>
-                  <p className="text-slate-600 mb-4">
-                    Métricas detalladas que van más allá de las estadísticas básicas: velocidad promedio de respuesta,
-                    puntuación de consistencia, curva de aprendizaje, y progresión temporal.
-                  </p>
-                  <div className="bg-cyan-50 rounded-lg p-4">
-                    <p className="text-sm text-cyan-900">
-                      <strong>Incluye:</strong> Gráficos de evolución, comparativa con otros usuarios,
-                      análisis de tendencias, y métricas de preparación para el examen.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Pricing Section */}
       <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
         <div className="container mx-auto px-6">
@@ -386,114 +302,88 @@ export const PremiumFeatures: React.FC = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* Plan Gratuito */}
-            <div className="bg-white rounded-2xl border-2 border-slate-200 p-8 hover:shadow-xl transition-shadow">
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Gratuito</h3>
-                <div className="text-4xl font-bold text-slate-900 mb-2">€0</div>
-                <p className="text-slate-600">Para empezar</p>
-              </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-                  <span className="text-slate-600">Tests normales por tema</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-                  <span className="text-slate-600">Historial de tests</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-                  <span className="text-slate-600">Estadísticas básicas</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-                  <span className="text-slate-600">Ranking público</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-                  <span className="text-slate-600">Progreso por temas</span>
-                </li>
-              </ul>
-            </div>
-
-
-            {/* Plan Premium */}
-            <div className="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl p-8 hover:shadow-2xl transition-shadow relative overflow-hidden">
-              <div className={`absolute top-0 right-0 px-4 py-1 text-sm font-bold rounded-bl-xl ${isEligibleForTrial ? 'bg-green-400 text-green-900' : 'bg-yellow-400 text-yellow-900'}`}>
-                {isEligibleForTrial ? '🎁 7 DÍAS GRATIS' : '🏆 RECOMENDADO'}
-              </div>
-              <div className="text-center mb-6 text-white">
-                <h3 className="text-2xl font-bold mb-2">Premium</h3>
-                <div className="text-4xl font-bold mb-2">
-                  {isEligibleForTrial ? (
-                    <>
-                      <span className="line-through text-white/50 text-2xl mr-2">€10</span>
-                      €0
-                    </>
-                  ) : '€10'}
-                  <span className="text-lg opacity-90">/mes</span>
-                </div>
-                <p className="opacity-90">
-                  {isEligibleForTrial ? 'Prueba gratis, cancela cuando quieras' : '¡El más completo!'}
-                </p>
-              </div>
-              <ul className="space-y-4 mb-8 text-white">
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-300 text-xl flex-shrink-0">★</span>
-                  <span><strong>Tests Enfocados en Debilidades</strong></span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-300 text-xl flex-shrink-0">★</span>
-                  <span><strong>Tests Adaptativos con IA</strong></span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-300 text-xl flex-shrink-0">★</span>
-                  <span><strong>Análisis de Rendimiento con IA</strong></span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-300 text-xl flex-shrink-0">★</span>
-                  <span>Recomendaciones Personalizadas</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-300 text-xl flex-shrink-0">★</span>
-                  <span>Predicción de Nota de Examen</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-300 text-xl flex-shrink-0">★</span>
-                  <span>Estadísticas Avanzadas</span>
-                </li>
-              </ul>
-
-              {!isEligibleForTrial && user?.hasUsedTrial && (
-                <div className="bg-white/10 border border-yellow-300/50 rounded-lg p-4 mb-6 text-left backdrop-blur-sm">
-                  <div className="flex items-start gap-3">
-                    <span className="text-yellow-300 text-xl">⚠️</span>
-                    <div>
-                      <p className="font-bold text-yellow-300 text-sm">Periodo de prueba agotado</p>
-                      <p className="text-white/90 text-xs mt-1">
-                        Ya has utilizado tu prueba gratuita de 7 días anteriormente. Se aplicará el precio estándar.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <button
-                onClick={handleSubscribe}
-                disabled={isLoading}
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed ${isEligibleForTrial
-                  ? 'bg-green-400 text-green-900 hover:bg-green-300'
-                  : 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300'
+            {plans.map((plan) => (
+              <div
+                key={plan.id}
+                className={`rounded-2xl p-8 hover:shadow-xl transition-shadow relative overflow-hidden ${plan.isFeatured
+                  ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white'
+                  : 'bg-white border-2 border-slate-200'
                   }`}
               >
-                {isLoading ? 'Procesando...' : (user?.isPremium ? '⚙️ Gestionar Suscripción' : (isEligibleForTrial ? 'Empezar Prueba de 7 Días' : '¡Quiero ser Premium!'))}
-              </button>
-            </div>
+                {plan.isFeatured && (
+                  <div className={`absolute top-0 right-0 px-4 py-1 text-sm font-bold rounded-bl-xl ${isEligibleForTrial ? 'bg-green-400 text-green-900' : 'bg-yellow-400 text-yellow-900'}`}>
+                    {isEligibleForTrial ? '🎁 7 DÍAS GRATIS' : '🏆 RECOMENDADO'}
+                  </div>
+                )}
+
+                <div className="text-center mb-6">
+                  <h3 className={`text-2xl font-bold mb-2 ${plan.isFeatured ? 'text-white' : 'text-slate-900'}`}>
+                    {plan.name}
+                  </h3>
+                  <div className={`text-4xl font-bold mb-2 ${plan.isFeatured ? 'text-white' : 'text-slate-900'}`}>
+                    {plan.isFeatured && isEligibleForTrial ? (
+                      <>
+                        <span className="line-through text-white/50 text-2xl mr-2">€{plan.price}</span>
+                        €0
+                      </>
+                    ) : `€${plan.price}`}
+                    {plan.price > 0 && <span className="text-lg opacity-90 font-normal">/mes</span>}
+                  </div>
+                  <p className={plan.isFeatured ? 'opacity-90' : 'text-slate-600'}>
+                    {plan.isFeatured && isEligibleForTrial ? 'Prueba gratis, cancela cuando quieras' : (plan.price === 0 ? 'Para empezar' : '¡El más completo!')}
+                  </p>
+                </div>
+
+                <ul className="space-y-4 mb-8">
+                  {(Array.isArray(plan.features) ? plan.features : []).map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <span className={`${plan.isFeatured ? 'text-yellow-300' : 'text-green-600'} text-xl flex-shrink-0`}>
+                        {plan.isFeatured ? '★' : '✓'}
+                      </span>
+                      <span className={plan.isFeatured ? 'text-white' : 'text-slate-600'}>
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {plan.isFeatured && !isEligibleForTrial && user?.hasUsedTrial && (
+                  <div className="bg-white/10 border border-yellow-300/50 rounded-lg p-4 mb-6 text-left backdrop-blur-sm">
+                    <div className="flex items-start gap-3">
+                      <span className="text-yellow-300 text-xl">⚠️</span>
+                      <div>
+                        <p className="font-bold text-yellow-300 text-sm">Periodo de prueba agotado</p>
+                        <p className="text-white/90 text-xs mt-1">
+                          Ya has utilizado tu prueba gratuita de 7 días anteriormente. Se aplicará el precio estándar.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => plan.price > 0 ? handleSubscribe(plan.stripePriceId) : null}
+                  disabled={isLoading || plan.price === 0}
+                  className={`w-full py-4 rounded-xl font-bold text-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed ${plan.isFeatured
+                    ? (isEligibleForTrial ? 'bg-green-400 text-green-900 hover:bg-green-300' : 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300')
+                    : 'bg-slate-100 text-slate-400 cursor-default'
+                    }`}
+                >
+                  {isLoading ? 'Procesando...' : (
+                    plan.price === 0 ? 'Plan Actual' : (
+                      user?.isPremium ? '⚙️ Gestionar Suscripción' : (
+                        isEligibleForTrial && plan.isFeatured ? 'Empezar Prueba de 7 Días' : plan.buttonText
+                      )
+                    )
+                  )}
+                </button>
+              </div>
+            ))}
           </div>
 
           <div className="text-center mt-12">
             <button
-              onClick={handleSubscribe}
+              onClick={() => handleSubscribe()}
               disabled={isLoading}
               className="inline-block px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
@@ -507,24 +397,24 @@ export const PremiumFeatures: React.FC = () => {
       <section className="py-20 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            ¿Listo para Conseguir tu Plaza?
+            {finalCta.title || '¿Listo para Conseguir tu Plaza?'}
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-            Únete a miles de opositores que ya están preparándose con la tecnología más avanzada
+            {finalCta.subtitle || 'Únete a miles de opositores que ya están preparándose con la tecnología más avanzada'}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
-              onClick={handleSubscribe}
+              onClick={() => handleSubscribe()}
               disabled={isLoading}
               className="px-10 py-5 bg-white text-blue-600 rounded-xl font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Procesando...' : (user?.isPremium ? 'Gestionar Suscripción' : 'Suscribirse Ahora')}
+              {isLoading ? 'Procesando...' : (user?.isPremium ? 'Gestionar Suscripción' : (finalCta.ctaPrimary || 'Suscribirse Ahora'))}
             </button>
             <button
               onClick={() => navigate('/dashboard')}
               className="px-10 py-5 bg-blue-700 bg-opacity-50 text-white border-2 border-white rounded-xl font-bold text-xl hover:bg-opacity-70 transition-all duration-300"
             >
-              Volver al Plan de Estudio
+              {finalCta.ctaSecondary || 'Volver al Plan de Estudio'}
             </button>
           </div>
         </div>

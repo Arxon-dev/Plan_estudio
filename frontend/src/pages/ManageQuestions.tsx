@@ -4,6 +4,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { Header } from '../components/Header';
+import { QuestionFormModal } from '../components/admin/QuestionFormModal';
+import { PencilIcon, DocumentDuplicateIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 interface Question {
     id: number;
@@ -147,7 +149,12 @@ export const ManageQuestions: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+
     const [showDeleteSelectedModal, setShowDeleteSelectedModal] = useState(false);
+
+    // Modal de Creación/Edición
+    const [showQuestionModal, setShowQuestionModal] = useState(false);
+    const [editingQuestion, setEditingQuestion] = useState<any>(null); // Usar tipo adecuado si se exporta
 
     useEffect(() => {
         console.log('🔍 ManageQuestions - Usuario:', user);
@@ -264,6 +271,86 @@ export const ManageQuestions: React.FC = () => {
         }
     };
 
+    const handleCreateQuestion = () => {
+        setEditingQuestion(null);
+        setShowQuestionModal(true);
+    };
+
+    const handleEditQuestion = async (questionId: number) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/api/tests/question/${questionId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            // Mapear respuesta al formato del formulario
+            const q = response.data;
+            setEditingQuestion({
+                id: q.id,
+                question: q.question,
+                options: q.options,
+                correctAnswer: q.correctAnswer,
+                explanation: q.explanation,
+                difficulty: q.difficulty,
+                themeId: themeId, // Asumimos el tema actual o lo sacamos de la respuesta si viniera
+                tags: [] // Si vinieran tags, mapearlos
+            });
+            setShowQuestionModal(true);
+        } catch (error) {
+            toast.error('Error al cargar detalles de la pregunta');
+        }
+    };
+
+    const handleDuplicateQuestion = async (questionId: number) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/api/tests/question/${questionId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const q = response.data;
+            setEditingQuestion({
+                ...q,
+                id: undefined, // Es nueva
+                question: `(Copia) ${q.question}`,
+                themeId: themeId
+            });
+            setShowQuestionModal(true);
+        } catch (error) {
+            toast.error('Error al duplicar pregunta');
+        }
+    };
+
+    const handleSaveQuestion = async (formData: any) => {
+        try {
+            const token = localStorage.getItem('token');
+            const headers = { Authorization: `Bearer ${token}` };
+
+            if (formData.id) {
+                await axios.put(
+                    `${import.meta.env.VITE_API_URL}/admin/questions/${formData.id}`,
+                    formData,
+                    { headers }
+                );
+                toast.success('Pregunta actualizada');
+            } else {
+                await axios.post(
+                    `${import.meta.env.VITE_API_URL}/admin/questions`,
+                    formData,
+                    { headers }
+                );
+                toast.success('Pregunta creada');
+            }
+            setShowQuestionModal(false);
+            loadQuestions();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || 'Error al guardar pregunta');
+            throw error;
+        }
+    };
+
     const getDifficultyColor = (difficulty: string) => {
         switch (difficulty) {
             case 'EASY':
@@ -357,158 +444,198 @@ export const ManageQuestions: React.FC = () => {
                         </p>
                     </div>
                 </div>
-
-                {/* Botones de Acción */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                    <div className="flex flex-wrap gap-3">
-                        <button
-                            onClick={handleSelectAll}
-                            disabled={filteredQuestions.length === 0}
-                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            {selectedIds.length === filteredQuestions.length ? '❌ Deseleccionar Todas' : '✅ Seleccionar Todas'}
-                        </button>
-
-                        <button
-                            onClick={() => setShowDeleteSelectedModal(true)}
-                            disabled={selectedIds.length === 0 || loading}
-                            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            🗑️ Eliminar Seleccionadas ({selectedIds.length})
-                        </button>
-
-                        <button
-                            onClick={() => setShowDeleteAllModal(true)}
-                            disabled={questions.length === 0 || loading}
-                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                            ⚠️ Eliminar Todas del Tema ({questions.length})
-                        </button>
-                    </div>
-                </div>
-
-                {/* Lista de Preguntas */}
-                {loading ? (
-                    <div className="flex justify-center items-center py-12">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                    </div>
-                ) : filteredQuestions.length === 0 ? (
-                    <div className="bg-white rounded-lg shadow-md p-12 text-center">
-                        <p className="text-gray-500 text-lg">
-                            {questions.length === 0
-                                ? '📝 No hay preguntas en este tema todavía'
-                                : '🔍 No se encontraron preguntas con ese término de búsqueda'}
-                        </p>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        {filteredQuestions.map((question) => (
-                            <div
-                                key={question.id}
-                                className={`bg-white rounded-lg shadow-md p-6 cursor-pointer transition-all ${selectedIds.includes(question.id)
-                                        ? 'ring-2 ring-blue-500 bg-blue-50'
-                                        : 'hover:shadow-lg'
-                                    }`}
-                                onClick={() => handleSelectQuestion(question.id)}
-                            >
-                                <div className="flex items-start gap-4">
-                                    {/* Checkbox */}
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedIds.includes(question.id)}
-                                        onChange={() => handleSelectQuestion(question.id)}
-                                        className="mt-1 h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
-                                        onClick={(e) => e.stopPropagation()}
-                                    />
-
-                                    {/* Contenido */}
-                                    <div className="flex-1">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <h3 className="text-lg font-medium text-gray-900 flex-1">
-                                                {question.question}
-                                            </h3>
-                                            <span
-                                                className={`ml-4 px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-                                                    question.difficulty
-                                                )}`}
-                                            >
-                                                {getDifficultyLabel(question.difficulty)}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                                            <span>📝 {question.optionsCount} opciones</span>
-                                            <span>
-                                                {question.hasExplanation ? '✅ Con explicación' : '❌ Sin explicación'}
-                                            </span>
-                                            <span>🕒 {new Date(question.createdAt).toLocaleDateString('es-ES')}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
 
-            {/* Modal: Eliminar Seleccionadas */}
-            {showDeleteSelectedModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">⚠️ Confirmar Eliminación</h3>
-                        <p className="text-gray-700 mb-6">
-                            ¿Estás seguro de que deseas eliminar <strong>{selectedIds.length} preguntas seleccionadas</strong>?
-                            Esta acción no se puede deshacer.
-                        </p>
-                        <div className="flex gap-3 justify-end">
-                            <button
-                                onClick={() => setShowDeleteSelectedModal(false)}
-                                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleDeleteSelected}
-                                disabled={loading}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
-                            >
-                                {loading ? 'Eliminando...' : 'Eliminar'}
-                            </button>
+            {/* Botones de Acción */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6 flex justify-between items-center">
+                <div className="flex flex-wrap gap-3">
+                    <button
+                        onClick={handleSelectAll}
+                        disabled={filteredQuestions.length === 0}
+                        className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        {selectedIds.length === filteredQuestions.length ? '❌ Deseleccionar' : '✅ Seleccionar Todo'}
+                    </button>
+
+                    <button
+                        onClick={() => setShowDeleteSelectedModal(true)}
+                        disabled={selectedIds.length === 0 || loading}
+                        className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        🗑️ Eliminar ({selectedIds.length})
+                    </button>
+
+                    <button
+                        onClick={() => setShowDeleteAllModal(true)}
+                        disabled={questions.length === 0 || loading}
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        ⚠️ Eliminar Todo
+                    </button>
+                </div>
+
+                <button
+                    onClick={handleCreateQuestion}
+                    className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
+                >
+                    <PlusIcon className="h-5 w-5" />
+                    Nueva Pregunta
+                </button>
+            </div>
+
+            {/* Lista de Preguntas */}
+            {loading ? (
+                <div className="flex justify-center items-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+            ) : filteredQuestions.length === 0 ? (
+                <div className="bg-white rounded-lg shadow-md p-12 text-center">
+                    <p className="text-gray-500 text-lg">
+                        {questions.length === 0
+                            ? '📝 No hay preguntas en este tema todavía'
+                            : '🔍 No se encontraron preguntas con ese término de búsqueda'}
+                    </p>
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {filteredQuestions.map((question) => (
+                        <div
+                            key={question.id}
+                            className={`bg-white rounded-lg shadow-md p-6 cursor-pointer transition-all group ${selectedIds.includes(question.id)
+                                ? 'ring-2 ring-blue-500 bg-blue-50'
+                                : 'hover:shadow-lg'
+                                }`}
+                            onClick={() => handleSelectQuestion(question.id)}
+                        >
+                            <div className="flex items-start gap-4">
+                                {/* Checkbox */}
+                                <input
+                                    type="checkbox"
+                                    checked={selectedIds.includes(question.id)}
+                                    onChange={() => handleSelectQuestion(question.id)}
+                                    className="mt-1 h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+
+                                {/* Contenido */}
+                                <div className="flex-1">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <h3 className="text-lg font-medium text-gray-900 flex-1">
+                                            {question.question}
+                                        </h3>
+                                        <span
+                                            className={`ml-4 px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
+                                                question.difficulty
+                                            )}`}
+                                        >
+                                            {getDifficultyLabel(question.difficulty)}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                                        <span>📝 {question.optionsCount} opciones</span>
+                                        <span>
+                                            {question.hasExplanation ? '✅ Con explicación' : '❌ Sin explicación'}
+                                        </span>
+                                        <span>🕒 {new Date(question.createdAt).toLocaleDateString('es-ES')}</span>
+                                    </div>
+                                </div>
+
+                                {/* Acciones Individuales */}
+                                <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                                    <button
+                                        onClick={() => handleEditQuestion(question.id)}
+                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
+                                        title="Editar"
+                                    >
+                                        <PencilIcon className="h-5 w-5" />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDuplicateQuestion(question.id)}
+                                        className="p-2 text-gray-600 hover:bg-gray-50 rounded-full"
+                                        title="Duplicar"
+                                    >
+                                        <DocumentDuplicateIcon className="h-5 w-5" />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ))}
                 </div>
             )}
 
-            {/* Modal: Eliminar Todas del Tema */}
-            {showDeleteAllModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">🚨 Confirmar Eliminación Masiva</h3>
-                        <p className="text-gray-700 mb-6">
-                            ¿Estás seguro de que deseas eliminar <strong>TODAS las {questions.length} preguntas</strong> de este tema?
-                            <br />
-                            <br />
-                            <span className="text-red-600 font-semibold">⚠️ Esta acción es IRREVERSIBLE</span>
-                        </p>
-                        <div className="flex gap-3 justify-end">
-                            <button
-                                onClick={() => setShowDeleteAllModal(false)}
-                                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleDeleteAllFromTheme}
-                                disabled={loading}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
-                            >
-                                {loading ? 'Eliminando...' : 'Eliminar Todas'}
-                            </button>
+
+            {/* Modal de Pregunta */}
+            <QuestionFormModal
+                isOpen={showQuestionModal}
+                onClose={() => setShowQuestionModal(false)}
+                onSave={handleSaveQuestion}
+                initialData={editingQuestion}
+                themes={THEMES}
+            />
+
+            {/* Modal: Eliminar Seleccionadas */}
+            {
+                showDeleteSelectedModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">⚠️ Confirmar Eliminación</h3>
+                            <p className="text-gray-700 mb-6">
+                                ¿Estás seguro de que deseas eliminar <strong>{selectedIds.length} preguntas seleccionadas</strong>?
+                                Esta acción no se puede deshacer.
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    onClick={() => setShowDeleteSelectedModal(false)}
+                                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleDeleteSelected}
+                                    disabled={loading}
+                                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                                >
+                                    {loading ? 'Eliminando...' : 'Eliminar'}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+
+            {/* Modal: Eliminar Todas del Tema */}
+            {
+                showDeleteAllModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">🚨 Confirmar Eliminación Masiva</h3>
+                            <p className="text-gray-700 mb-6">
+                                ¿Estás seguro de que deseas eliminar <strong>TODAS las {questions.length} preguntas</strong> de este tema?
+                                <br />
+                                <br />
+                                <span className="text-red-600 font-semibold">⚠️ Esta acción es IRREVERSIBLE</span>
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    onClick={() => setShowDeleteAllModal(false)}
+                                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleDeleteAllFromTheme}
+                                    disabled={loading}
+                                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                                >
+                                    {loading ? 'Eliminando...' : 'Eliminar Todas'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

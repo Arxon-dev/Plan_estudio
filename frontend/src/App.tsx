@@ -3,10 +3,13 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { MobileWarningBanner } from './components/MobileWarningBanner';
+import { GlobalAnnouncementBanner } from './components/GlobalAnnouncementBanner';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { CreatePlan } from './pages/CreatePlan';
+import AIQuestionGenerator from './pages/AIQuestionGenerator';
+import AdminSettings from './pages/AdminSettings';
 import { Sessions } from './pages/Sessions';
 import { Themes } from './pages/Themes';
 import { ManualPlanner } from './pages/ManualPlanner';
@@ -19,24 +22,41 @@ import { TelegramCommunity } from './pages/TelegramCommunity';
 import { AdminPanel } from './pages/AdminPanel';
 import ImportQuestions from './pages/ImportQuestions';
 import ManageQuestions from './pages/ManageQuestions';
-import GenerateQuestions from './pages/GenerateQuestions';
+
 import Tests from './pages/Tests';
 import TestSession from './pages/TestSession';
 import TestResults from './pages/TestResults';
 import { PaymentSuccess } from './pages/PaymentSuccess';
 import { PaymentCancel } from './pages/PaymentCancel';
+import { UserList } from './pages/admin/UserList';
+import { UserManagement } from './pages/admin/UserManagement';
+import { UserProgress } from './pages/admin/UserProgress';
+import { SyllabusManagement } from './pages/admin/SyllabusManagement';
+import { GuideEditor } from './pages/admin/GuideEditor';
+import { MarketingSettings } from './pages/admin/MarketingSettings';
+import { Announcements } from './pages/admin/Announcements';
+import { SystemLogs } from './pages/admin/SystemLogs';
+import { MaintenancePage } from './pages/MaintenancePage';
 
-function App() {
+const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
         <div className="App">
           {/* Mobile Warning Banner - Shown globally */}
           <MobileWarningBanner />
+          <GlobalAnnouncementBanner />
 
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/maintenance" element={<MaintenancePage />} />
+            <Route path="/admin/ai-generator" element={<AIQuestionGenerator />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="usuarios/gestion/:id" element={<UserManagement />} />
+            <Route path="usuarios/progreso" element={<UserProgress />} />
+            <Route path="contenido/temario" element={<SyllabusManagement />} />
+            <Route path="contenido/guias" element={<GuideEditor />} />
 
             <Route
               path="/dashboard"
@@ -147,32 +167,21 @@ function App() {
               }
             />
 
-            <Route
-              path="/admin/import-questions"
-              element={
-                <ProtectedRoute>
-                  <ImportQuestions />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/admin/usuarios/listado" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
+            <Route path="/admin/usuarios/gestion/:id" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+            <Route path="/admin/usuarios/progreso" element={<ProtectedRoute><UserProgress /></ProtectedRoute>} />
 
-            <Route
-              path="/admin/manage-questions"
-              element={
-                <ProtectedRoute>
-                  <ManageQuestions />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/admin/contenido/temario" element={<ProtectedRoute><SyllabusManagement /></ProtectedRoute>} />
+            <Route path="/admin/contenido/preguntas" element={<ProtectedRoute><ManageQuestions /></ProtectedRoute>} />
+            <Route path="/admin/contenido/importador" element={<ProtectedRoute><ImportQuestions /></ProtectedRoute>} />
+            <Route path="/admin/contenido/generador" element={<ProtectedRoute><AIQuestionGenerator /></ProtectedRoute>} />
 
-            <Route
-              path="/admin/generate-questions"
-              element={
-                <ProtectedRoute>
-                  <GenerateQuestions />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/admin/web/guia-estudio" element={<ProtectedRoute><GuideEditor /></ProtectedRoute>} />
+            <Route path="/admin/web/marketing" element={<ProtectedRoute><MarketingSettings /></ProtectedRoute>} />
+            <Route path="/admin/web/avisos" element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
+
+            <Route path="/admin/sistema/configuracion" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+            <Route path="/admin/sistema/logs" element={<ProtectedRoute><SystemLogs /></ProtectedRoute>} />
 
             <Route
               path="/tests"

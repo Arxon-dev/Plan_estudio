@@ -84,6 +84,18 @@ export class AuthController {
         return;
       }
 
+      // Verificar modo mantenimiento
+      const SettingsService = require('../services/SettingsService').default;
+      const isMaintenance = await SettingsService.get('MAINTENANCE_MODE', false);
+
+      if (isMaintenance && !user.isAdmin) {
+        res.status(503).json({
+          error: 'El sistema se encuentra en mantenimiento. Por favor, inténtelo más tarde.',
+          maintenance: true
+        });
+        return;
+      }
+
       // Generar token
       const token = jwt.sign(
         { id: user.id, email: user.email },

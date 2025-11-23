@@ -1,4 +1,4 @@
-import express, { Application } from 'express'; // Force restart 2
+import express, { Application } from 'express'; // Force restart 3
 import cors from 'cors';
 import dotenv from 'dotenv';
 import sequelize from './config/database';
@@ -13,7 +13,14 @@ const PORT = Number(process.env.PORT) || 3001;
 console.log('🔍 PORT detectado:', process.env.PORT);
 console.log('🔍 PORT usado:', PORT);
 
-const routes = require('./routes').default;
+import authRoutes from './routes/auth';
+import studyPlanRoutes from './routes/studyPlans';
+import themeRoutes from './routes/themes';
+import adminRoutes from './routes/admin';
+import testRoutes from './routes/tests';
+import aiRoutes from './routes/aiRoutes';
+import guideRoutes from './routes/guide';
+import sessionRoutes from './routes/sessions';
 
 // Middlewares
 // CORS con lista de orígenes permitidos (separados por comas)
@@ -44,8 +51,25 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), Pay
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Middleware de mantenimiento
+import { maintenanceMiddleware } from './middleware/maintenance';
+app.use(maintenanceMiddleware);
+
 // Rutas
-app.use('/api', routes);
+app.use('/api/auth', authRoutes);
+app.use('/api/study-plans', studyPlanRoutes);
+app.use('/api/themes', themeRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/tests', testRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/guide', guideRoutes);
+app.use('/api/sessions', sessionRoutes);
+import marketingRoutes from './routes/marketing';
+app.use('/api/marketing', marketingRoutes);
+import announcementRoutes from './routes/announcements';
+app.use('/api/announcements', announcementRoutes);
+import paymentRoutes from './routes/payments';
+app.use('/api/payments', paymentRoutes);
 
 // Manejador de errores
 app.use(errorHandler);

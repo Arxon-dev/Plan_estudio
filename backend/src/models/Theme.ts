@@ -16,6 +16,7 @@ export enum ThemeComplexity {
 interface ThemeAttributes {
   id: number;
   block: ThemeBlock;
+  blockId?: number;
   themeNumber: number;
   title: string;
   content: string;
@@ -26,11 +27,12 @@ interface ThemeAttributes {
   updatedAt?: Date;
 }
 
-interface ThemeCreationAttributes extends Optional<ThemeAttributes, 'id'> {}
+interface ThemeCreationAttributes extends Optional<ThemeAttributes, 'id'> { }
 
 class Theme extends Model<ThemeAttributes, ThemeCreationAttributes> implements ThemeAttributes {
   public id!: number;
-  public block!: ThemeBlock;
+  public block!: ThemeBlock; // Deprecated, use blockId
+  public blockId?: number;
   public themeNumber!: number;
   public title!: string;
   public content!: string;
@@ -50,7 +52,15 @@ Theme.init(
     },
     block: {
       type: DataTypes.ENUM(...Object.values(ThemeBlock)),
-      allowNull: false,
+      allowNull: true, // Now optional as we move to blockId
+    },
+    blockId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      references: {
+        model: 'blocks',
+        key: 'id',
+      },
     },
     themeNumber: {
       type: DataTypes.INTEGER,
@@ -92,5 +102,10 @@ Theme.init(
     ],
   }
 );
+
+import Block from './Block';
+
+Theme.belongsTo(Block, { foreignKey: 'blockId', as: 'blockData' });
+Block.hasMany(Theme, { foreignKey: 'blockId', as: 'themes' });
 
 export default Theme;

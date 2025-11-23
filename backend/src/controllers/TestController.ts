@@ -8,7 +8,7 @@ import UserTestStats from '../models/UserTestStats';
 import TestAttempt from '../models/TestAttempt';
 import Theme from '../models/Theme';
 import QuestionImportService from '../services/QuestionImportService';
-import TestQuestion from '../models/TestQuestion';
+import TestQuestion, { QuestionSource } from '../models/TestQuestion';
 
 class TestController {
   /**
@@ -658,6 +658,112 @@ class TestController {
     } catch (error: any) {
       console.error('Error al eliminar preguntas del tema:', error);
       return res.status(500).json({ message: 'Error al eliminar preguntas del tema' });
+    }
+  }
+  /**
+   * POST /api/admin/questions
+   * Crear una nueva pregunta manualmente
+   */
+  async createQuestion(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const { themeId, themePart, question, options, correctAnswer, explanation, difficulty, tags } = req.body;
+
+      // Verificar que es admin
+      const User = (await import('../models/User')).default;
+      const user = await User.findByPk(userId);
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: 'Acceso denegado. Solo administradores.' });
+      }
+
+      // Validaciones básicas
+      if (!question || !options || correctAnswer === undefined || !explanation || !difficulty || !themeId) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+      }
+
+      if (!Array.isArray(options) || options.length < 2 || options.length > 4) {
+        return res.status(400).json({ message: 'Debe haber entre 2 y 4 opciones' });
+      }
+
+      if (correctAnswer < 0 || correctAnswer >= options.length) {
+        return res.status(400).json({ message: 'La respuesta correcta debe ser un índice válido' });
+      }
+
+      const newQuestion = await TestQuestion.create({
+        themeId: parseInt(themeId),
+        themePart: themePart ? parseInt(themePart) : undefined,
+        question,
+        options,
+        correctAnswer,
+        explanation,
+        difficulty,
+        source: QuestionSource.MANUAL,
+        tags: tags || [],
+        usageCount: 0,
+        successRate: 0
+      });
+
+      return res.status(201).json(newQuestion);
+    } catch (error: any) {
+      console.error('Error al crear pregunta:', error);
+      return res.status(500).json({ message: error.message || 'Error al crear pregunta' });
+    }
+  }
+
+  /**
+   * PUT /api/admin/questions/:questionId
+   * Actualizar una pregunta existente
+   */
+  async updateQuestion(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const { questionId } = req.params;
+      const { themeId, themePart, question, options, correctAnswer, explanation, difficulty, tags } = req.body;
+
+      // Verificar que es admin
+      const User = (await import('../models/User')).default;
+      const user = await User.findByPk(userId);
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: 'Acceso denegado. Solo administradores.' });
+      }
+
+      const existingQuestion = await TestQuestion.findByPk(parseInt(questionId));
+      if (!existingQuestion) {
+        return res.status(404).json({ message: 'Pregunta no encontrada' });
+      }
+
+      // Validaciones si se envían campos
+      if (options && (!Array.isArray(options) || options.length < 2 || options.length > 4)) {
+        return res.status(400).json({ message: 'Debe haber entre 2 y 4 opciones' });
+      }
+
+      if (correctAnswer !== undefined && options) {
+        if (correctAnswer < 0 || correctAnswer >= options.length) {
+          return res.status(400).json({ message: 'La respuesta correcta debe ser un índice válido' });
+        }
+      } else if (correctAnswer !== undefined) {
+        // Si solo actualiza correctAnswer, validar contra opciones existentes
+        const currentOptions = existingQuestion.options;
+        if (correctAnswer < 0 || correctAnswer >= currentOptions.length) {
+          return res.status(400).json({ message: 'La respuesta correcta debe ser un índice válido' });
+        }
+      }
+
+      await existingQuestion.update({
+        themeId: themeId ? parseInt(themeId) : existingQuestion.themeId,
+        themePart: themePart !== undefined ? (themePart ? parseInt(themePart) : null as any) : existingQuestion.themePart,
+        question: question || existingQuestion.question,
+        options: options || existingQuestion.options,
+        correctAnswer: correctAnswer !== undefined ? correctAnswer : existingQuestion.correctAnswer,
+        explanation: explanation || existingQuestion.explanation,
+        difficulty: difficulty || existingQuestion.difficulty,
+        tags: tags || existingQuestion.tags
+      });
+
+      return res.json(existingQuestion);
+    } catch (error: any) {
+      console.error('Error al actualizar pregunta:', error);
+      return res.status(500).json({ message: error.message || 'Error al actualizar pregunta' });
     }
   }
 }

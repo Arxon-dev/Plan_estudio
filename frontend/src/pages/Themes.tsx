@@ -9,7 +9,7 @@ import 'driver.js/dist/driver.css';
 
 interface Theme {
   id: number;
-  block: string;
+  blockId: number;
   themeNumber: number;
   title: string;
   content: string | null;
@@ -17,15 +17,22 @@ interface Theme {
   estimatedHours: number;
 }
 
+interface Block {
+  id: number;
+  code: string;
+  name: string;
+  themes: Theme[];
+}
+
 export const Themes: React.FC = () => {
-  const [themes, setThemes] = useState<Theme[]>([]);
+  const [blocks, setBlocks] = useState<Block[]>([]);
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
-  const [filterBlock, setFilterBlock] = useState<string>('ALL');
+  const [filterBlockId, setFilterBlockId] = useState<number | 'ALL'>('ALL');
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
   useEffect(() => {
-    loadThemes();
+    loadSyllabus();
   }, []);
 
   useEffect(() => {
@@ -40,7 +47,7 @@ export const Themes: React.FC = () => {
           element: '#filter-buttons',
           popover: {
             title: 'Explora por Bloques',
-            description: 'Filtra los temas por bloques (Organización, Jurídico-Social, Seguridad Nacional) para enfocar tu estudio.',
+            description: 'Filtra los temas por bloques para enfocar tu estudio.',
             side: 'bottom',
             align: 'start'
           }
@@ -59,61 +66,52 @@ export const Themes: React.FC = () => {
 
     const hasSeenTutorial = localStorage.getItem(`onboarding:themes:v1:${user?.id}`);
 
-    if (!hasSeenTutorial && !isLoading && themes.length > 0) {
+    if (!hasSeenTutorial && !isLoading && blocks.length > 0) {
       setTimeout(() => {
         driverObj.drive();
         localStorage.setItem(`onboarding:themes:v1:${user?.id}`, 'true');
       }, 1000);
     }
-  }, [isLoading, themes.length, user?.id]);
+  }, [isLoading, blocks.length, user?.id]);
 
-  const loadThemes = async () => {
+  const loadSyllabus = async () => {
     try {
-      const response = await apiClient.get('/themes');
-      setThemes(response.data.themes);
+      // We use the admin endpoint for now as it returns the nested structure we need
+      // Ideally we should have a public/student endpoint for this
+      const response = await apiClient.get('/admin/syllabus');
+      setBlocks(response.data);
     } catch (error) {
-      toast.error('Error al cargar los temas');
+      toast.error('Error al cargar el temario');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getFilteredThemes = () => {
-    if (filterBlock === 'ALL') return themes;
-    return themes.filter((theme) => theme.block === filterBlock);
-  };
-
-  const getBlockName = (block: string) => {
-    const names: { [key: string]: string } = {
-      ORGANIZACION: 'Organización',
-      JURIDICO_SOCIAL: 'Jurídico-Social',
-      SEGURIDAD_NACIONAL: 'Seguridad Nacional',
-    };
-    return names[block] || block;
-  };
-
-  const getBlockColor = (block: string) => {
+  const getBlockColor = (code: string) => {
     const colors: { [key: string]: string } = {
       ORGANIZACION: 'bg-blue-100 text-blue-800 border-blue-200',
       JURIDICO_SOCIAL: 'bg-purple-100 text-purple-800 border-purple-200',
       SEGURIDAD_NACIONAL: 'bg-orange-100 text-orange-800 border-orange-200',
     };
-    return colors[block] || 'bg-gray-100 text-gray-800 border-gray-200';
+    return colors[code] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
-  const groupThemesByBlock = () => {
-    const filtered = getFilteredThemes();
-    const grouped: { [key: string]: Theme[] } = {};
+  const getButtonColor = (code: string, isActive: boolean) => {
+    if (!isActive) return 'bg-gray-200 text-gray-700 hover:bg-gray-300';
 
-    filtered.forEach((theme) => {
-      if (!grouped[theme.block]) {
-        grouped[theme.block] = [];
-      }
-      grouped[theme.block].push(theme);
-    });
-
-    return grouped;
+    const colors: { [key: string]: string } = {
+      ORGANIZACION: 'bg-blue-600 text-white',
+      JURIDICO_SOCIAL: 'bg-purple-600 text-white',
+      SEGURIDAD_NACIONAL: 'bg-orange-600 text-white',
+    };
+    return colors[code] || 'bg-gray-800 text-white';
   };
+
+  const filteredBlocks = filterBlockId === 'ALL'
+    ? blocks
+    : blocks.filter(b => b.id === filterBlockId);
+
+  const totalThemes = blocks.reduce((acc, block) => acc + block.themes.length, 0);
 
   if (isLoading) {
     return (
@@ -122,8 +120,6 @@ export const Themes: React.FC = () => {
       </div>
     );
   }
-
-  const groupedThemes = groupThemesByBlock();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -135,112 +131,99 @@ export const Themes: React.FC = () => {
         <div id="filter-buttons" className="card mb-6">
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => setFilterBlock('ALL')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterBlock === 'ALL'
+              onClick={() => setFilterBlockId('ALL')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterBlockId === 'ALL'
                 ? 'bg-primary-600 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
             >
-              Todos los Bloques ({themes.length})
+              Todos los Bloques ({totalThemes})
             </button>
-            <button
-              onClick={() => setFilterBlock('ORGANIZACION')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterBlock === 'ORGANIZACION'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-            >
-              📋 Organización ({themes.filter((t) => t.block === 'ORGANIZACION').length})
-            </button>
-            <button
-              onClick={() => setFilterBlock('JURIDICO_SOCIAL')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterBlock === 'JURIDICO_SOCIAL'
-                ? 'bg-purple-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-            >
-              ⚖️ Jurídico-Social ({themes.filter((t) => t.block === 'JURIDICO_SOCIAL').length})
-            </button>
-            <button
-              onClick={() => setFilterBlock('SEGURIDAD_NACIONAL')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterBlock === 'SEGURIDAD_NACIONAL'
-                ? 'bg-orange-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-            >
-              🛡️ Seguridad Nacional ({themes.filter((t) => t.block === 'SEGURIDAD_NACIONAL').length})
-            </button>
+
+            {blocks.map(block => (
+              <button
+                key={block.id}
+                onClick={() => setFilterBlockId(block.id)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${getButtonColor(block.code, filterBlockId === block.id)}`}
+              >
+                {block.name} ({block.themes.length})
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Themes List */}
         <div id="themes-list" className="space-y-8">
-          {Object.entries(groupedThemes).map(([block, blockThemes]) => (
-            <div key={block}>
+          {filteredBlocks.map((block) => (
+            <div key={block.id}>
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className={`px-3 py-1 rounded-lg text-sm ${getBlockColor(block)}`}>
-                  {getBlockName(block)}
+                <span className={`px-3 py-1 rounded-lg text-sm ${getBlockColor(block.code)}`}>
+                  {block.name}
                 </span>
-                <span className="text-gray-500 text-sm">({blockThemes.length} temas)</span>
+                <span className="text-gray-500 text-sm">({block.themes.length} temas)</span>
               </h2>
 
               <div className="grid grid-cols-1 gap-4">
-                {blockThemes
-                  .sort((a, b) => a.themeNumber - b.themeNumber)
-                  .map((theme) => (
-                    <div
-                      key={theme.id}
-                      className={`card cursor-pointer transition-all hover:shadow-lg ${selectedTheme?.id === theme.id ? 'ring-2 ring-primary-500' : ''
-                        }`}
-                      onClick={() => setSelectedTheme(selectedTheme?.id === theme.id ? null : theme)}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className={`px-2 py-1 rounded text-xs font-bold ${getBlockColor(theme.block)}`}>
-                              Tema {theme.themeNumber}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              ⏱️ {theme.estimatedHours}h • {theme.parts} {theme.parts === 1 ? 'parte' : 'partes'}
-                            </span>
-                          </div>
-                          <h3 className="font-semibold text-gray-900 mb-2">{theme.title}</h3>
-
-                          {selectedTheme?.id === theme.id && (
-                            <div className="mt-4 pt-4 border-t border-gray-200">
-                              {theme.content ? (
-                                <div className="prose prose-sm max-w-none">
-                                  <p className="text-gray-700 whitespace-pre-wrap">{theme.content}</p>
-                                </div>
-                              ) : (
-                                <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                  <p className="text-gray-500">
-                                    📚 El contenido de este tema estará disponible próximamente
-                                  </p>
-                                  <p className="text-xs text-gray-400 mt-2">
-                                    Mientras tanto, puedes consultar el temario oficial
-                                  </p>
-                                </div>
-                              )}
+                {block.themes.length === 0 ? (
+                  <p className="text-gray-500 text-sm italic">No hay temas en este bloque.</p>
+                ) : (
+                  block.themes
+                    .sort((a, b) => a.themeNumber - b.themeNumber)
+                    .map((theme) => (
+                      <div
+                        key={theme.id}
+                        className={`card cursor-pointer transition-all hover:shadow-lg ${selectedTheme?.id === theme.id ? 'ring-2 ring-primary-500' : ''
+                          }`}
+                        onClick={() => setSelectedTheme(selectedTheme?.id === theme.id ? null : theme)}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className={`px-2 py-1 rounded text-xs font-bold ${getBlockColor(block.code)}`}>
+                                Tema {theme.themeNumber}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                ⏱️ {theme.estimatedHours}h • {theme.parts} {theme.parts === 1 ? 'parte' : 'partes'}
+                              </span>
                             </div>
-                          )}
-                        </div>
+                            <h3 className="font-semibold text-gray-900 mb-2">{theme.title}</h3>
 
-                        <button className="text-gray-400 hover:text-gray-600">
-                          {selectedTheme?.id === theme.id ? '▼' : '▶'}
-                        </button>
+                            {selectedTheme?.id === theme.id && (
+                              <div className="mt-4 pt-4 border-t border-gray-200">
+                                {theme.content ? (
+                                  <div className="prose prose-sm max-w-none">
+                                    <p className="text-gray-700 whitespace-pre-wrap">{theme.content}</p>
+                                  </div>
+                                ) : (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                    <p className="text-gray-500">
+                                      📚 El contenido de este tema estará disponible próximamente
+                                    </p>
+                                    <p className="text-xs text-gray-400 mt-2">
+                                      Mientras tanto, puedes consultar el temario oficial
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          <button className="text-gray-400 hover:text-gray-600">
+                            {selectedTheme?.id === theme.id ? '▼' : '▶'}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                )}
               </div>
             </div>
           ))}
         </div>
 
         {/* Empty State */}
-        {Object.keys(groupedThemes).length === 0 && (
+        {blocks.length === 0 && (
           <div className="card text-center py-12">
-            <p className="text-gray-500 text-lg">No hay temas disponibles</p>
+            <p className="text-gray-500 text-lg">No hay bloques disponibles</p>
           </div>
         )}
       </main>

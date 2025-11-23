@@ -91,10 +91,10 @@ TestQuestion.init(
       allowNull: false,
       validate: {
         isValidOptions(value: string[]) {
-          if (!Array.isArray(value) || value.length !== 4) {
-            throw new Error('Debe haber exactamente 4 opciones de respuesta');
+          if (!Array.isArray(value) || value.length < 2 || value.length > 4) {
+            throw new Error('Debe haber entre 2 y 4 opciones de respuesta');
           }
-          if (new Set(value).size !== 4) {
+          if (new Set(value).size !== value.length) {
             throw new Error('Las opciones deben ser diferentes entre sí');
           }
         },
