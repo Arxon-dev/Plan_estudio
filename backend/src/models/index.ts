@@ -15,6 +15,10 @@ import SubscriptionPlan from './SubscriptionPlan';
 import MarketingSection from './MarketingSection';
 import Announcement from './Announcement';
 import SystemLog from './SystemLog';
+import Recompensa from './Recompensa';
+import Titulacion from './Titulacion';
+import Idioma from './Idioma';
+import CursoMilitar from './CursoMilitar';
 
 // Exportar todos los modelos
 export {
@@ -35,6 +39,10 @@ export {
   MarketingSection,
   Announcement,
   SystemLog,
+  Recompensa,
+  Titulacion,
+  Idioma,
+  CursoMilitar,
 };
 
 // Exportar enums

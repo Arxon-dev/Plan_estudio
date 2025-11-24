@@ -70,6 +70,10 @@ import announcementRoutes from './routes/announcements';
 app.use('/api/announcements', announcementRoutes);
 import paymentRoutes from './routes/payments';
 app.use('/api/payments', paymentRoutes);
+import baremoRoutes from './routes/baremo';
+app.use('/api/baremo', baremoRoutes);
+import rankingRoutes from './routes/ranking';
+app.use('/api/ranking', rankingRoutes);
 
 // Manejador de errores
 app.use(errorHandler);

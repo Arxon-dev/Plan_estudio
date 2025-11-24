@@ -37,6 +37,8 @@ import { MarketingSettings } from './pages/admin/MarketingSettings';
 import { Announcements } from './pages/admin/Announcements';
 import { SystemLogs } from './pages/admin/SystemLogs';
 import { MaintenancePage } from './pages/MaintenancePage';
+import BaremoPage from './pages/baremo/BaremoPage';
+import RankingPage from './pages/ranking/RankingPage';
 
 const App: React.FC = () => {
   return (
@@ -224,6 +226,24 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <PaymentCancel />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/baremo"
+              element={
+                <ProtectedRoute>
+                  <BaremoPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/ranking"
+              element={
+                <ProtectedRoute>
+                  <RankingPage />
                 </ProtectedRoute>
               }
             />

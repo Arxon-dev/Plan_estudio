@@ -79,6 +79,8 @@ export const Dashboard: React.FC = () => {
         { element: '#tour-sessions-card', popover: { title: 'Sesiones', description: 'Calendario completo de estudio.' } },
         { element: '#tour-themes-card', popover: { title: 'Temas', description: 'Explora los 21 temas.' } },
         { element: '#tour-manual-card', popover: { title: 'Editor manual', description: 'Reorganiza sesiones a tu manera.' } },
+        { element: '#tour-baremo-card', popover: { title: 'Mi Baremo', description: '¡IMPORTANTE! Introduce tus datos para calcular tu nota. Esto nos ayudará a estimar la nota de corte con la media de todos los compañeros.' } },
+        { element: '#tour-ranking-card', popover: { title: 'Ranking', description: 'Consulta tu posición respecto al resto de opositores.' } },
         { element: '#tour-smart-card', popover: { title: 'Calendario inteligente', description: 'Genera un plan optimizado.' } },
       ]
       : [
@@ -375,6 +377,42 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Editor Manual</h3>
             <p className="text-gray-600 text-sm">
               Ajusta tu plan manualmente arrastrando y soltando sesiones.
+            </p>
+          </div>
+
+          {/* Baremo Card */}
+          <div
+            onClick={() => navigate('/baremo')}
+            id="tour-baremo-card"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors">
+                <span className="text-2xl">🎖️</span>
+              </div>
+              <span className="text-sm text-gray-500">Oposición</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Mi Baremo</h3>
+            <p className="text-gray-600 text-sm">
+              Calcula tu puntuación de concurso y consulta tu posición en el ranking.
+            </p>
+          </div>
+
+          {/* Ranking Card */}
+          <div
+            onClick={() => navigate('/ranking')}
+            id="tour-ranking-card"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
+                <span className="text-2xl">🏆</span>
+              </div>
+              <span className="text-sm text-gray-500">Clasificación</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Ranking Público</h3>
+            <p className="text-gray-600 text-sm">
+              Consulta el listado de puntuaciones y tu posición global.
             </p>
           </div>
         </div>
