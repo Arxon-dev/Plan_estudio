@@ -61,7 +61,7 @@ class TestController {
           {
             model: Theme,
             as: 'theme',
-            attributes: ['id', 'title'],
+            attributes: ['id', 'title', 'block'],
           },
         ],
         order: [['createdAt', 'DESC']],

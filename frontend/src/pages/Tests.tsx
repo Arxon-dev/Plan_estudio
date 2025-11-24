@@ -6,6 +6,8 @@ import PremiumAnalysisDashboard from '../components/PremiumAnalysisDashboard';
 import { Header } from '../components/Header';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
+import { RecentActivity } from '../components/RecentActivity';
+import type { RecentTest } from '../components/RecentActivity';
 
 interface TestStats {
   totalTests: number;
@@ -29,17 +31,7 @@ interface ThemeProgress {
   };
 }
 
-interface RecentTest {
-  id: number;
-  testType: string;
-  score: number | null;
-  passed: boolean;
-  createdAt: string;
-  theme?: {
-    id: number;
-    title: string;
-  };
-}
+
 
 // Definición de temas base con partes
 const THEMES_BASE = [
@@ -285,15 +277,33 @@ const Tests: React.FC = () => {
   // Filtrar por bloque seleccionado
   const filteredThemes = selectedBlock === 'all'
     ? themesWithProgress
-    : themesWithProgress.filter(t => t.block === selectedBlock);
+    : themesWithProgress.filter(t => {
+      // Mapeo de BLOQUE_X a nombres reales
+      const blockMap: Record<string, string> = {
+        'BLOQUE_1': 'Organización',
+        'BLOQUE_2': 'Jurídico-Social',
+        'BLOQUE_3': 'Seguridad Nacional'
+      };
+      const realBlockName = blockMap[selectedBlock] || selectedBlock;
+      return t.block === realBlockName;
+    });
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  // Filtrar tests recientes
+  const filteredRecentTests = selectedBlock === 'all'
+    ? recentTests
+    : recentTests.filter(test => {
+      const blockMap: Record<string, string> = {
+        'BLOQUE_1': 'ORGANIZACION',
+        'BLOQUE_2': 'JURIDICO_SOCIAL',
+        'BLOQUE_3': 'SEGURIDAD_NACIONAL'
+      };
+      // Nota: El backend debe devolver test.theme.block
+      // Si no lo devuelve, esto fallará (undefined)
+      const testBlock = (test.theme as any)?.block;
+      const targetBlock = blockMap[selectedBlock];
+
+      return testBlock === targetBlock;
+    });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -314,14 +324,14 @@ const Tests: React.FC = () => {
         {/* Aviso de Límite Diario */}
         {stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && (
           <div className={`mb-6 p-4 rounded-xl border ${!user?.isPremium && stats.testsToday >= stats.dailyLimit
-              ? 'bg-red-50 border-red-200'
-              : 'bg-blue-50 border-blue-200'
+            ? 'bg-red-50 border-red-200'
+            : 'bg-blue-50 border-blue-200'
             }`}>
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-full ${!user?.isPremium && stats.testsToday >= stats.dailyLimit
-                    ? 'bg-red-100 text-red-600'
-                    : 'bg-blue-100 text-blue-600'
+                  ? 'bg-red-100 text-red-600'
+                  : 'bg-blue-100 text-blue-600'
                   }`}>
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -329,8 +339,8 @@ const Tests: React.FC = () => {
                 </div>
                 <div>
                   <h3 className={`font-bold ${!user?.isPremium && stats.testsToday >= stats.dailyLimit
-                      ? 'text-red-800'
-                      : 'text-blue-900'
+                    ? 'text-red-800'
+                    : 'text-blue-900'
                     }`}>
                     Tests realizados hoy: {stats.testsToday} / {stats.dailyLimit}
                   </h3>
@@ -384,51 +394,7 @@ const Tests: React.FC = () => {
         </div>
 
         {/* Tests Recientes */}
-        {recentTests.length > 0 && (
-          <div id="recent-activity" className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Actividad Reciente</h2>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tema</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resultado</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Puntuación</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {recentTests.map((test) => (
-                      <tr key={test.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(test.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {test.testType === 'WEAKNESS_FOCUSED' ? 'Test de Debilidades' :
-                            test.testType === 'PRACTICE' ? 'Práctica' : test.testType}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate" title={test.theme?.title || 'General'}>
-                          {test.theme?.title || 'General'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${test.passed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                            }`}>
-                            {test.passed ? 'Aprobado' : 'Suspendido'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {test.score !== null ? formatNumber(test.score, 1) : '-'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
+        <RecentActivity recentTests={filteredRecentTests} />
 
         {/* Filtros de Bloque */}
         <div id="theme-filters" className="flex gap-2 mb-6 overflow-x-auto pb-2">
@@ -497,8 +463,8 @@ const Tests: React.FC = () => {
                 onClick={() => startTest(theme.themeId, theme.part, theme.name)}
                 disabled={!user?.isPremium && stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && stats.testsToday >= stats.dailyLimit}
                 className={`w-full py-2 border-2 font-bold rounded-lg transition-colors ${!user?.isPremium && stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && stats.testsToday >= stats.dailyLimit
-                    ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-white border-blue-600 text-blue-600 hover:bg-blue-50'
+                  ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-white border-blue-600 text-blue-600 hover:bg-blue-50'
                   }`}
               >
                 {(!user?.isPremium && stats?.testsToday !== undefined && stats?.dailyLimit !== undefined && stats.testsToday >= stats.dailyLimit)
