@@ -16,6 +16,7 @@ export const Profile: React.FC = () => {
   const [activePlan, setActivePlan] = useState<any>(null);
   const [showRebalanceInfo, setShowRebalanceInfo] = useState(false);
   const [showRebalanceConfirm, setShowRebalanceConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDistribution, setShowDistribution] = useState(false);
   const [showThemeStats, setShowThemeStats] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
@@ -34,13 +35,13 @@ export const Profile: React.FC = () => {
     }
   };
 
-  const handleDeletePlan = async () => {
+  const handleDeletePlan = () => {
     if (!activePlan) return;
+    setShowDeleteConfirm(true);
+  };
 
-    if (!window.confirm('¿Estás seguro de que quieres eliminar tu plan de estudio actual? Esta acción no se puede deshacer.')) {
-      return;
-    }
-
+  const confirmDeletePlan = async () => {
+    setShowDeleteConfirm(false);
     setIsDeletingPlan(true);
     try {
       await studyPlanService.deleteActivePlan();
@@ -581,6 +582,62 @@ export const Profile: React.FC = () => {
                   className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
                 >
                   {isRebalancing ? 'Rebalanceando...' : 'Confirmar Rebalanceo'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal de Confirmación de Eliminación */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full">
+            <div className="p-6">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <span className="text-2xl">🗑️</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    ¿Eliminar Plan de Estudio?
+                  </h3>
+                  <p className="text-gray-700 text-sm">
+                    Estás a punto de eliminar permanentemente tu plan de estudio actual.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <h4 className="font-semibold text-red-900 mb-2 text-sm">⚠️ Consecuencias de esta acción:</h4>
+                <ul className="space-y-1.5 text-sm text-red-800">
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-600 font-bold mt-0.5">•</span>
+                    <span>Se borrará todo tu calendario de sesiones.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-600 font-bold mt-0.5">•</span>
+                    <span>Perderás el historial de progreso de este plan.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-red-600 font-bold mt-0.5">•</span>
+                    <span>Tendrás que configurar un nuevo plan desde cero.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={confirmDeletePlan}
+                  disabled={isDeletingPlan}
+                  className="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+                >
+                  {isDeletingPlan ? 'Eliminando...' : 'Sí, Eliminar Plan'}
                 </button>
               </div>
             </div>

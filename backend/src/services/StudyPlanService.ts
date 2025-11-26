@@ -2,6 +2,8 @@ import { StudyPlan, StudySession, Theme, WeeklySchedule, SessionStatus, SessionT
 import { addDays, differenceInDays, startOfDay, format } from 'date-fns';
 import { Op } from 'sequelize';
 import { RotationStudyService, RotationConfig, RotationSession } from './RotationStudyService';
+import { MonthlyBlocksService } from './MonthlyBlocksService';
+import { SimpleCalendarGenerator } from './SimpleCalendarGenerator';
 
 export interface WeeklyScheduleData {
   monday: number;
@@ -15,7 +17,7 @@ export interface WeeklyScheduleData {
 
 // Interfaz para temas con prioridad
 interface ThemeInput {
-  id: number;
+  id: number | string;
   name: string;
   hours: number;
   priority: number; // 1 = más importante
@@ -41,28 +43,28 @@ export class StudyPlanService {
    * Calcula los límites óptimos de repasos por tema según su complejidad
    * para mantener equilibrio en la distribución (más equitativo)
    */
-  private static calculateReviewLimits(themes: ThemeInput[]): Record<number, { base: number; max: number; extra: number }> {
-    const limits: Record<number, { base: number; max: number; extra: number }> = {};
-    
+  private static calculateReviewLimits(themes: ThemeInput[]): Record<string | number, { base: number; max: number; extra: number }> {
+    const limits: Record<string | number, { base: number; max: number; extra: number }> = {};
+
     themes.forEach(theme => {
       const complexity = theme.complexity || 'MEDIUM';
-      
+
       // Repasos base más equitativos (reducir diferencias)
       const baseReviews = complexity === 'LOW' ? 3 : complexity === 'MEDIUM' ? 3 : 4;
-      
+
       // Máximo total más equilibrado
       const maxReviews = complexity === 'LOW' ? 8 : complexity === 'MEDIUM' ? 12 : 16;
-      
+
       // Máximo de repasos extras en fase de refuerzo
       const maxExtraReviews = maxReviews - baseReviews;
-      
+
       limits[theme.id] = {
         base: baseReviews,
         max: maxReviews,
         extra: maxExtraReviews
       };
     });
-    
+
     return limits;
   }
 
@@ -76,51 +78,86 @@ export class StudyPlanService {
     startDate: Date,
     examDate: Date,
     weeklySchedule: WeeklyScheduleData,
-    themes: ThemeInput[]
+    themes: ThemeInput[],
+    methodology: 'rotation' | 'monthly-blocks' = 'rotation',
+    topicsPerDay: number = 3 // NUEVO PARÁMETRO
   ): Promise<GenerateSmartCalendarResponse> {
-    
+
     console.log('\n🎯 ====== GENERANDO CALENDARIO INTELIGENTE ======');
-    console.log(`📅 Fecha Inicio: ${startDate.toLocaleDateString()}`);
-    console.log(`📅 Fecha Examen: ${examDate.toLocaleDateString()}`);
-    console.log(`📚 Total Temas: ${themes.length}`);
+    console.log(`📅 Fecha Inicio: ${startDate.toLocaleDateString()} `);
+    console.log(`📅 Fecha Examen: ${examDate.toLocaleDateString()} `);
+    console.log(`📚 Total Temas: ${themes.length} `);
+    console.log(`⚙️ Metodología: ${methodology} `);
+    console.log(`📚 Temas por día: ${topicsPerDay} `);
 
     try {
       // **FASE 1: VALIDACIÓN** 
       const validation = this.validatePlan(startDate, examDate, weeklySchedule, themes);
-      
+
       if (!validation.isViable) {
-        console.error(`❌ ${validation.message}`);
+        console.error(`❌ ${validation.message} `);
         return { success: false, message: validation.message };
       }
 
       console.log(`✅ Plan viable: ${validation.totalAvailableHours.toFixed(2)}h disponibles vs ${validation.totalRequiredHours.toFixed(2)}h requeridas`);
-      console.log(`📊 Margen de seguridad: ${(validation.totalAvailableHours - validation.totalRequiredHours).toFixed(2)}h`);
+      console.log(`📊 Margen de seguridad: ${(validation.totalAvailableHours - validation.totalRequiredHours).toFixed(2)} h`);
 
       let sessions: any[] = [];
 
-      // **FASE 2: DISTRIBUCIÓN - SISTEMA DE ROTACIÓN ÚNICAMENTE**
-      console.log('🔄 ====== USANDO SISTEMA DE ROTACIÓN DE TEMAS ======');
-      
-      // Obtener temas reales desde ThemeInput
-      const realThemes = await Theme.findAll({
-        where: { id: themes.map(t => t.id) }
-      });
-      
-      // Calcular configuración óptima según horas disponibles
-      const weeklyHours = this.calculateWeeklyHours(weeklySchedule);
-      const rotationConfig = RotationStudyService.calculateOptimalConfig(weeklyHours);
-      
-      // Generar plan de rotación
-      const rotationPlan = RotationStudyService.createRotationGroups(
-        realThemes,
-        weeklySchedule,
-        startDate,
-        examDate,
-        rotationConfig
-      );
-      
-      // Convertir plan de rotación a sesiones de base de datos
-      sessions = this.convertRotationPlanToSessions(planId, rotationPlan, validation.daysWithHours);
+      if (methodology === 'monthly-blocks') {
+        // **FASE 2A: DISTRIBUCIÓN - BLOQUES MENSUALES**
+        console.log('🗓️ ====== USANDO SISTEMA DE BLOQUES MENSUALES ======');
+
+        // Convertir temas al formato esperado por MonthlyBlocksService (TopicInfo)
+        // Asumimos que 'themes' ya trae la info necesaria (id, name, parts)
+        const topicInfos = themes.map(t => ({
+          id: t.id.toString(),
+          name: t.name,
+          parts: 0 // TODO: Si ThemeInput tuviera parts, lo usaríamos. Por ahora 0 o inferir.
+          // NOTA: El frontend debería enviar 'parts' si es posible, o lo inferimos del nombre/id
+        }));
+
+        sessions = await MonthlyBlocksService.generateMonthlyBlocksPlan({
+          startDate,
+          examDate,
+          weeklySchedule: this.convertWeeklyScheduleToSlots(weeklySchedule), // Helper necesario
+          selectedTopics: topicInfos,
+          topicsPerDay: topicsPerDay
+        }, planId);
+
+      } else {
+        // **FASE 2B: DISTRIBUCIÓN - SISTEMA DE ROTACIÓN (DEFAULT)**
+        console.log('🔄 ====== USANDO SISTEMA DE ROTACIÓN DE TEMAS ======');
+
+        // 1. Configuración de rotación
+        const weeklyHours = this.calculateWeeklyHours(weeklySchedule);
+        const rotationConfig = RotationStudyService.calculateOptimalConfig(weeklyHours);
+        console.log(`⚙️ Configuración de rotación: ${rotationConfig.intensity} (${rotationConfig.maxSimultaneousThemes} temas simultáneos)`);
+
+        // 2. Generar grupos de rotación
+        // Necesitamos los objetos Theme completos para la lógica de rotación (bloques, partes, etc.)
+        const themeIds = themes.map(t => t.id);
+        const dbThemes = await Theme.findAll({ where: { id: themeIds } });
+
+        // Actualizar horas estimadas con las del input si son diferentes
+        dbThemes.forEach(theme => {
+          const input = themes.find(t => t.id === theme.id);
+          if (input) {
+            theme.estimatedHours = input.hours;
+          }
+        });
+
+        const rotationPlan = await RotationStudyService.createRotationGroups(
+          dbThemes,
+          weeklySchedule,
+          startDate,
+          examDate,
+          rotationConfig
+        );
+
+        // 3. Convertir a sesiones de base de datos
+        sessions = this.convertRotationPlanToSessions(planId, rotationPlan, validation.daysWithHours);
+      }
 
       if (!sessions || sessions.length === 0) {
         console.error('❌ Error crítico: No se generaron sesiones');
@@ -130,23 +167,23 @@ export class StudyPlanService {
       // **FASE 3: GUARDAR EN BASE DE DATOS** (inserción en chunks para evitar bloqueos)
       const CHUNK_SIZE = parseInt(process.env.SESSION_INSERT_CHUNK || '500'); // Reducir a 500 para optimizar
       console.log(`💾 Guardando ${sessions.length} sesiones en base de datos...`);
-      
+
       try {
         if (sessions.length > CHUNK_SIZE) {
           console.log(`⚙️ Insertando ${sessions.length} sesiones en chunks de ${CHUNK_SIZE}...`);
           for (let i = 0; i < sessions.length; i += CHUNK_SIZE) {
             const batch = sessions.slice(i, i + CHUNK_SIZE);
-            await StudySession.bulkCreate(batch, { 
-              validate: false, 
+            await StudySession.bulkCreate(batch, {
+              validate: false,
               logging: false,
               returning: false // No devolver los registros insertados para mejorar rendimiento
             } as any);
-            console.log(`   ✓ Chunk ${Math.floor(i / CHUNK_SIZE) + 1} insertado (${batch.length} sesiones)`);
+            console.log(`   ✓ Chunk ${Math.floor(i / CHUNK_SIZE) + 1} insertado(${batch.length} sesiones)`);
           }
         } else {
           console.log(`⚙️ Insertando ${sessions.length} sesiones directamente...`);
-          await StudySession.bulkCreate(sessions, { 
-            validate: false, 
+          await StudySession.bulkCreate(sessions, {
+            validate: false,
             logging: false,
             returning: false // No devolver los registros insertados para mejorar rendimiento
           } as any);
@@ -154,7 +191,7 @@ export class StudyPlanService {
         }
         console.log(`✅ Todas las sesiones guardadas correctamente`);
       } catch (error) {
-        console.error(`❌ Error al guardar sesiones:`, error);
+        console.error(`❌ Error al guardar sesiones: `, error);
         throw error;
       }
 
@@ -165,9 +202,9 @@ export class StudyPlanService {
       const bufferDays = 30;
       const bufferStartDate = addDays(new Date(examDate), -bufferDays);
       const lastSessionDate = sessions.length > 0 ? sessions[sessions.length - 1].scheduledDate : null;
-      
-      return { 
-        success: true, 
+
+      return {
+        success: true,
         sessions,
         bufferWarning: {
           type: 'info',
@@ -201,23 +238,23 @@ export class StudyPlanService {
     totalRequiredHours: number;
     daysWithHours: { date: Date; hours: number; dayOfWeek: number }[];
   } {
-    
+
     // Calcular días disponibles (HASTA LA FECHA DEL EXAMEN, sin buffer restrictivo)
     const start = startOfDay(new Date(startDate));
     const examDay = startOfDay(new Date(examDate));
-    
+
     const daysWithHours: { date: Date; hours: number; dayOfWeek: number }[] = [];
     let currentDate = start;
-    
+
     // **USAR TODOS LOS DÍAS HASTA EL EXAMEN** (sin buffer de 30 días)
     while (currentDate <= examDay) {
       const dayOfWeek = currentDate.getDay();
       const hours = this.getHoursForDay(dayOfWeek, weeklySchedule);
-      
+
       if (hours > 0) {
         daysWithHours.push({ date: new Date(currentDate), hours, dayOfWeek });
       }
-      
+
       currentDate = addDays(currentDate, 1);
     }
 
@@ -238,21 +275,21 @@ export class StudyPlanService {
     const studyHours = themes.reduce((sum, theme) => sum + theme.hours, 0);
     const reviewHoursEstimated = totalRequiredHours - studyHours;
 
-    console.log(`\n📊 VALIDACIÓN:`);
-    console.log(`   - Días disponibles (HASTA EL EXAMEN): ${daysWithHours.length}`);
-    console.log(`   - Fecha inicio: ${start.toLocaleDateString()}`);
-    console.log(`   - Fecha examen: ${examDay.toLocaleDateString()}`);
-    console.log(`   - Horas disponibles totales: ${Number(totalAvailableHours).toFixed(2)}h`);
-    console.log(`   - Horas de estudio: ${studyHours.toFixed(2)}h`);
-    console.log(`   - Horas de repasos estimadas: ${reviewHoursEstimated.toFixed(2)}h`);
-    console.log(`   - Total requerido: ${totalRequiredHours.toFixed(2)}h`);
+    console.log(`\n📊 VALIDACIÓN: `);
+    console.log(`   - Días disponibles(HASTA EL EXAMEN): ${daysWithHours.length} `);
+    console.log(`   - Fecha inicio: ${start.toLocaleDateString()} `);
+    console.log(`   - Fecha examen: ${examDay.toLocaleDateString()} `);
+    console.log(`   - Horas disponibles totales: ${Number(totalAvailableHours).toFixed(2)} h`);
+    console.log(`   - Horas de estudio: ${studyHours.toFixed(2)} h`);
+    console.log(`   - Horas de repasos estimadas: ${reviewHoursEstimated.toFixed(2)} h`);
+    console.log(`   - Total requerido: ${totalRequiredHours.toFixed(2)} h`);
 
     // Validar viabilidad
     if (totalRequiredHours > totalAvailableHours) {
       const deficit = totalRequiredHours - totalAvailableHours;
       return {
         isViable: false,
-        message: `❌ Plan Imposible: No tienes suficientes horas disponibles. Necesitas ${totalRequiredHours.toFixed(2)}h pero solo tienes ${totalAvailableHours.toFixed(2)}h disponibles. Déficit: ${deficit.toFixed(2)}h. Solución: Añade más horas semanales o ajusta las fechas.`,
+        message: `❌ Plan Imposible: No tienes suficientes horas disponibles.Necesitas ${totalRequiredHours.toFixed(2)}h pero solo tienes ${totalAvailableHours.toFixed(2)}h disponibles.Déficit: ${deficit.toFixed(2)} h.Solución: Añade más horas semanales o ajusta las fechas.`,
         totalAvailableHours,
         totalRequiredHours,
         daysWithHours
@@ -276,26 +313,26 @@ export class StudyPlanService {
     rotationPlan: RotationSession[][],
     daysWithHours: Array<{ date: Date; hours: number; dayOfWeek: number }>
   ): any[] {
-    
+
     const sessions: any[] = [];
-    
+
     // Crear mapa de días disponibles por fecha para búsqueda rápida
     const daysMap = new Map<string, { date: Date; hours: number; dayOfWeek: number }>();
     daysWithHours.forEach(dayInfo => {
       const dayKey = format(dayInfo.date, 'yyyy-MM-dd');
       daysMap.set(dayKey, dayInfo);
     });
-    
+
     console.log(`📅 Procesando ${rotationPlan.length} semanas de rotación`);
     console.log(`📊 Días disponibles: ${daysWithHours.length} días`);
-    
+
     // Procesar TODAS las sesiones de rotación sin limitaciones
     rotationPlan.forEach((weekSessions, weekIndex) => {
       console.log(`📅 Semana ${weekIndex + 1}: ${weekSessions.length} sesiones`);
-      
+
       // Agrupar sesiones por día usando las fechas REALES de lastStudied
       const sessionsByDay = new Map<string, RotationSession[]>();
-      
+
       weekSessions.forEach(session => {
         if (session.lastStudied) {
           const dayKey = format(session.lastStudied, 'yyyy-MM-dd');
@@ -305,36 +342,36 @@ export class StudyPlanService {
           sessionsByDay.get(dayKey)!.push(session);
         }
       });
-      
+
       // Procesar cada día que tiene sesiones
       sessionsByDay.forEach((daySessions, dayKey) => {
         const dayInfo = daysMap.get(dayKey);
-        
+
         if (!dayInfo) {
           console.log(`⚠️  Día ${dayKey} no encontrado en días disponibles`);
           return;
         }
-        
+
         if (dayInfo.hours === 0) {
           console.log(`⚠️  Día ${dayKey} tiene 0 horas disponibles`);
           return;
         }
-        
+
         console.log(`   ${dayInfo.date.toLocaleDateString()}: ${daySessions.length} sesiones, ${dayInfo.hours}h disponibles`);
-        
+
         // Calcular tiempo por sesión
         let remainingHours = dayInfo.hours;
-        
+
         daySessions.forEach((session, index) => {
           if (remainingHours <= 0) return;
-          
+
           // Ajustar tiempo según disponibilidad
           const sessionTime = Math.min(session.hours, remainingHours);
-          
+
           // Determinar tipo de sesión y etiqueta
           const sessionType = session.sessionType;
           const label = this.getRotationSessionLabel(sessionType, session.themeName, (session as any).subThemeIndex, (session as any).subThemeLabel);
-          
+
           sessions.push({
             studyPlanId: planId,
             themeId: session.themeId,
@@ -343,26 +380,26 @@ export class StudyPlanService {
             status: SessionStatus.PENDING,
             notes: label,
             sessionType: sessionType === 'STUDY' ? SessionType.STUDY :
-                         sessionType === 'REVIEW' ? SessionType.REVIEW : SessionType.TEST,
+              sessionType === 'REVIEW' ? SessionType.REVIEW : SessionType.TEST,
             reviewStage: sessionType === 'REVIEW' ? (index % 4) + 1 : 0,
             subThemeIndex: (session as any).subThemeIndex,
             subThemeLabel: (session as any).subThemeLabel
           });
-          
+
           remainingHours -= sessionTime;
         });
       });
     });
-    
+
     console.log(`✅ Convertidas ${sessions.length} sesiones de rotación`);
-    
+
     // Verificar cobertura de fechas
     if (sessions.length > 0) {
       const firstDate = sessions[0].scheduledDate;
       const lastDate = sessions[sessions.length - 1].scheduledDate;
-      console.log(`📊 Cobertura: ${firstDate.toLocaleDateString()} → ${lastDate.toLocaleDateString()}`);
+      console.log(`📊 Cobertura: ${firstDate.toLocaleDateString()} → ${lastDate.toLocaleDateString()} `);
     }
-    
+
     return sessions;
   }
 
@@ -370,16 +407,16 @@ export class StudyPlanService {
    * Obtiene etiqueta para sesión de rotación
    */
   private static getRotationSessionLabel(sessionType: 'STUDY' | 'REVIEW' | 'TEST', themeName: string, subThemeIndex?: number, subThemeLabel?: string): string {
-    const partSuffix = subThemeIndex && subThemeIndex > 0 ? ` — Parte ${subThemeIndex}: ${subThemeLabel || ''}` : '';
+    const partSuffix = subThemeIndex && subThemeIndex > 0 ? ` — Parte ${subThemeIndex}: ${subThemeLabel || ''} ` : '';
     switch (sessionType) {
       case 'STUDY':
-        return `📚 Estudio: ${themeName}${partSuffix}`;
+        return `📚 Estudio: ${themeName}${partSuffix} `;
       case 'REVIEW':
-        return `📖 Repaso: ${themeName}${partSuffix}`;
+        return `📖 Repaso: ${themeName}${partSuffix} `;
       case 'TEST':
-        return `🧪 Test: ${themeName}${partSuffix}`;
+        return `🧪 Test: ${themeName}${partSuffix} `;
       default:
-        return `📚 Sesión: ${themeName}${partSuffix}`;
+        return `📚 Sesión: ${themeName}${partSuffix} `;
     }
   }
 
@@ -387,9 +424,9 @@ export class StudyPlanService {
    * Calcula las horas semanales totales del usuario
    */
   private static calculateWeeklyHours(weeklySchedule: WeeklyScheduleData): number {
-    return weeklySchedule.monday + weeklySchedule.tuesday + weeklySchedule.wednesday + 
-           weeklySchedule.thursday + weeklySchedule.friday + weeklySchedule.saturday + 
-           weeklySchedule.sunday;
+    return weeklySchedule.monday + weeklySchedule.tuesday + weeklySchedule.wednesday +
+      weeklySchedule.thursday + weeklySchedule.friday + weeklySchedule.saturday +
+      weeklySchedule.sunday;
   }
 
   /**
@@ -405,7 +442,7 @@ export class StudyPlanService {
       weeklySchedule.friday,
       weeklySchedule.saturday
     ];
-    return days[dayOfWeek] || 0;
+    return days[dayOfWeek as number] || 0;
   }
 
   /**
@@ -414,12 +451,12 @@ export class StudyPlanService {
    * Ahora usa únicamente el sistema de rotación
    */
   static async rebalanceFromDate(planId: number, fromDate: Date): Promise<void> {
-    console.log(`🔄 Rebalanceando calendario desde ${fromDate.toLocaleDateString()} para plan ${planId}`);
-    
+    console.log(`🔄 Rebalanceando calendario desde ${fromDate.toLocaleDateString()} para plan ${planId} `);
+
     try {
       // Obtener plan con sus relaciones
       const { StudyPlan, WeeklySchedule, Theme, StudySession } = await import('@models/index');
-      
+
       const plan = await StudyPlan.findByPk(planId);
       if (!plan) {
         throw new Error('Plan de estudio no encontrado');
@@ -429,7 +466,7 @@ export class StudyPlanService {
       const weeklySchedule = await WeeklySchedule.findOne({
         where: { studyPlanId: planId }
       });
-      
+
       if (!weeklySchedule) {
         throw new Error('Horario semanal no encontrado');
       }
@@ -440,7 +477,7 @@ export class StudyPlanService {
         attributes: ['themeId'],
         group: ['themeId']
       });
-      
+
       const themeIds = planThemes.map(st => st.themeId);
       const dbThemes = await Theme.findAll({
         where: { id: themeIds }
@@ -497,7 +534,9 @@ export class StudyPlanService {
         fromDate,
         plan.examDate,
         weeklyScheduleData,
-        themes
+        themes,
+        plan.methodology as 'rotation' | 'monthly-blocks',
+        3 // Default topicsPerDay for rebalance (TODO: store in DB)
       );
 
       if (!result.success) {
@@ -509,5 +548,33 @@ export class StudyPlanService {
       console.error('❌ Error al rebalancear calendario:', error);
       throw error;
     }
+  }
+  // Helper para convertir el formato simple de horario a slots de tiempo
+  private static convertWeeklyScheduleToSlots(schedule: WeeklyScheduleData): { [key: string]: { start: string; end: string }[] } {
+    const slots: { [key: string]: { start: string; end: string }[] } = {};
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+    days.forEach(day => {
+      // @ts-ignore
+      const hours = schedule[day] || 0;
+      if (hours > 0) {
+        // Crear un slot ficticio de X horas empezando a las 9:00
+        // Esto es una simplificación porque MonthlyBlocksService espera rangos horarios
+        // pero nuestro frontend solo manda horas totales.
+        // MonthlyBlocksService usa esto para calcular slots de 50min.
+        const startHour = 9;
+        const endHour = 9 + Math.floor(hours);
+        const endMin = (hours % 1) * 60;
+
+        slots[day] = [{
+          start: `${startHour.toString().padStart(2, '0')}:00`,
+          end: `${endHour.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')} `
+        }];
+      } else {
+        slots[day] = [];
+      }
+    });
+
+    return slots;
   }
 }

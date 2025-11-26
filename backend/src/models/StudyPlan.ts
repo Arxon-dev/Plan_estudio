@@ -1,6 +1,8 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import sequelize from '@config/database';
+import sequelize from '../config/database';
 import User from './User';
+import WeeklySchedule from './WeeklySchedule';
+import StudySession from './StudySession';
 
 export enum PlanStatus {
   ACTIVE = 'ACTIVE',
@@ -16,21 +18,26 @@ interface StudyPlanAttributes {
   examDate: Date;
   totalHours: number;
   status: PlanStatus;
+  methodology: 'rotation' | 'monthly-blocks';
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface StudyPlanCreationAttributes extends Optional<StudyPlanAttributes, 'id'> {}
+interface StudyPlanCreationAttributes extends Optional<StudyPlanAttributes, 'id' | 'methodology'> { }
 
-class StudyPlan extends Model<StudyPlanAttributes, StudyPlanCreationAttributes> implements StudyPlanAttributes {
+export class StudyPlan extends Model<StudyPlanAttributes, StudyPlanCreationAttributes> implements StudyPlanAttributes {
   public id!: number;
   public userId!: number;
   public startDate!: Date;
   public examDate!: Date;
   public totalHours!: number;
   public status!: PlanStatus;
+  public methodology!: 'rotation' | 'monthly-blocks';
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public weeklySchedule?: WeeklySchedule;
+  public sessions?: StudySession[];
 }
 
 StudyPlan.init(
@@ -66,6 +73,11 @@ StudyPlan.init(
       allowNull: false,
       defaultValue: PlanStatus.ACTIVE,
     },
+    methodology: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      defaultValue: 'rotation',
+    },
   },
   {
     sequelize,
@@ -77,5 +89,8 @@ StudyPlan.init(
 // Relaciones
 StudyPlan.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasMany(StudyPlan, { foreignKey: 'userId', as: 'studyPlans' });
+// Las relaciones HasOne/HasMany se definen en index.ts normalmente, pero aquí también es útil
+// StudyPlan.hasOne(WeeklySchedule, { foreignKey: 'studyPlanId', as: 'weeklySchedule' });
+// StudyPlan.hasMany(StudySession, { foreignKey: 'studyPlanId', as: 'sessions' });
 
 export default StudyPlan;

@@ -70,7 +70,7 @@ export class PDFExportService {
         format(new Date(session.scheduledDate), 'EEE dd/MM', { locale: es }),
         this.getThemeTitle(session),
         this.getSessionTypeLabel(session.sessionType || 'STUDY'),
-        `${session.scheduledHours}h`,
+        this.formatHours(session.scheduledHours),
         `Bloque ${session.theme?.block || '-'}`,
         this.getStatusLabel(session.status),
       ]);
@@ -190,11 +190,11 @@ export class PDFExportService {
    */
   private static addFooter(doc: jsPDF, pageWidth: number, pageHeight: number): void {
     const pageNumber = (doc as any).internal.getCurrentPageInfo().pageNumber;
-    
+
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(120, 120, 120);
-    
+
     // Número de página
     doc.text(
       `Página ${pageNumber}`,
@@ -202,7 +202,7 @@ export class PDFExportService {
       pageHeight - 10,
       { align: 'center' }
     );
-    
+
     // Texto "Generado por OpoMelilla.com"
     doc.text(
       'Generado por OpoMelilla.com',
@@ -350,9 +350,9 @@ export class PDFExportService {
    */
   private static getThemeTitle(session: Session): string {
     if (!session.theme) return 'Sin tema';
-    
+
     const baseTitle = `Tema ${session.theme.themeNumber} - ${session.theme.title}`;
-    
+
     // Si tiene nota de parte, añadirla
     if (session.notes && session.notes.includes('— Parte')) {
       const match = session.notes.match(/— Parte \d+/);
@@ -360,7 +360,7 @@ export class PDFExportService {
         return `${baseTitle} ${match[0]}`;
       }
     }
-    
+
     return baseTitle;
   }
 
@@ -388,5 +388,22 @@ export class PDFExportService {
       SKIPPED: 'Saltada',
     };
     return labels[status] || status;
+  }
+  /**
+   * Formatea las horas para mostrar minutos si es menos de 1h
+   */
+  private static formatHours(hours: number | string): string {
+    const numHours = typeof hours === 'string' ? parseFloat(hours) : hours;
+
+    if (isNaN(numHours)) {
+      return '0 min';
+    }
+
+    if (numHours >= 1) {
+      return numHours % 1 === 0 ? `${numHours}h` : `${numHours.toFixed(1)}h`;
+    } else {
+      const minutes = Math.round(numHours * 60);
+      return `${minutes} min`;
+    }
   }
 }

@@ -34,6 +34,10 @@ const formatHours = (hours: number | string): string => {
 
 // Helper para determinar el tipo de sesión
 const tagFor = (notes?: string, sessionType?: string): string => {
+  // Check for Flash Review first (based on notes convention)
+  const n = (notes || '').toUpperCase();
+  if (n.includes('REPASO FLASH') || n.includes('FLASH REVIEW')) return 'Flash Review';
+
   // Primero intentar por sessionType (más confiable)
   if (sessionType === 'TEST') return 'Test';
   if (sessionType === 'SIMULATION') return 'Simulacro';
@@ -41,11 +45,21 @@ const tagFor = (notes?: string, sessionType?: string): string => {
   if (sessionType === 'STUDY') return 'Estudio';
 
   // Fallback a las notas si no hay sessionType
-  const n = (notes || '').toUpperCase();
   if (n.includes('REVIEW') || n.includes('REPASO')) return 'Repaso';
   if (n.includes('SIMULATION') || n.includes('SIMULACRO')) return 'Simulacro';
   if (n.includes('TEST')) return 'Test';
   return 'Estudio';
+};
+
+// Helper para el color del tipo de sesión
+const getTypeColor = (tag: string) => {
+  switch (tag) {
+    case 'Flash Review': return 'bg-cyan-100 text-cyan-800 border border-cyan-200';
+    case 'Test': return 'bg-purple-100 text-purple-800';
+    case 'Simulacro': return 'bg-red-100 text-red-800';
+    case 'Repaso': return 'bg-orange-100 text-orange-800';
+    default: return 'bg-blue-100 text-blue-800';
+  }
 };
 
 export const Sessions: React.FC = () => {
@@ -506,7 +520,7 @@ export const Sessions: React.FC = () => {
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <h3 className="font-semibold text-gray-900">{displayTitle(session)}</h3>
-                                <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100">
+                                <span className={`inline-block px-2 py-1 text-xs rounded ${getTypeColor(tagFor(session.notes, session.sessionType))}`}>
                                   {tagFor(session.notes, session.sessionType)}
                                 </span>
                               </div>

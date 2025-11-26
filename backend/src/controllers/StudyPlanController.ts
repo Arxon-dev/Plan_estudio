@@ -16,11 +16,19 @@ export class StudyPlanController {
         examDate,
         weeklySchedule,
         themes, // Array de { id, name, hours, priority }
+        methodology = 'rotation', // NUEVO: por defecto rotación
+        topicsPerDay = 3 // NUEVO: por defecto 3
       } = req.body;
 
       // Validaciones
       if (new Date(startDate) >= new Date(examDate)) {
         res.status(400).json({ error: 'La fecha de inicio debe ser anterior a la fecha del examen' });
+        return;
+      }
+
+      // Validar topicsPerDay
+      if (topicsPerDay < 1 || topicsPerDay > 6) {
+        res.status(400).json({ error: 'topicsPerDay debe estar entre 1 y 6' });
         return;
       }
 
@@ -100,6 +108,7 @@ export class StudyPlanController {
         examDate,
         totalHours: totalWeeklyHours,
         status: PlanStatus.ACTIVE,
+        methodology, // NUEVO: guardar metodología elegida
       });
 
       // Crear horario semanal
@@ -111,15 +120,26 @@ export class StudyPlanController {
       // Calcular información del buffer para mostrar al usuario
       const bufferDays = 30;
       const bufferStartDate = addDays(new Date(examDate), -bufferDays);
-      
+
       // Generación asíncrona del calendario inteligente para no bloquear la respuesta
       setImmediate(async () => {
         console.log(`🔄 Iniciando generación asíncrona para plan ${plan.id}...`);
         try {
           // Validación y mapeo de temas dentro del proceso asíncrono
-          type ThemeInputLocal = { id: number; name: string; hours: number; priority: number; complexity?: 'LOW' | 'MEDIUM' | 'HIGH' };
-          const inputIds: number[] = themes.map((t: any) => Number(t.id));
-          console.log(`🔍 Verificando temas en lote: [${inputIds.join(', ')}]`);
+          type ThemeInputLocal = { id: number | string; name: string; hours: number; priority: number; complexity?: 'LOW' | 'MEDIUM' | 'HIGH' };
+
+          // Extraer IDs base para la consulta a BD (ej: '6-1' -> 6)
+          const baseIds = new Set<number>();
+          themes.forEach((t: any) => {
+            const idStr = String(t.id);
+            const baseId = idStr.includes('-') ? parseInt(idStr.split('-')[0]) : parseInt(idStr);
+            if (!isNaN(baseId)) {
+              baseIds.add(baseId);
+            }
+          });
+
+          const inputIds = Array.from(baseIds);
+          console.log(`🔍 Verificando temas en lote (IDs base): [${inputIds.join(', ')}]`);
           console.log(`📋 Temas recibidos:`, themes.map((t: any) => ({ id: t.id, name: t.name })));
 
           const dbThemes = await Theme.findAll({
@@ -128,17 +148,20 @@ export class StudyPlanController {
           } as any);
 
           console.log(`✅ Temas encontrados en BD: [${dbThemes.map((t: any) => t.id).join(', ')}]`);
-          console.log(`📊 Total temas en BD: ${dbThemes.length}, Total temas solicitados: ${inputIds.length}`);
 
           const themeMap = new Map<number, any>(dbThemes.map((t: any) => [t.id, t]));
           const themesWithRealIds: ThemeInputLocal[] = [];
           const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
           for (const themeInput of themes) {
-            const dbTheme = themeMap.get(Number(themeInput.id));
+            const idStr = String(themeInput.id);
+            const baseId = idStr.includes('-') ? parseInt(idStr.split('-')[0]) : parseInt(idStr);
+            const dbTheme = themeMap.get(baseId);
+
             if (dbTheme) {
-              console.log(`✅ Tema encontrado: ${dbTheme.id} - ${dbTheme.title}`);
+              console.log(`✅ Tema encontrado para ${themeInput.id}: ${dbTheme.id} - ${dbTheme.title}`);
               themesWithRealIds.push({
-                id: dbTheme.id,
+                id: themeInput.id, // Mantener ID original (puede ser compuesto)
                 name: themeInput.name || dbTheme.title,
                 hours: themeInput.hours || parseFloat(dbTheme.estimatedHours.toString()),
                 priority: themeInput.priority,
@@ -213,13 +236,15 @@ export class StudyPlanController {
           // Usar StudyPlanService como generador principal (repetición espaciada)
           console.log(`🔄 Generando calendario inteligente con repetición espaciada...`);
           console.log(`📊 Sistema de distribución: ROTACIÓN DE TEMAS`);
-          
+
           const result = await StudyPlanService.generateSmartCalendar(
             plan.id,
             new Date(startDate),
             bufferEnd, // Usar fecha con buffer (30 días antes del examen)
             weeklySchedule,
-            themesWithRealIds
+            themesWithRealIds,
+            methodology, // NUEVO: pasar metodología
+            topicsPerDay // NUEVO: pasar topicsPerDay
           );
 
           if (!result.success) {
@@ -233,7 +258,7 @@ export class StudyPlanController {
               weeklySchedule,
               themesWithRealIds
             );
-            
+
             if (simpleResult.success) {
               console.log(`✅ Fallback exitoso: ${simpleResult.sessions!.length} sesiones generadas`);
             } else {
@@ -242,7 +267,7 @@ export class StudyPlanController {
             }
           } else {
             console.log(`✅ Calendario inteligente generado: ${result.sessions!.length} sesiones con repetición espaciada`);
-            
+
             // Mostrar información del buffer en los logs
             if (result.bufferWarning) {
               console.log(`⚠️ ${result.bufferWarning.message}`);
@@ -366,16 +391,16 @@ export class StudyPlanController {
       const completedSessions = sessions.filter(s => s.status === 'COMPLETED').length;
       const pendingSessions = sessions.filter(s => s.status === 'PENDING').length;
       const skippedSessions = sessions.filter(s => s.status === 'SKIPPED').length;
-      
+
       const totalHoursScheduled = sessions.reduce((sum, session) => sum + parseFloat(session.scheduledHours.toString()), 0);
       const totalHoursCompleted = sessions
         .filter(s => s.status === 'COMPLETED')
         .reduce((sum, session) => sum + (session.completedHours ? parseFloat(session.completedHours.toString()) : 0), 0);
-      
-      const progressPercentage = totalSessions > 0 
-        ? Math.round((completedSessions / totalSessions) * 100) 
+
+      const progressPercentage = totalSessions > 0
+        ? Math.round((completedSessions / totalSessions) * 100)
         : 0;
-      
+
       const daysRemaining = Math.max(0, differenceInDays(new Date(plan.examDate), new Date()));
 
       res.json({
@@ -527,7 +552,7 @@ export class StudyPlanController {
 
       // Obtener todos los IDs de temas únicos de las sesiones
       const themeIds = [...new Set(sessions.map(session => session.themeId))];
-      
+
       // Obtener los temas completos
       const themes = await Theme.findAll({
         where: { id: themeIds },
@@ -537,7 +562,7 @@ export class StudyPlanController {
       // Calcular distribución por tema
       const themeDistribution = themes.map(theme => {
         const themeSessions = sessions.filter(session => session.themeId === theme.id);
-        
+
         return {
           theme: {
             id: theme.id,
@@ -639,27 +664,24 @@ export class StudyPlanController {
 
       // Obtener información de temas
       const themeIds = [...new Set(sessions.map(s => s.themeId))];
+
       const themes = await Theme.findAll({
         where: { id: themeIds },
         attributes: ['id', 'title', 'complexity', 'parts']
       });
-      
       const themeMap = new Map(themes.map(t => [t.id, t]));
 
-      // Agrupar por tema y parte
       const partsStats: { [key: string]: any } = {};
-      
+
       sessions.forEach(session => {
         const themeId = session.themeId;
         const theme = themeMap.get(themeId);
-        
-        // Extraer información de la parte de la nota
         const partInfo = StudyPlanController.extractPartInfo(session.notes || '', theme?.id, theme?.title);
-        
+
         // Solo procesar si hay información válida de parte o si es una parte real
         if (partInfo.partIndex > 0 || partInfo.partLabel) {
           const partKey = `${themeId}-${partInfo.partIndex}`;
-          
+
           if (!partsStats[partKey]) {
             partsStats[partKey] = {
               themeId: themeId,
@@ -675,10 +697,10 @@ export class StudyPlanController {
               complexity: theme?.complexity || 'MEDIUM'
             };
           }
-          
+
           const stats = partsStats[partKey];
           stats.totalSessions++;
-          
+
           if (session.sessionType === 'STUDY') {
             stats.studySessions++;
           } else if (session.sessionType === 'REVIEW') {
@@ -686,9 +708,9 @@ export class StudyPlanController {
           } else if (session.sessionType === 'TEST') {
             stats.testSessions++;
           }
-          
+
           stats.totalHours += Number(session.scheduledHours) || 0;
-          
+
           if (session.status === 'COMPLETED') {
             stats.completedSessions++;
           }
@@ -709,10 +731,10 @@ export class StudyPlanController {
       });
 
       // Para temas sin partes específicas, asegurar que tengan al menos una entrada
-      const themesWithoutParts = themeIds.filter(themeId => 
+      const themesWithoutParts = themeIds.filter(themeId =>
         !result.some((part: any) => part.themeId === themeId)
       );
-      
+
       themesWithoutParts.forEach(themeId => {
         const theme = themeMap.get(themeId);
         result.push({
@@ -733,7 +755,7 @@ export class StudyPlanController {
 
       // Agrupar por tema para mejor visualización
       const groupedByTheme: { [key: number]: any } = {};
-      
+
       // Primero, agrupar todas las partes por tema
       result.forEach((part: any) => {
         if (!groupedByTheme[part.themeId]) {
@@ -753,10 +775,10 @@ export class StudyPlanController {
         if (hasRealParts) {
           theme.parts = theme.parts.filter((part: any) => part.partIndex > 0);
         }
-        
+
         // Ordenar las partes por partIndex
         theme.parts.sort((a: any, b: any) => a.partIndex - b.partIndex);
-        
+
         // Transformar al formato final
         theme.parts = theme.parts.map((part: any) => ({
           partIndex: part.partIndex,

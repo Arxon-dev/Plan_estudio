@@ -11,7 +11,7 @@ export interface WeeklySchedule {
 }
 
 export interface ThemeInput {
-  id: number;
+  id: number | string;
   name: string;
   hours: number;
   priority: number; // 1 = más importante
@@ -22,6 +22,8 @@ export interface CreateSmartPlanData {
   examDate: Date;
   weeklySchedule: WeeklySchedule;
   themes: ThemeInput[];
+  methodology?: 'rotation' | 'monthly-blocks';
+  topicsPerDay?: number;
 }
 
 export interface SmartPlanResponse {
@@ -89,9 +91,11 @@ export const studyPlanService = {
       startDate: data.startDate.toISOString().split('T')[0],
       examDate: data.examDate.toISOString().split('T')[0],
       weeklySchedule: data.weeklySchedule,
-      themes: data.themes
+      themes: data.themes,
+      methodology: data.methodology,
+      topicsPerDay: data.topicsPerDay
     };
-    
+
     const response = await apiClient.post('/study-plans', formattedData);
     return response.data;
   },

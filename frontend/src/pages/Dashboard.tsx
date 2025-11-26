@@ -141,6 +141,9 @@ export const Dashboard: React.FC = () => {
 
   const displayTitle = (s: any): string => {
     const base = s.theme?.title || `Tema ${s.themeId}`;
+    if (s.subThemeLabel) {
+      return s.subThemeLabel;
+    }
     const n = (s.notes || '').toString();
     const idx = n.indexOf('— Parte');
     if (idx > -1) {
