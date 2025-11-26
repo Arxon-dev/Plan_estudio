@@ -179,8 +179,29 @@ export class ICalExportService {
    */
   private static getSessionTitle(session: Session): string {
     const sessionType = this.getSessionTypeLabel(session.sessionType || 'STUDY');
-    const themeName = session.theme?.title || `Tema ${session.theme?.themeNumber || '?'}`;
-    
+
+    let themeName = session.theme?.title || `Tema ${session.theme?.themeNumber || '?'}`;
+
+    // Check for explicit subThemeLabel first
+    if ((session as any).subThemeLabel && session.theme) {
+      themeName = `Tema ${session.theme.themeNumber}. ${(session as any).subThemeLabel}`;
+    } else if (session.theme) {
+      // Si tiene nota de parte, intentar extraerla
+      if (session.notes && (session.notes.includes('Parte') || session.notes.includes('Instrucción'))) {
+        const partMatch = session.notes.match(/Parte \d+:[^(\n|;)]+/);
+        if (partMatch) {
+          themeName = `Tema ${session.theme.themeNumber}. ${partMatch[0]}`;
+        } else {
+          const oldMatch = session.notes.match(/— Parte \d+/);
+          if (oldMatch) {
+            themeName = `Tema ${session.theme.themeNumber} - ${session.theme.title} ${oldMatch[0]}`;
+          }
+        }
+      } else {
+        themeName = `Tema ${session.theme.themeNumber} - ${session.theme.title}`;
+      }
+    }
+
     return `${sessionType}: ${themeName}`;
   }
 
@@ -189,25 +210,46 @@ export class ICalExportService {
    */
   private static getSessionDescription(session: Session): string {
     const sessionType = this.getSessionTypeLabel(session.sessionType || 'STUDY');
-    const themeName = session.theme?.title || `Tema ${session.theme?.themeNumber || '?'}`;
-    const duration = session.scheduledHours >= 1 
-      ? `${session.scheduledHours}h` 
+
+    let themeName = session.theme?.title || `Tema ${session.theme?.themeNumber || '?'}`;
+
+    // Check for explicit subThemeLabel first
+    if ((session as any).subThemeLabel && session.theme) {
+      themeName = `Tema ${session.theme.themeNumber}. ${(session as any).subThemeLabel}`;
+    } else if (session.theme) {
+      // Si tiene nota de parte, intentar extraerla
+      if (session.notes && (session.notes.includes('Parte') || session.notes.includes('Instrucción'))) {
+        const partMatch = session.notes.match(/Parte \d+:[^(\n|;)]+/);
+        if (partMatch) {
+          themeName = `Tema ${session.theme.themeNumber}. ${partMatch[0]}`;
+        } else {
+          const oldMatch = session.notes.match(/— Parte \d+/);
+          if (oldMatch) {
+            themeName = `Tema ${session.theme.themeNumber} - ${session.theme.title} ${oldMatch[0]}`;
+          }
+        }
+      } else {
+        themeName = `Tema ${session.theme.themeNumber} - ${session.theme.title}`;
+      }
+    }
+    const duration = session.scheduledHours >= 1
+      ? `${session.scheduledHours}h`
       : `${Math.round(session.scheduledHours * 60)} min`;
-    
+
     let description = `📚 ${sessionType}\\n`;
     description += `📖 Tema: ${themeName}\\n`;
     description += `⏰ Duración: ${duration}\\n`;
-    
+
     if (session.theme?.block) {
       description += `📂 Bloque: ${session.theme.block}\\n`;
     }
-    
+
     if (session.notes) {
       description += `\\n📝 Notas: ${session.notes}\\n`;
     }
-    
+
     description += `\\n✨ Preparado con OpoMelilla.com`;
-    
+
     return description;
   }
 
@@ -234,7 +276,7 @@ export class ICalExportService {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    
+
     return `${year}${month}${day}T${hours}${minutes}${seconds}`;
   }
 
@@ -256,14 +298,14 @@ export class ICalExportService {
     const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
-    
+
     link.href = url;
     link.download = `${planName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyyMMdd')}.ics`;
-    
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     window.URL.revokeObjectURL(url);
   }
 }

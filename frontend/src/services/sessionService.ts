@@ -51,4 +51,14 @@ export const sessionService = {
     const response = await apiClient.post('/sessions/agenda/add', { planId, date, themeId, hours });
     return response.data;
   },
+
+  async updatePomodoro(sessionId: number, data: { pomodorosCompleted?: number; actualDuration?: number; interruptions?: number; status?: string }): Promise<any> {
+    const response = await apiClient.post(`/sessions/${sessionId}/pomodoro`, data);
+    return response.data;
+  },
+
+  async saveSettings(settings: any): Promise<any> {
+    const response = await apiClient.put('/sessions/settings', { settings });
+    return response.data;
+  },
 };

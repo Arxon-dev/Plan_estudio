@@ -35,9 +35,14 @@ interface StudySessionAttributes {
   keyPoints?: string; // Puntos clave aprendidos
   createdAt?: Date;
   updatedAt?: Date;
+  pomodorosCompleted?: number;
+  actualDuration?: number;
+  concentrationScore?: number;
+  interruptions?: number;
+  lastHeartbeat?: Date;
 }
 
-interface StudySessionCreationAttributes extends Optional<StudySessionAttributes, 'id'> {}
+interface StudySessionCreationAttributes extends Optional<StudySessionAttributes, 'id'> { }
 
 class StudySession extends Model<StudySessionAttributes, StudySessionCreationAttributes> implements StudySessionAttributes {
   public id!: number;
@@ -57,6 +62,11 @@ class StudySession extends Model<StudySessionAttributes, StudySessionCreationAtt
   public keyPoints?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+  public pomodorosCompleted!: number;
+  public actualDuration!: number;
+  public concentrationScore!: number;
+  public interruptions!: number;
+  public lastHeartbeat?: Date;
 }
 
 StudySession.init(
@@ -134,6 +144,30 @@ StudySession.init(
     },
     keyPoints: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    pomodorosCompleted: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false,
+    },
+    actualDuration: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false,
+    },
+    concentrationScore: {
+      type: DataTypes.FLOAT,
+      defaultValue: 0,
+      allowNull: false,
+    },
+    interruptions: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false,
+    },
+    lastHeartbeat: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
   },

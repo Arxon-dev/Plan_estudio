@@ -48,7 +48,9 @@ interface UserAttributes {
   puntosOposicion?: number;
   puntosTotal?: number;
   posicionRanking?: number | null;
+
   perfilPublico?: boolean;
+  pomodoroSettings?: any;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
@@ -101,6 +103,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public puntosTotal!: number;
   public posicionRanking!: number | null;
   public perfilPublico!: boolean;
+  public pomodoroSettings!: any;
 
   // Método para validar contraseña
   public async validatePassword(password: string): Promise<boolean> {
@@ -297,6 +300,10 @@ User.init(
     perfilPublico: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+    },
+    pomodoroSettings: {
+      type: DataTypes.JSON,
+      allowNull: true,
     },
   },
   {

@@ -130,6 +130,8 @@ export class SessionController {
         notes: notes || session.notes,
         difficulty: difficulty || session.difficulty,
         keyPoints: keyPoints || session.keyPoints,
+        // Ensure actualDuration is at least the completedHours if not set
+        actualDuration: session.actualDuration || Math.round((completedHours || session.scheduledHours) * 60)
       });
 
       // 🔓 Desbloquear tema para tests si es sesión de STUDY
@@ -653,6 +655,73 @@ export class SessionController {
     } catch (error) {
       console.error('Error al añadir recomendación a agenda:', error);
       res.status(500).json({ error: 'Error al añadir recomendación' });
+    }
+  }
+
+  // Actualizar estado del Pomodoro (Heartbeat)
+  static async updatePomodoro(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { sessionId } = req.params;
+      const { pomodorosCompleted, actualDuration, interruptions, status } = req.body;
+
+      const session = await StudySession.findByPk(sessionId);
+      if (!session) {
+        res.status(404).json({ error: 'Sesión no encontrada' });
+        return;
+      }
+
+      // Calcular concentration score
+      // Score = (Tiempo Total - Tiempo Interrupciones) / Tiempo Total * 100
+      // Simplificado: asumimos que cada interrupción resta un porcentaje o usamos el tiempo real vs tiempo esperado
+      // Mejor aproximación con los datos que tenemos:
+      // Si tenemos interruptions (contador), podemos penalizar el score.
+      // Score base 100. Cada interrupción resta 5 puntos (ejemplo), min 0.
+      // O si el frontend manda el tiempo de pausa, sería mejor.
+      // Por ahora, usaremos una heurística simple basada en interrupciones si no se envía score explícito.
+
+      let concentrationScore = session.concentrationScore;
+      if (actualDuration > 0) {
+        // Si el frontend envía interrupciones, recalculamos
+        // Asumimos 1 min de pérdida por interrupción para el cálculo
+        const penaltyMinutes = (interruptions || 0) * 2;
+        const effectiveMinutes = Math.max(0, actualDuration - penaltyMinutes);
+        concentrationScore = Math.min(100, Math.max(0, (effectiveMinutes / actualDuration) * 100));
+      }
+
+      await session.update({
+        pomodorosCompleted: pomodorosCompleted !== undefined ? pomodorosCompleted : session.pomodorosCompleted,
+        actualDuration: actualDuration !== undefined ? actualDuration : session.actualDuration,
+        interruptions: interruptions !== undefined ? interruptions : session.interruptions,
+        concentrationScore: concentrationScore,
+        lastHeartbeat: new Date(),
+        status: status || session.status
+      });
+
+      res.json({ message: 'Pomodoro actualizado', session });
+    } catch (error) {
+      console.error('Error al actualizar pomodoro:', error);
+      res.status(500).json({ error: 'Error al actualizar pomodoro' });
+    }
+  }
+
+  // Actualizar configuración de Pomodoro del usuario
+  static async updateSettings(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+      const { settings } = req.body;
+
+      const user = await import('@models/User').then(m => m.default.findByPk(userId));
+      if (!user) {
+        res.status(404).json({ error: 'Usuario no encontrado' });
+        return;
+      }
+
+      await user.update({ pomodoroSettings: settings });
+
+      res.json({ message: 'Configuración actualizada', settings: user.pomodoroSettings });
+    } catch (error) {
+      console.error('Error al actualizar configuración:', error);
+      res.status(500).json({ error: 'Error al actualizar configuración' });
     }
   }
 }

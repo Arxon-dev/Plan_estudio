@@ -413,9 +413,9 @@ export const Dashboard: React.FC = () => {
               </div>
               <span className="text-sm text-gray-500">Clasificación</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Ranking Público</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Clasificación examen 2026</h3>
             <p className="text-gray-600 text-sm">
-              Consulta el listado de puntuaciones y tu posición global.
+              Consulta el listado de puntuaciones en baremo, pruebas físicas, nota examen final y tu posición global.
             </p>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Header } from '../components/Header';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
+import { PomodoroTimer } from '../components/PomodoroTimer';
 
 // Helper para formatear horas de manera más legible
 const formatHours = (hours: number | string): string => {
@@ -36,7 +37,7 @@ const formatHours = (hours: number | string): string => {
 const tagFor = (notes?: string, sessionType?: string): string => {
   // Check for Flash Review first (based on notes convention)
   const n = (notes || '').toUpperCase();
-  if (n.includes('REPASO FLASH') || n.includes('FLASH REVIEW')) return 'Flash Review';
+  if (n.includes('REPASO FLASH') || n.includes('FLASH REVIEW')) return 'Repaso Flash';
 
   // Primero intentar por sessionType (más confiable)
   if (sessionType === 'TEST') return 'Test';
@@ -54,7 +55,8 @@ const tagFor = (notes?: string, sessionType?: string): string => {
 // Helper para el color del tipo de sesión
 const getTypeColor = (tag: string) => {
   switch (tag) {
-    case 'Flash Review': return 'bg-cyan-100 text-cyan-800 border border-cyan-200';
+    case 'Repaso Flash': return 'bg-cyan-100 text-cyan-800 border border-cyan-200';
+    case 'Flash Review': return 'bg-cyan-100 text-cyan-800 border border-cyan-200'; // Backwards compatibility
     case 'Test': return 'bg-purple-100 text-purple-800';
     case 'Simulacro': return 'bg-red-100 text-red-800';
     case 'Repaso': return 'bg-orange-100 text-orange-800';
@@ -72,6 +74,8 @@ export const Sessions: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [showInProgressModal, setShowInProgressModal] = useState(false);
+  const [showPomodoroModal, setShowPomodoroModal] = useState(false);
+  const [selectedPomodoroSession, setSelectedPomodoroSession] = useState<StudySession | null>(null);
   const [selectedSession, setSelectedSession] = useState<StudySession | null>(null);
   const [completionData, setCompletionData] = useState({
     hours: '',
@@ -307,6 +311,48 @@ export const Sessions: React.FC = () => {
     } catch (error) {
       toast.error('Error al marcar la sesión en progreso');
     }
+  };
+
+  const handleStartPomodoro = (session: StudySession) => {
+    setSelectedPomodoroSession(session);
+    setShowPomodoroModal(true);
+    // Cambiar estado a IN_PROGRESS si está PENDING
+    if (session.status === 'PENDING') {
+      sessionService.markInProgress(session.id, session.completedHours || 0)
+        .then(() => loadData())
+        .catch(err => console.error('Error auto-starting session', err));
+    }
+  };
+
+  const handlePomodoroHeartbeat = async (stats: { actualDuration: number; interruptions: number; pomodorosCompleted: number; status: string }) => {
+    if (!selectedPomodoroSession) return;
+    try {
+      await sessionService.updatePomodoro(selectedPomodoroSession.id, stats);
+    } catch (error) {
+      console.error('Error updating pomodoro heartbeat', error);
+    }
+  };
+
+  const handlePomodoroSessionComplete = async (stats: { actualDuration: number; interruptions: number; pomodorosCompleted: number }) => {
+    if (!selectedPomodoroSession) return;
+
+    // Cerrar modal de pomodoro y abrir el de completar sesión con los datos pre-rellenados
+    setShowPomodoroModal(false);
+
+    // Actualizar últimos datos en backend
+    await sessionService.updatePomodoro(selectedPomodoroSession.id, { ...stats, status: 'IN_PROGRESS' });
+
+    // Abrir modal de completar
+    setSelectedSession(selectedPomodoroSession);
+    setCompletionData({
+      hours: (stats.actualDuration / 60).toFixed(2), // Convertir minutos a horas
+      difficulty: 3,
+      notes: selectedPomodoroSession.notes || '',
+      keyPoints: '',
+    });
+    setShowCompleteModal(true);
+    setSelectedPomodoroSession(null);
+    loadData();
   };
 
   const handleExportToPDF = async () => {
@@ -583,6 +629,12 @@ export const Sessions: React.FC = () => {
                                     ⏸️ En Progreso
                                   </button>
                                   <button
+                                    onClick={() => handleStartPomodoro(session)}
+                                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                                  >
+                                    🍅 Pomodoro
+                                  </button>
+                                  <button
                                     onClick={() => handleSkipSession(session.id)}
                                     className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg text-sm font-medium transition-colors"
                                   >
@@ -603,6 +655,12 @@ export const Sessions: React.FC = () => {
                                     className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
                                   >
                                     ▶️ Continuar
+                                  </button>
+                                  <button
+                                    onClick={() => handleStartPomodoro(session)}
+                                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                                  >
+                                    🍅 Pomodoro
                                   </button>
                                 </>
                               )}
@@ -1013,6 +1071,8 @@ export const Sessions: React.FC = () => {
         )
       }
 
+
+
       {/* Modal de Detalles del Día */}
       {
         showDayDetailsModal && selectedDayDate && (
@@ -1151,6 +1211,44 @@ export const Sessions: React.FC = () => {
           </div>
         )
       }
+      {/* Modal Pomodoro */}
+      {
+        showPomodoroModal && selectedPomodoroSession && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+              <button
+                onClick={() => setShowPomodoroModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+
+              <h2 className="text-xl font-bold text-gray-900 mb-1 text-center">
+                {displayTitle(selectedPomodoroSession)}
+              </h2>
+              <p className="text-sm text-gray-500 text-center mb-6">
+                {tagFor(selectedPomodoroSession.notes, selectedPomodoroSession.sessionType)} • {formatHours(selectedPomodoroSession.scheduledHours)}
+              </p>
+
+              <PomodoroTimer
+                sessionId={selectedPomodoroSession.id}
+                initialSettings={{
+                  // Podríamos cargar configuración del usuario aquí si la tuviéramos en el contexto
+                  workDuration: 45,
+                  shortBreak: 10,
+                  longBreak: 20
+                }}
+                onUpdateHeartbeat={handlePomodoroHeartbeat}
+                onPomodoroComplete={(stats) => {
+                  handlePomodoroHeartbeat({ ...stats, status: 'IN_PROGRESS' });
+                }}
+                onSessionComplete={handlePomodoroSessionComplete}
+              />
+            </div>
+          </div>
+        )
+      }
     </div >
   );
 };
+

@@ -34,4 +34,10 @@ router.put('/:sessionId/notes', SessionController.updateSessionNotes);
 // Rebalancear calendario manualmente
 router.post('/rebalance/:planId', SessionController.rebalanceCalendar);
 
+// Actualizar estado del Pomodoro (Heartbeat)
+router.post('/:sessionId/pomodoro', SessionController.updatePomodoro);
+
+// Actualizar configuración de Pomodoro
+router.put('/settings', SessionController.updateSettings);
+
 export default router;

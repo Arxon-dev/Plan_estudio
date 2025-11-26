@@ -351,13 +351,25 @@ export class PDFExportService {
   private static getThemeTitle(session: Session): string {
     if (!session.theme) return 'Sin tema';
 
+    // Check for explicit subThemeLabel first (if available in session object)
+    if ((session as any).subThemeLabel) {
+      return `Tema ${session.theme.themeNumber}. ${(session as any).subThemeLabel}`;
+    }
+
     const baseTitle = `Tema ${session.theme.themeNumber} - ${session.theme.title}`;
 
-    // Si tiene nota de parte, añadirla
-    if (session.notes && session.notes.includes('— Parte')) {
-      const match = session.notes.match(/— Parte \d+/);
-      if (match) {
-        return `${baseTitle} ${match[0]}`;
+    // Si tiene nota de parte, intentar extraerla
+    if (session.notes && (session.notes.includes('Parte') || session.notes.includes('Instrucción'))) {
+      // Intentar extraer "Parte X: Título"
+      const partMatch = session.notes.match(/Parte \d+:[^(\n|;)]+/);
+      if (partMatch) {
+        return `Tema ${session.theme.themeNumber}. ${partMatch[0]}`;
+      }
+
+      // Fallback para formato antiguo "— Parte X"
+      const oldMatch = session.notes.match(/— Parte \d+/);
+      if (oldMatch) {
+        return `${baseTitle} ${oldMatch[0]}`;
       }
     }
 
