@@ -39,3 +39,5 @@ export const PREDEFINED_THEMES: PredefinedTheme[] = [
     { id: '20', block: 'Bloque 3 – Seguridad Nacional', name: 'Tema 6. Unión Europea (UE)', defaultHours: 8 },
     { id: '21', block: 'Bloque 3 – Seguridad Nacional', name: 'Tema 7. España y su participación en Misiones Internacionales', defaultHours: 11 },
 ];
+
+export const COMPLEXITY_ORDER = PREDEFINED_THEMES.map(t => t.id);

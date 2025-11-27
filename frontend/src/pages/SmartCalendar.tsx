@@ -1,17 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { driver } from 'driver.js';
-import 'driver.js/dist/driver.css';
-import { studyPlanService } from '../services/studyPlanService';
-import type { WeeklySchedule } from '../services/studyPlanService';
-import { PREDEFINED_THEMES } from '../constants/themeDefinitions';
-import { MethodologySelector } from '../components/MethodologySelector';
-
-interface Theme {
-  id: number | string;
-  name: string;
-  hours: number;
-  priority: number;
+hours: number;
+priority: number;
 }
 
 const SmartCalendar: React.FC = () => {
