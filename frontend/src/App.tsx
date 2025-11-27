@@ -39,6 +39,7 @@ import { SystemLogs } from './pages/admin/SystemLogs';
 import { MaintenancePage } from './pages/MaintenancePage';
 import BaremoPage from './pages/baremo/BaremoPage';
 import RankingPage from './pages/ranking/RankingPage';
+import { CustomBlocksWizard } from './components/CustomBlocksWizard';
 
 const App: React.FC = () => {
   return (
@@ -120,6 +121,15 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <SmartCalendar />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/custom-blocks"
+              element={
+                <ProtectedRoute>
+                  <CustomBlocksWizard />
                 </ProtectedRoute>
               }
             />

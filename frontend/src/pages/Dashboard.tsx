@@ -77,6 +77,7 @@ export const Dashboard: React.FC = () => {
         { element: '#tour-agenda-btn', popover: { title: 'Agenda de hoy', description: 'Accede a tus sesiones de hoy.' } },
         { element: '#tour-tests-card', popover: { title: 'Tests', description: 'Evalúa tu conocimiento y practica.' } },
         { element: '#tour-sessions-card', popover: { title: 'Sesiones', description: 'Calendario completo de estudio.' } },
+        { element: '#tour-custom-blocks-card', popover: { title: 'Bloques a Medida', description: 'Diseña tu plan bloque a bloque con control total sobre tu horario.' } },
         { element: '#tour-themes-card', popover: { title: 'Temas', description: 'Explora los 21 temas.' } },
         { element: '#tour-manual-card', popover: { title: 'Editor manual', description: 'Reorganiza sesiones a tu manera.' } },
         { element: '#tour-baremo-card', popover: { title: 'Mi Baremo', description: '¡IMPORTANTE! Introduce tus datos para calcular tu nota. Esto nos ayudará a estimar la nota de corte con la media de todos los compañeros.' } },
@@ -344,6 +345,24 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Calendario de Sesiones</h3>
             <p className="text-gray-600 text-sm">
               Visualiza y gestiona todas tus sesiones de estudio programadas.
+            </p>
+          </div>
+
+          {/* Custom Blocks Card */}
+          <div
+            onClick={() => navigate('/custom-blocks')}
+            id="tour-custom-blocks-card"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-teal-100 rounded-lg group-hover:bg-teal-200 transition-colors">
+                <span className="text-2xl">🧱</span>
+              </div>
+              <span className="text-sm text-gray-500">Personalizado</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Bloques a Medida</h3>
+            <p className="text-gray-600 text-sm">
+              Diseña tu plan bloque a bloque con control total sobre tu horario.
             </p>
           </div>
 

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { StudyPlan, WeeklySchedule, StudySession, Theme, PlanStatus, PlanThemeStats } from '@models/index';
 import { AuthRequest } from '@middleware/auth';
 import { StudyPlanService } from '@services/StudyPlanService';
+import { CustomBlocksService } from '@services/CustomBlocksService';
 import { SimpleCalendarGenerator } from '@services/SimpleCalendarGenerator';
 import { differenceInDays, addDays, startOfDay } from 'date-fns';
 import { Op } from 'sequelize';
@@ -798,12 +799,161 @@ export class StudyPlanController {
         totalThemes: Object.keys(groupedByTheme).length,
         totalParts: result.length
       });
-
     } catch (error) {
-      console.error('Error al obtener estadísticas por partes:', error);
-      res.status(500).json({ error: 'Error al obtener estadísticas por partes' });
+      console.error('Error al obtener estadísticas de partes:', error);
+      res.status(500).json({ error: 'Error al obtener estadísticas de partes' });
     }
   }
+
+  // Generar plan de bloques personalizados
+  static async generateCustomBlocksPlan(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+      const {
+        startDate,
+        examDate,
+        blocksConfig, // Array de BlockConfig
+        totalHours, // Horas semanales promedio o total
+        themes, // Array de temas con info de partes
+      } = req.body;
+
+      // Validaciones básicas
+      if (!blocksConfig || blocksConfig.length === 0) {
+        res.status(400).json({ error: 'Configuración de bloques requerida' });
+        return;
+      }
+
+      // Validar cada bloque
+      const availableDailyMinutes = totalHours ? (totalHours / 7) * 60 : 240; // Default 4h/day
+      for (const block of blocksConfig) {
+        const validation = CustomBlocksService.validateBlockConfig(block, availableDailyMinutes);
+        if (!validation.valid) {
+          res.status(400).json({
+            error: `Error en bloque ${block.blockNumber}: ${validation.errors.join(', ')}`
+          });
+          return;
+        }
+      }
+
+      // Desactivar planes anteriores
+      await StudyPlan.update(
+        { status: PlanStatus.CANCELLED },
+        { where: { userId, status: PlanStatus.ACTIVE } }
+      );
+
+      // Crear plan
+      const plan = await StudyPlan.create({
+        userId,
+        startDate,
+        examDate,
+        totalHours: totalHours || 0,
+        status: PlanStatus.ACTIVE,
+        methodology: 'custom-blocks',
+        configuration: { blocksConfig }
+      });
+
+      // Generar sesiones
+      const sessions = await CustomBlocksService.generateSessionsFromBlocks(plan.id, blocksConfig, themes);
+
+      // Guardar sesiones en lotes
+      const CHUNK_SIZE = 500;
+      for (let i = 0; i < sessions.length; i += CHUNK_SIZE) {
+        await StudySession.bulkCreate(sessions.slice(i, i + CHUNK_SIZE));
+      }
+
+      // Eliminar draft si existe
+      await StudyPlan.destroy({
+        where: { userId, status: PlanStatus.DRAFT }
+      });
+
+      res.status(201).json({
+        message: 'Plan personalizado creado exitosamente',
+        plan,
+        sessionsCount: sessions.length
+      });
+
+    } catch (error) {
+      console.error('Error al generar plan personalizado:', error);
+      res.status(500).json({ error: 'Error al generar plan personalizado' });
+    }
+  }
+
+  // Guardar progreso parcial (Draft)
+  static async saveCustomBlocksProgress(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+      const {
+        startDate,
+        examDate,
+        blocksConfig,
+        currentBlock,
+        weeklyPattern,
+        totalBlocks,
+        availableDailyMinutes,
+        allThemes
+      } = req.body;
+
+      // Buscar si ya existe un draft
+      let draft = await StudyPlan.findOne({
+        where: { userId, status: PlanStatus.DRAFT }
+      });
+
+      const config = {
+        blocksConfig,
+        currentBlock,
+        weeklyPattern,
+        totalBlocks,
+        availableDailyMinutes,
+        allThemes
+      };
+
+      if (draft) {
+        await draft.update({
+          startDate,
+          examDate,
+          configuration: config
+        });
+      } else {
+        draft = await StudyPlan.create({
+          userId,
+          startDate,
+          examDate,
+          totalHours: 0, // Se calculará al finalizar
+          status: PlanStatus.DRAFT,
+          methodology: 'custom-blocks',
+          configuration: config
+        });
+      }
+
+      res.json({ message: 'Progreso guardado', draftId: draft.id });
+
+    } catch (error) {
+      console.error('Error al guardar progreso:', error);
+      res.status(500).json({ error: 'Error al guardar progreso' });
+    }
+  }
+
+  // Obtener draft existente
+  static async getDraftPlan(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+      const draft = await StudyPlan.findOne({
+        where: { userId, status: PlanStatus.DRAFT }
+      });
+
+      if (!draft) {
+        res.status(404).json({ message: 'No hay borrador pendiente' });
+        return;
+      }
+
+      res.json({ draft });
+    } catch (error) {
+      console.error('Error al obtener borrador:', error);
+      res.status(500).json({ error: 'Error al obtener borrador' });
+    }
+  }
+
+
 
   // Método auxiliar para extraer información de partes
   private static extractPartInfo(notes: string, themeId?: number, themeTitle?: string): { partIndex: number; partLabel: string } {

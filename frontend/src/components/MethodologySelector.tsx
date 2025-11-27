@@ -1,8 +1,8 @@
 import React from 'react';
-import { Calendar, Repeat, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Calendar, Repeat, ArrowRight, CheckCircle2, Settings } from 'lucide-react';
 
 interface MethodologySelectorProps {
-    onSelect: (methodology: 'rotation' | 'monthly-blocks') => void;
+    onSelect: (methodology: 'rotation' | 'monthly-blocks' | 'custom-blocks') => void;
 }
 
 export const MethodologySelector: React.FC<MethodologySelectorProps> = ({ onSelect }) => {
@@ -15,7 +15,7 @@ export const MethodologySelector: React.FC<MethodologySelectorProps> = ({ onSele
                 </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
                 {/* Opción 1: Rotación Inteligente */}
                 <div
                     className="relative bg-white rounded-xl p-6 hover:border-blue-500 transition-all duration-300 cursor-pointer group border-2 border-transparent shadow-sm hover:shadow-xl"
@@ -96,6 +96,48 @@ export const MethodologySelector: React.FC<MethodologySelectorProps> = ({ onSele
                         </ul>
                         <button className="w-full inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 group-hover:shadow-lg">
                             Seleccionar Bloques <ArrowRight className="w-4 h-4 ml-2" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Opción 3: Bloques a Medida */}
+                <div
+                    className="relative bg-white rounded-xl p-6 hover:border-green-500 transition-all duration-300 cursor-pointer group border-2 border-transparent shadow-sm hover:shadow-xl"
+                    onClick={() => onSelect('custom-blocks')}
+                >
+                    <div className="absolute top-4 right-4 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <CheckCircle2 className="w-8 h-8" />
+                    </div>
+                    <div className="mb-6">
+                        <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4 text-green-600 group-hover:scale-110 transition-transform">
+                            <Settings className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-2xl font-semibold leading-none tracking-tight">Bloques a Medida</h3>
+                        <p className="text-sm text-muted-foreground mt-2 text-gray-500">
+                            Control total sobre tu planificación
+                        </p>
+                    </div>
+                    <div>
+                        <ul className="space-y-3 mb-8">
+                            <li className="flex items-start gap-3 text-gray-600">
+                                <span className="mt-1.5 w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" />
+                                <span>Configura patrones semanales personalizados</span>
+                            </li>
+                            <li className="flex items-start gap-3 text-gray-600">
+                                <span className="mt-1.5 w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" />
+                                <span>Define duración exacta por actividad</span>
+                            </li>
+                            <li className="flex items-start gap-3 text-gray-600">
+                                <span className="mt-1.5 w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" />
+                                <span>Organización por bloques de 30 días</span>
+                            </li>
+                            <li className="flex items-start gap-3 text-gray-600">
+                                <span className="mt-1.5 w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" />
+                                <span>Guarda borradores y continúa después</span>
+                            </li>
+                        </ul>
+                        <button className="w-full inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-green-600 text-white hover:bg-green-700 group-hover:shadow-lg">
+                            Seleccionar a Medida <ArrowRight className="w-4 h-4 ml-2" />
                         </button>
                     </div>
                 </div>

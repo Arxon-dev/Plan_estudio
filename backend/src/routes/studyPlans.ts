@@ -49,7 +49,7 @@ router.delete('/active', async (req: any, res: any) => {
   try {
     const userId = req.user!.id;
     const { StudyPlan } = require('@models/index');
-    
+
     const plan = await StudyPlan.findOne({
       where: { userId, status: 'ACTIVE' },
     });
@@ -72,9 +72,9 @@ router.post('/test-rotation', async (req: any, res: any) => {
     const userId = req.user!.id;
     const { StudyPlan, WeeklySchedule, Theme } = require('@models/index');
     const { StudyPlanService } = require('@services/StudyPlanService');
-    
+
     const { startDate, examDate, themes } = req.body;
-    
+
     if (!startDate || !examDate) {
       return res.status(400).json({ error: 'Se requieren startDate y examDate' });
     }
@@ -99,7 +99,7 @@ router.post('/test-rotation', async (req: any, res: any) => {
 
     // Obtener temas del request body o usar temas globales
     let themesToUse = themes;
-    
+
     if (!themesToUse || themesToUse.length === 0) {
       // Si no hay temas en el body, buscar temas globales
       const globalThemes = await Theme.findAll({
@@ -115,7 +115,7 @@ router.post('/test-rotation', async (req: any, res: any) => {
     console.log(`🔄 Probando sistema de rotación...`);
     console.log(`📅 Período: ${startDate} al ${examDate}`);
     console.log(`📊 Temas: ${themesToUse.length}`);
-    
+
     // Calcular horas semanales de forma segura
     const scheduleValues = Object.values(weeklySchedule.dataValues);
     const weeklyHours = scheduleValues
@@ -134,12 +134,12 @@ router.post('/test-rotation', async (req: any, res: any) => {
 
     if (result.success) {
       console.log(`✅ Sistema de rotación exitoso: ${result.sessions!.length} sesiones generadas`);
-      
+
       // Análisis de cobertura de fechas
       const sessions = result.sessions!;
       const firstDate = new Date(Math.min(...sessions.map((s: any) => new Date(s.lastStudied).getTime())));
       const lastDate = new Date(Math.max(...sessions.map((s: any) => new Date(s.lastStudied).getTime())));
-      
+
       res.json({
         success: true,
         totalSessions: sessions.length,
@@ -162,5 +162,10 @@ router.post('/test-rotation', async (req: any, res: any) => {
     res.status(500).json({ error: 'Error al probar sistema de rotación' });
   }
 });
+
+// Custom Blocks Routes
+router.post('/custom-blocks/generate', StudyPlanController.generateCustomBlocksPlan);
+router.post('/custom-blocks/save-progress', StudyPlanController.saveCustomBlocksProgress);
+router.get('/custom-blocks/draft', StudyPlanController.getDraftPlan);
 
 export default router;

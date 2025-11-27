@@ -9,6 +9,7 @@ export enum PlanStatus {
   COMPLETED = 'COMPLETED',
   PAUSED = 'PAUSED',
   CANCELLED = 'CANCELLED',
+  DRAFT = 'DRAFT',
 }
 
 interface StudyPlanAttributes {
@@ -18,12 +19,13 @@ interface StudyPlanAttributes {
   examDate: Date;
   totalHours: number;
   status: PlanStatus;
-  methodology: 'rotation' | 'monthly-blocks';
+  methodology: 'rotation' | 'monthly-blocks' | 'custom-blocks';
+  configuration?: any;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface StudyPlanCreationAttributes extends Optional<StudyPlanAttributes, 'id' | 'methodology'> { }
+interface StudyPlanCreationAttributes extends Optional<StudyPlanAttributes, 'id' | 'methodology' | 'configuration'> { }
 
 export class StudyPlan extends Model<StudyPlanAttributes, StudyPlanCreationAttributes> implements StudyPlanAttributes {
   public id!: number;
@@ -32,7 +34,8 @@ export class StudyPlan extends Model<StudyPlanAttributes, StudyPlanCreationAttri
   public examDate!: Date;
   public totalHours!: number;
   public status!: PlanStatus;
-  public methodology!: 'rotation' | 'monthly-blocks';
+  public methodology!: 'rotation' | 'monthly-blocks' | 'custom-blocks';
+  public configuration?: any;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -77,6 +80,10 @@ StudyPlan.init(
       type: DataTypes.STRING(20),
       allowNull: false,
       defaultValue: 'rotation',
+    },
+    configuration: {
+      type: DataTypes.JSON,
+      allowNull: true,
     },
   },
   {

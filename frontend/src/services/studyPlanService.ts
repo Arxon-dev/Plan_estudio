@@ -47,8 +47,9 @@ export interface StudyPlan {
   startDate: string;
   examDate: string;
   totalHours: number;
-  status: 'ACTIVE' | 'COMPLETED' | 'PAUSED' | 'CANCELLED';
+  status: 'ACTIVE' | 'COMPLETED' | 'PAUSED' | 'CANCELLED' | 'DRAFT';
   weeklySchedule?: WeeklySchedule;
+  configuration?: any;
 }
 
 export interface StudySession {
@@ -175,6 +176,29 @@ export const studyPlanService = {
   }> {
     const response = await apiClient.get(`/study-plans/${planId}/status`);
     return response.data;
+  },
+
+  // Custom Blocks Methods
+  async generateCustomBlocksPlan(data: any): Promise<SmartPlanResponse> {
+    const response = await apiClient.post('/study-plans/custom-blocks/generate', data);
+    return response.data;
+  },
+
+  async saveCustomBlocksProgress(data: any): Promise<{ message: string; draftId: number }> {
+    const response = await apiClient.post('/study-plans/custom-blocks/save-progress', data);
+    return response.data;
+  },
+
+  async getDraftPlan(): Promise<{ draft: StudyPlan | null }> {
+    try {
+      const response = await apiClient.get('/study-plans/custom-blocks/draft');
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return { draft: null };
+      }
+      throw error;
+    }
   },
 
 };

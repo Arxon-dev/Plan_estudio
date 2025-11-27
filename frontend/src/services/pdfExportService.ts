@@ -81,6 +81,7 @@ export class PDFExportService {
         head: [['Día', 'Tema', 'Tipo', 'Horas', 'Bloque', 'Estado']],
         body: tableData,
         theme: 'striped',
+        tableWidth: 'auto',
         headStyles: {
           fillColor: [59, 130, 246], // blue-500
           textColor: 255,
@@ -94,15 +95,21 @@ export class PDFExportService {
         alternateRowStyles: {
           fillColor: [248, 250, 252], // slate-50
         },
-        columnStyles: {
-          0: { cellWidth: 25 }, // Día
-          1: { cellWidth: 70 }, // Tema
-          2: { cellWidth: 20 }, // Tipo
-          3: { cellWidth: 15 }, // Horas
-          4: { cellWidth: 22 }, // Bloque
-          5: { cellWidth: 28 }, // Estado
+        styles: {
+          overflow: 'linebreak',
+          cellWidth: 'wrap',
+          fontSize: 8,
+          cellPadding: 1.5,
         },
-        margin: { left: 14, right: 14 },
+        columnStyles: {
+          0: { cellWidth: 22, halign: 'center' }, // Día
+          1: { cellWidth: 'auto', minCellWidth: 40 }, // Tema
+          2: { cellWidth: 28, halign: 'center' }, // Tipo
+          3: { cellWidth: 18, halign: 'center' }, // Horas
+          4: { cellWidth: 18, halign: 'center' }, // Bloque
+          5: { cellWidth: 25, halign: 'center' }, // Estado
+        },
+        margin: { left: 8, right: 8 },
         didDrawPage: () => {
           // Añadir footer en cada página
           this.addFooter(doc, pageWidth, pageHeight);
@@ -128,9 +135,30 @@ export class PDFExportService {
       sessionsByBlock: this.groupSessionsByBlock(sessions),
     });
 
-    // Descargar el PDF
-    const fileName = `Plan_Estudio_${planName.replace(/\s+/g, '_')}_${format(new Date(), 'yyyyMMdd')}.pdf`;
-    doc.save(fileName);
+    // Validar que hay sesiones
+    if (sessions.length === 0) {
+      console.error('No hay sesiones para exportar');
+      throw new Error('El plan está vacío');
+    }
+
+    // Descargar el PDF usando Blob para asegurar el nombre correcto
+    const safePlanName = planName ? planName.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'custom_blocks';
+    const fileName = `Plan_Estudio_${safePlanName}_${format(new Date(), 'yyyyMMdd')}.pdf`;
+
+    console.log('Generando PDF con', sessions.length, 'sesiones');
+    console.log('Nombre del archivo:', fileName);
+
+    const pdfBlob = doc.output('blob');
+    const url = window.URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    console.log('PDF guardado exitosamente');
   }
 
   /**
@@ -277,6 +305,7 @@ export class PDFExportService {
       head: [['Bloque', 'Sesiones', 'Horas', '% Total']],
       body: blockData,
       theme: 'grid',
+      tableWidth: 'auto',
       headStyles: {
         fillColor: [59, 130, 246],
         textColor: 255,
@@ -284,16 +313,22 @@ export class PDFExportService {
         fontStyle: 'bold',
       },
       bodyStyles: {
-        fontSize: 9,
+        fontSize: 8,
         textColor: 60,
       },
-      columnStyles: {
-        0: { cellWidth: 50 },
-        1: { cellWidth: 40 },
-        2: { cellWidth: 40 },
-        3: { cellWidth: 40 },
+      styles: {
+        overflow: 'linebreak',
+        cellWidth: 'wrap',
+        fontSize: 8,
+        cellPadding: 1.5,
       },
-      margin: { left: 20, right: 14 },
+      columnStyles: {
+        0: { cellWidth: 'auto', minCellWidth: 40 }, // Bloque (Flexible)
+        1: { cellWidth: 25, halign: 'center' },
+        2: { cellWidth: 25, halign: 'center' },
+        3: { cellWidth: 25, halign: 'center' },
+      },
+      margin: { left: 8, right: 8 },
     });
 
     // Footer
