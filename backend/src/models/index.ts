@@ -19,6 +19,7 @@ import Recompensa from './Recompensa';
 import Titulacion from './Titulacion';
 import Idioma from './Idioma';
 import CursoMilitar from './CursoMilitar';
+import ChatUsage from './ChatUsage';
 
 // Exportar todos los modelos
 export {
@@ -43,6 +44,7 @@ export {
   Titulacion,
   Idioma,
   CursoMilitar,
+  ChatUsage,
 };
 
 // Exportar enums

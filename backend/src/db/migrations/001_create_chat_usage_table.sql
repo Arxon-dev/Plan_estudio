@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS chat_usage (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  month VARCHAR(7) NOT NULL,  -- formato: 2025-01
+  queries_count INT DEFAULT 0,
+  last_query_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_user_month (user_id, month),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_user_month (user_id, month)
+);

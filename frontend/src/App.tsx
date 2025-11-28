@@ -40,6 +40,7 @@ import { MaintenancePage } from './pages/MaintenancePage';
 import BaremoPage from './pages/baremo/BaremoPage';
 import RankingPage from './pages/ranking/RankingPage';
 import { CustomBlocksWizard } from './components/CustomBlocksWizard';
+import ChatPage from './pages/ChatPage';
 
 const App: React.FC = () => {
   return (
@@ -254,6 +255,15 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <RankingPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoute>
+                  <ChatPage />
                 </ProtectedRoute>
               }
             />

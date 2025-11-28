@@ -74,6 +74,8 @@ import baremoRoutes from './routes/baremo';
 app.use('/api/baremo', baremoRoutes);
 import rankingRoutes from './routes/ranking';
 app.use('/api/ranking', rankingRoutes);
+import chatRoutes from './routes/chat';
+app.use('/api/chat', chatRoutes);
 
 // Manejador de errores
 app.use(errorHandler);

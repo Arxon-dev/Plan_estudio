@@ -9,6 +9,8 @@ import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { SparklesIcon } from '@heroicons/react/24/solid';
 import { Header } from '../components/Header';
+import { ChatCard } from '../components/Dashboard/ChatCard';
+import { useChat } from '../hooks/useChat';
 
 // Helper para formatear horas de manera más legible
 const formatHours = (hours: number | string): string => {
@@ -36,6 +38,7 @@ export const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const isPremium = user?.isPremium;
+  const { usage } = useChat(); // Fetch chat usage
 
   // Calcular información del buffer
   const calculateBufferInfo = () => {
@@ -312,6 +315,9 @@ export const Dashboard: React.FC = () => {
 
         {/* Main Actions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Chat Card */}
+          <ChatCard usage={usage || undefined} isLoading={!usage} />
+
           {/* Tests Card */}
           <div
             onClick={() => navigate('/tests')}

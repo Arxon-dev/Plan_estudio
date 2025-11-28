@@ -5,6 +5,7 @@ import TestAttempt from '../models/TestAttempt';
 import ThemeProgress from '../models/ThemeProgress';
 import UserTestStats from '../models/UserTestStats';
 import AITestSession from '../models/AITestSession';
+import ChatUsage from '../models/ChatUsage';
 
 export async function migrate() {
   try {
@@ -29,6 +30,9 @@ export async function migrate() {
 
     await AITestSession.sync({ force: false });
     console.log('✅ Tabla ai_test_sessions creada');
+
+    await ChatUsage.sync({ force: false });
+    console.log('✅ Tabla chat_usage creada');
 
     console.log('✅ Migración completada exitosamente');
     process.exit(0);

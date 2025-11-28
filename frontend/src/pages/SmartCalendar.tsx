@@ -14,6 +14,14 @@ interface Theme {
   priority: number;
 }
 
+interface BufferWarning {
+  title: string;
+  message: string;
+  bufferStartDate: string | Date;
+  examDate: string | Date;
+  bufferDays: number;
+}
+
 const SmartCalendar: React.FC = () => {
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState('');
@@ -30,7 +38,7 @@ const SmartCalendar: React.FC = () => {
   const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set(PREDEFINED_THEMES.map(t => t.id)));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [bufferWarning, setBufferWarning] = useState<any>(null);
+  const [bufferWarning, setBufferWarning] = useState<BufferWarning | null>(null);
   const [methodology, setMethodology] = useState<'rotation' | 'monthly-blocks' | null>(null);
   const [topicsPerDay, setTopicsPerDay] = useState<number>(3);
 
@@ -175,10 +183,12 @@ const SmartCalendar: React.FC = () => {
       } else {
         throw new Error('No se recibió el plan creado');
       }
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Error al crear el plan. Por favor intente nuevamente.';
+    } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error al crear el plan. Por favor intente nuevamente.';
       setError(errorMessage);
-      console.error('Error al crear plan:', err);
+      console.error('Error al crear plan:', error);
     } finally {
       setLoading(false);
     }
