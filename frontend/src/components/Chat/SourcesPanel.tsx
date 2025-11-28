@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
+
 
 interface SourcesPanelProps {
     sources: Array<{

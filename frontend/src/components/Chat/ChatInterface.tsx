@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useChat } from '../../hooks/useChat';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
@@ -6,12 +6,10 @@ import { UsageIndicator } from './UsageIndicator';
 import { LimitReachedModal } from './LimitReachedModal';
 import { SourcesPanel } from './SourcesPanel';
 import { UpgradeBanner } from './UpgradeBanner';
-import { Card } from '../ui/card'; // Asumiendo que existe o usaré div
-import { Button } from '../ui/button'; // Asumiendo que existe o usaré button
 import { X } from 'lucide-react';
 
 export const ChatInterface: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
-    const { messages, isLoading, usage, limitReached, sendMessage, refreshUsage } = useChat();
+    const { messages, isLoading, usage, limitReached, sendMessage } = useChat();
     const [showSources, setShowSources] = React.useState(false);
     const [activeSources, setActiveSources] = React.useState<any[]>([]);
 

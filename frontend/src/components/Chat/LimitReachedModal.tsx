@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, AlertCircle, Crown } from 'lucide-react';
+import { AlertCircle, Crown } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 
 interface LimitReachedModalProps {
