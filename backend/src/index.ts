@@ -1,6 +1,27 @@
 import express, { Application } from 'express'; // Force restart 3
 import cors from 'cors';
 import dotenv from 'dotenv';
+import dns from 'dns';
+
+// Parche para forzar IPv4 en Railway y evitar errores ECONNREFUSED con IPv6
+// Esto es necesario porque Node.js prefiere IPv6 pero Qdrant en Railway parece escuchar mejor en IPv4
+try {
+    const originalLookup = dns.lookup;
+    (dns as any).lookup = (hostname: string, options: any, callback: any) => {
+        if (typeof options === 'function') {
+            callback = options;
+            options = {};
+        }
+        if (!options) options = {};
+        options.family = 4; // Forzar IPv4
+        options.verbatim = false;
+        return originalLookup(hostname, options, callback);
+    };
+    console.log('🔧 DNS Patch aplicado: Forzando resolución IPv4');
+} catch (e) {
+    console.error('Error aplicando parche DNS:', e);
+}
+
 import sequelize from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 

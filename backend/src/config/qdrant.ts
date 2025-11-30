@@ -1,5 +1,6 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
 import dotenv from 'dotenv';
+import dns from 'dns';
 
 dotenv.config();
 
@@ -8,6 +9,15 @@ const QDRANT_PORT = Number(process.env.QDRANT_PORT) || 6333;
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 
 console.log(`🔌 Conectando a Qdrant en ${QDRANT_HOST}:${QDRANT_PORT}`);
+
+// Debug: Verificar resolución DNS
+dns.lookup(QDRANT_HOST, (err, address, family) => {
+    if (err) {
+        console.error(`❌ Error resolviendo DNS para ${QDRANT_HOST}:`, err);
+    } else {
+        console.log(`🔍 Resolución DNS para ${QDRANT_HOST}: ${address} (Familia: IPv${family})`);
+    }
+});
 
 export const qdrantClient = new QdrantClient({
     host: QDRANT_HOST,
