@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { BookOpen, Copy, Check, FileText, List, CreditCard, GitCompare, Network, Image as ImageIcon, FileDown, MoreVertical } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { DiagramViewer } from './DiagramViewer';
 import { FlashcardViewer } from './FlashcardViewer';
 import { OutlineTreeView } from './OutlineTreeView';
@@ -231,14 +232,14 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
             const parts = message.content.split(mermaidRegex);
             return (
                 <>
-                    <ReactMarkdown>{parts[0]}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{parts[0]}</ReactMarkdown>
                     <DiagramViewer code={match![1]} />
-                    {parts[2] && <ReactMarkdown>{parts[2]}</ReactMarkdown>}
+                    {parts[2] && <ReactMarkdown remarkPlugins={[remarkGfm]}>{parts[2]}</ReactMarkdown>}
                 </>
             );
         }
 
-        return <ReactMarkdown>{message.content}</ReactMarkdown>;
+        return <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>;
     };
 
     return (
