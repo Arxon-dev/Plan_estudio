@@ -66,9 +66,12 @@ function sanitizeOutlineResponse(response: string, type: string): string {
 // --- Obtener Documentos Disponibles ---
 export async function getAvailableDocuments(): Promise<{ bloque: string; temas: { id: string; title: string; isPart?: boolean; parentId?: string }[] }[]> {
     try {
+        // OPTIMIZACIÓN CRÍTICA: Solo traer metadatos necesarios, NO el texto completo.
+        // Traer 10,000 documentos con texto completo (with_payload: true) causaba OOM (Out of Memory)
+        // y reinicios del contenedor en Railway.
         const points = await qdrantClient.scroll(COLLECTION_NAME, {
             limit: 10000,
-            with_payload: true,
+            with_payload: ['bloque', 'tema', 'documento'], 
         });
 
         // Map<Bloque, Map<TemaID, Set<DocumentoTitulo>>>
