@@ -160,6 +160,29 @@ export async function getAvailableDocuments(): Promise<{ bloque: string; temas: 
     }
 }
 
+// --- Helper: Reparar tablas Markdown ---
+function repairMarkdownTables(text: string): string {
+    if (!text) return text;
+
+    // Estrategia agresiva para separar filas pegadas
+    // Reemplaza "| |" o "||" por "|\n|"
+    // Esto asume que los espacios entre pipes son separadores de fila cuando faltan los saltos de línea
+    let processed = text.replace(/\|\s*\|/g, (match) => {
+        // Si es una línea de separación (ej: |---|), no la tocamos aquí si está aislada, 
+        // pero si está pegada a algo, el regex capturará los pipes de unión.
+        return '|\n|';
+    });
+
+    // Asegurar que la línea de separación de encabezados tenga saltos de línea
+    // Busca patrones como: |\n|---|---|...|\n|
+    // A veces el reemplazo anterior deja cosas como: ...Header|\n|---|...
+    // Queremos asegurar que |---| tenga \n antes y después.
+    // Buscamos el patrón de guiones
+    processed = processed.replace(/([^\n])(\|\s*:?-{3,}:?.*\|)([^\n])/g, '$1\n$2\n$3');
+
+    return processed;
+}
+
 // --- Chat Principal ---
 export const processChat = async (
     userId: number,
@@ -272,11 +295,16 @@ export const processChat = async (
             console.warn('⚠️ RESPUESTA TRUNCADA - Aumentar maxOutputTokens');
         }
 
-        const sanitizedResponse = sanitizeOutlineResponse(geminiResponse, type);
+        let sanitizedResponse = sanitizeOutlineResponse(geminiResponse, type);
+        
+        // Reparar tablas si el modelo las devolvió compactadas (sin saltos de línea)
+        if (type === 'summary' || type === 'comparison' || type === 'general') {
+            sanitizedResponse = repairMarkdownTables(sanitizedResponse);
+        }
 
         // 5. Registrar uso (asumiendo que existe la función incrementUsage, si no, comentar)
         // await incrementUsage(userId); 
-
+        
         // 6. Formatear fuentes
         const sources = searchResult.map((item: any) => ({
             documento: item.payload.documento,
@@ -382,6 +410,9 @@ INSTRUCCIONES FINALES:
         if (firstHeaderIndex !== -1) {
             content = content.substring(firstHeaderIndex);
         }
+
+        // Reparar tablas (para ambos formatos: PDF y Markdown)
+        content = repairMarkdownTables(content);
 
         if (format === 'pdf') {
             console.log('[ChatService] Generating PDF...');
