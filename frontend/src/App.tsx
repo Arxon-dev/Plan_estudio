@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import './index.css';
+import './styles/flow-diagram.css';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { MobileWarningBanner } from './components/MobileWarningBanner';
@@ -36,6 +38,9 @@ import { GuideEditor } from './pages/admin/GuideEditor';
 import { MarketingSettings } from './pages/admin/MarketingSettings';
 import { Announcements } from './pages/admin/Announcements';
 import { SystemLogs } from './pages/admin/SystemLogs';
+import { AIUsageDashboard } from './pages/admin/AIUsageDashboard';
+import { SimulacroManagement } from './pages/admin/SimulacroManagement';
+import { SimulacroList } from './pages/SimulacroList';
 import { MaintenancePage } from './pages/MaintenancePage';
 import BaremoPage from './pages/baremo/BaremoPage';
 import RankingPage from './pages/ranking/RankingPage';
@@ -195,6 +200,17 @@ const App: React.FC = () => {
 
             <Route path="/admin/sistema/configuracion" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
             <Route path="/admin/sistema/logs" element={<ProtectedRoute><SystemLogs /></ProtectedRoute>} />
+            <Route path="/admin/sistema/ai-usage" element={<ProtectedRoute><AIUsageDashboard /></ProtectedRoute>} />
+            <Route path="/admin/simulacros" element={<ProtectedRoute><SimulacroManagement /></ProtectedRoute>} />
+
+            <Route
+              path="/simulacros"
+              element={
+                <ProtectedRoute>
+                  <SimulacroList />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/tests"

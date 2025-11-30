@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AdminSidebar } from '../../components/AdminSidebar';
+import { UserBaremoManager } from './UserBaremoManager';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import {
@@ -51,6 +52,7 @@ export const UserManagement: React.FC = () => {
     const [logs, setLogs] = useState<AuditLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [activeTab, setActiveTab] = useState<'general' | 'baremo' | 'audit'>('general');
 
     // Form states
     const [role, setRole] = useState('user');
@@ -204,8 +206,6 @@ export const UserManagement: React.FC = () => {
         }
     };
 
-
-
     if (loading) {
         return (
             <div className="flex h-screen bg-gray-100 items-center justify-center">
@@ -254,11 +254,48 @@ export const UserManagement: React.FC = () => {
                 </header>
 
                 <main className="flex-1 overflow-y-auto p-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Tabs Navigation */}
+                    <div className="mb-6 border-b border-gray-200">
+                        <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+                            <button
+                                onClick={() => setActiveTab('general')}
+                                className={`${
+                                    activeTab === 'general'
+                                        ? 'border-blue-500 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                            >
+                                <UserIcon className="h-5 w-5" />
+                                Información General
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('baremo')}
+                                className={`${
+                                    activeTab === 'baremo'
+                                        ? 'border-blue-500 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                            >
+                                <ShieldCheckIcon className="h-5 w-5" />
+                                Gestión de Baremo
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('audit')}
+                                className={`${
+                                    activeTab === 'audit'
+                                        ? 'border-blue-500 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                            >
+                                <ClockIcon className="h-5 w-5" />
+                                Historial ({logs.length})
+                            </button>
+                        </nav>
+                    </div>
 
-                        {/* Left Column: User Info & Edit Form */}
-                        <div className="lg:col-span-2 space-y-6">
-
+                    {/* Tab Content */}
+                    {activeTab === 'general' && (
+                        <div className="space-y-6 max-w-4xl mx-auto">
                             {/* Basic Info Card */}
                             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                                 <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -439,16 +476,23 @@ export const UserManagement: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+                    )}
 
-                        {/* Right Column: Audit Log */}
-                        <div className="lg:col-span-1">
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
+                    {activeTab === 'baremo' && (
+                        <div className="max-w-5xl mx-auto">
+                            <UserBaremoManager userId={Number(id)} />
+                        </div>
+                    )}
+
+                    {activeTab === 'audit' && (
+                        <div className="max-w-4xl mx-auto">
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                                 <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                                     <ClockIcon className="h-5 w-5 text-gray-500" />
                                     Historial de Cambios
                                 </h2>
 
-                                <div className="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[600px]">
+                                <div className="overflow-y-auto pr-2 space-y-4">
                                     {logs.length === 0 ? (
                                         <p className="text-sm text-gray-500 text-center py-4">No hay registros de cambios.</p>
                                     ) : (
@@ -470,8 +514,7 @@ export const UserManagement: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-
-                    </div>
+                    )}
                 </main >
             </div >
 
@@ -490,7 +533,11 @@ export const UserManagement: React.FC = () => {
                             </p>
                             <div className="flex justify-end gap-3">
                                 <button
-                                    onClick={() => setShowBanModal(false)}
+                                    onClick={() => {
+                                        setShowBanModal(false);
+                                        setIsBanned(false);
+                                        setBanReason('');
+                                    }}
                                     className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
                                 >
                                     Cancelar
@@ -499,7 +546,7 @@ export const UserManagement: React.FC = () => {
                                     onClick={confirmBan}
                                     className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
                                 >
-                                    Confirmar Suspensión
+                                    Suspender Usuario
                                 </button>
                             </div>
                         </div>
@@ -512,24 +559,27 @@ export const UserManagement: React.FC = () => {
                 showPremiumModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                            <div className="flex items-center gap-3 mb-4 text-blue-600">
+                            <div className="flex items-center gap-3 mb-4 text-yellow-600">
                                 <CurrencyEuroIcon className="h-8 w-8" />
-                                <h3 className="text-lg font-bold">¿Activar Premium Manualmente?</h3>
+                                <h3 className="text-lg font-bold">¿Activar Premium?</h3>
                             </div>
                             <p className="text-gray-600 mb-6">
-                                Esto otorgará acceso completo a la plataforma. Si el usuario ya tiene una suscripción activa,
-                                <strong> esta acción podría interferir con la facturación automática</strong>.
+                                ¿Estás seguro de que deseas activar el estado Premium para <strong>{user.firstName} {user.lastName}</strong>?
+                                Esto dará acceso completo a todo el contenido de la plataforma.
                             </p>
                             <div className="flex justify-end gap-3">
                                 <button
-                                    onClick={() => setShowPremiumModal(false)}
+                                    onClick={() => {
+                                        setShowPremiumModal(false);
+                                        setIsPremium(false);
+                                    }}
                                     className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={confirmPremium}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                    className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
                                 >
                                     Activar Premium
                                 </button>

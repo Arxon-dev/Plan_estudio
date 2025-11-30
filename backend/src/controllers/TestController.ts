@@ -154,7 +154,7 @@ class TestController {
       const userId = req.user!.id;
       console.log('🔵 [TEST CREATE] User:', userId, 'Request body:', req.body);
 
-      const { themeId, themePart, testType, questionCount, difficulty } = req.body;
+      const { themeId, themePart, testType, questionCount, difficulty, simulacroId } = req.body;
 
       // Validaciones
       if (!testType) {
@@ -165,7 +165,7 @@ class TestController {
         return res.status(400).json({ message: 'Tipo de test inválido' });
       }
 
-      if (!questionCount || questionCount < 1 || questionCount > 100) {
+      if ((!questionCount || questionCount < 1 || questionCount > 100) && !simulacroId) {
         return res.status(400).json({ message: 'Cantidad de preguntas inválida (1-100)' });
       }
 
@@ -230,8 +230,9 @@ class TestController {
         themeId: themeId ? parseInt(themeId) : undefined,
         themePart: themePart ? parseInt(themePart) : undefined,
         testType,
-        questionCount,
+        questionCount: simulacroId ? 0 : questionCount,
         difficulty,
+        simulacroId
       });
 
       console.log('✅ [TEST CREATED] Test ID:', result.attemptId);

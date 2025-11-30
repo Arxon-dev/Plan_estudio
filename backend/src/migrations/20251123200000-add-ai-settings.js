@@ -66,7 +66,7 @@ module.exports = {
             },
             {
                 key: 'GEMINI_MODEL',
-                value: 'gemini-1.5-pro',
+                value: 'gemini-2.5-pro',
                 type: 'string',
                 category: 'ai',
                 description: 'Modelo de Gemini',

@@ -5,6 +5,7 @@ export interface ChatResponse {
         texto: string;
         score: number;
     }>;
+    type?: string;
     usage?: {
         queries_used: number;
         queries_limit: number;

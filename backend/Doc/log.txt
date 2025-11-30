@@ -1,0 +1,272 @@
+CORRECCIÓN URGENTE: Esquemas generando gráficos en lugar de texto
+PROBLEMA IDENTIFICADO
+Cuando el usuario solicita un esquema, el sistema está generando diagramas visuales con cajas de colores en lugar de texto estructurado jerárquicamente.
+TAREA 1: Modificar template de outline (CRÍTICO)
+Archivo: backend/src/prompts/promptTemplates.js
+Reemplazar completamente el template outline por este:
+javascriptoutline: (context, userQuestion) => `
+Eres un asistente especializado en normativa militar española.
+
+TAREA: Crear un esquema de texto jerárquico estructurado.
+
+CONTEXTO DE LOS DOCUMENTOS:
+${context}
+
+PREGUNTA DEL USUARIO:
+${userQuestion}
+
+INSTRUCCIONES ABSOLUTAS - NO NEGOCIABLES:
+
+1. FORMATO OBLIGATORIO: Solo texto plano con numeración jerárquica
+2. USA EXCLUSIVAMENTE esta estructura de niveles:
+   - Nivel 1: números romanos (I, II, III, IV)
+   - Nivel 2: letras mayúsculas (A, B, C, D)
+   - Nivel 3: números arábigos (1, 2, 3, 4)
+   - Nivel 4: letras minúsculas (a, b, c, d)
+
+3. CADA LÍNEA debe contener:
+   - El marcador de nivel
+   - Un punto después del marcador
+   - Texto descriptivo completo (mínimo 5 palabras)
+
+4. PROHIBIDO ABSOLUTAMENTE:
+   - NO generes diagramas visuales
+   - NO uses cajas, círculos o formas gráficas
+   - NO uses sintaxis de Mermaid, PlantUML o similar
+   - NO uses código HTML, SVG o Canvas
+   - NO uses bloques de código con formato gráfico
+   - SOLO TEXTO CON INDENTACIÓN
+
+5. Máximo 4 niveles de profundidad
+6. Usa 3 espacios por cada nivel de indentación
+
+EJEMPLO EXACTO DEL FORMATO REQUERIDO:
+
+I. TÍTULO PRINCIPAL DEL TEMA EN MAYÚSCULAS
+   A. Primer subtema con descripción clara del contenido
+      1. Punto específico que explica un aspecto importante del subtema
+         a. Detalle concreto que amplía información del punto anterior
+         b. Otro detalle relevante relacionado con el mismo punto
+      2. Segundo punto específico con su propia explicación detallada
+   B. Segundo subtema igualmente desarrollado con información
+      1. Punto que desarrolla este segundo subtema
+
+II. SEGUNDO TÍTULO PRINCIPAL SI APLICA
+   A. Subtema del segundo bloque principal
+      1. Punto específico
+      2. Otro punto
+
+FUENTE: Bloque X, Tema Y - Nombre del documento
+
+ADVERTENCIA FINAL: Si generas CUALQUIER elemento visual (diagramas, gráficos, cajas), habrás fallado completamente. SOLO texto con numeración jerárquica.
+
+Genera el esquema AHORA en el formato especificado:
+`
+TAREA 2: Verificar detección de tipo
+Archivo: backend/src/prompts/promptTemplates.js
+Modificar la función detectRequestType para priorizar la detección de esquemas:
+javascriptfunction detectRequestType(userMessage) {
+  const message = userMessage.toLowerCase();
+  
+  // PRIORIDAD 1: Esquema/Outline (detectar PRIMERO)
+  if (/(esquema|outline|estructura|índice|organiza)/i.test(message)) {
+    return 'outline';
+  }
+  
+  // PRIORIDAD 2: Diagrama visual (esto es DIFERENTE de esquema)
+  if (/(diagrama|mapa\s+mental|mapa\s+conceptual|gráfico|visual)/i.test(message)) {
+    return 'diagram';
+  }
+  
+  // Resto de detecciones...
+  if (/(resume|resumen|sintetiza)/i.test(message)) {
+    return 'summary';
+  }
+  
+  if (/(flashcard|tarjeta|carta)/i.test(message)) {
+    return 'flashcards';
+  }
+  
+  if (/(compar|diferencia|vs|versus)/i.test(message)) {
+    return 'comparison';
+  }
+  
+  return 'general';
+}
+TAREA 3: Agregar logging de debug
+Archivo: backend/src/services/chatService.js
+Agregar logs para ver qué está devolviendo Gemini:
+javascriptasync function processMessage(userMessage, selectedContext = null) {
+  try {
+    const relevantDocs = await qdrantService.search(/*...*/);
+    
+    const { prompt, type } = buildPrompt(userMessage, relevantDocs);
+    
+    console.log('=== DEBUG CHAT SERVICE ===');
+    console.log('Tipo detectado:', type);
+    console.log('Primeras 500 chars del prompt:');
+    console.log(prompt.substring(0, 500));
+    console.log('========================');
+    
+    const geminiResponse = await geminiService.generateResponse(prompt);
+    
+    console.log('=== RESPUESTA DE GEMINI ===');
+    console.log('Primeros 200 chars de respuesta:');
+    console.log(geminiResponse.substring(0, 200));
+    console.log('Contiene "```":', geminiResponse.includes('```'));
+    console.log('Contiene "<svg":', geminiResponse.includes('<svg'));
+    console.log('Contiene "mermaid":', geminiResponse.includes('mermaid'));
+    console.log('===========================');
+    
+    return {
+      response: geminiResponse,
+      sources: sources,
+      type: type
+    };
+  } catch (error) {
+    console.error('[ChatService] Error:', error);
+    throw error;
+  }
+}
+TAREA 4: Filtrar contenido visual en el backend
+Archivo: backend/src/services/chatService.js
+Agregar función para sanitizar la respuesta:
+javascriptfunction sanitizeOutlineResponse(response, type) {
+  if (type !== 'outline') {
+    return response;
+  }
+  
+  // Eliminar bloques de código que puedan contener diagramas
+  let cleaned = response.replace(/```[\s\S]*?```/g, '');
+  
+  // Eliminar tags HTML/SVG
+  cleaned = cleaned.replace(/<[^>]*>/g, '');
+  
+  // Eliminar sintaxis de Mermaid
+  if (cleaned.includes('graph') || cleaned.includes('flowchart')) {
+    console.warn('[SANITIZE] Detectado intento de diagrama Mermaid, limpiando...');
+    cleaned = cleaned.split('\n')
+      .filter(line => !line.includes('-->') && !line.includes('graph'))
+      .join('\n');
+  }
+  
+  return cleaned;
+}
+
+// Modificar processMessage:
+const geminiResponse = await geminiService.generateResponse(prompt);
+const sanitizedResponse = sanitizeOutlineResponse(geminiResponse, type);
+
+return {
+  response: sanitizedResponse,
+  // ...
+};
+TAREA 5: Agregar configuración específica para Gemini
+Archivo: backend/src/services/geminiService.js
+Asegurarse de que la configuración de Gemini no permita código:
+javascriptasync function generateResponse(prompt) {
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-1.5-pro",
+    generationConfig: {
+      temperature: 0.3,  // Más bajo = más determinista
+      topK: 20,
+      topP: 0.8,
+      maxOutputTokens: 2048,
+      // IMPORTANTE: No permitir código si es posible
+      stopSequences: [],
+    },
+  });
+  
+  const result = await model.generateContent(prompt);
+  const response = result.response.text();
+  
+  return response;
+}
+TAREA 6: Test manual desde consola
+Crear script de prueba: backend/src/scripts/testOutline.js
+javascriptconst { buildPrompt } = require('../prompts/promptTemplates');
+
+const mockDocs = [{
+  text: `La Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público regula:
+  
+  - El funcionamiento electrónico del sector público
+  - Las normas de funcionamiento
+  - Los órganos de las Administraciones Públicas
+  
+  Artículo 1. Objeto: Esta Ley regula y desarrolla...`,
+  metadata: {
+    bloque: "1",
+    tema: "3",
+    documento: "Ley 40/2015",
+    filename: "test.txt"
+  }
+}];
+
+const testMessage = "Dame un esquema de la Ley 40/2015";
+
+const { prompt, type } = buildPrompt(testMessage, mockDocs);
+
+console.log('TIPO DETECTADO:', type);
+console.log('\n========== PROMPT GENERADO ==========\n');
+console.log(prompt);
+console.log('\n====================================\n');
+
+// Verificaciones
+console.log('✓ Contiene "SOLO TEXTO":', prompt.includes('SOLO TEXTO'));
+console.log('✓ Contiene "PROHIBIDO":', prompt.includes('PROHIBIDO'));
+console.log('✓ Contiene ejemplo de formato:', prompt.includes('I. TÍTULO'));
+Ejecutar: node backend/src/scripts/testOutline.js
+
+VERIFICACIÓN POST-IMPLEMENTACIÓN
+Después de aplicar los cambios:
+
+Ejecutar test script:
+
+bash   node backend/src/scripts/testOutline.js
+Verificar que el prompt contenga todas las restricciones
+
+Revisar logs del backend:
+
+bash   # Al hacer petición real
+   # Buscar en logs:
+   - "Tipo detectado: outline"
+   - Primeros chars del prompt
+   - Primeros chars de respuesta de Gemini
+```
+
+3. **Probar en el chat:**
+   - Escribir: "Dame un esquema del tema 3"
+   - Verificar que la respuesta sea SOLO texto
+   - Formato esperado:
+```
+     I. TÍTULO
+        A. Subtema
+           1. Punto
+              a. Detalle
+```
+
+4. **Si SIGUE generando gráficos:**
+   - Revisar los logs de debug
+   - Copiar aquí la respuesta exacta de Gemini
+   - Revisar si el frontend está procesando algo especial
+
+---
+
+## RESPUESTA ESPERADA CORRECTA:
+```
+I. LEY 40/2015 - RÉGIMEN JURÍDICO DEL SECTOR PÚBLICO
+   A. Objeto y finalidad de la norma
+      1. Regular el funcionamiento del sector público administrativo
+         a. Establecer principios de organización y funcionamiento
+         b. Definir relaciones entre administraciones públicas
+      2. Garantizar transparencia en la gestión administrativa
+   B. Ámbito de aplicación territorial
+      1. Administración General del Estado y organismos adscritos
+      2. Administraciones autonómicas en sus respectivos ámbitos
+      
+II. PRINCIPIOS GENERALES DE ACTUACIÓN
+   A. Eficacia y eficiencia en la gestión pública
+      1. Optimización de recursos disponibles
+      2. Orientación a resultados medibles
+
+Fuente: Bloque 1, Tema 3 - Ley 40/2015

@@ -40,6 +40,18 @@ class SettingsService {
             description: 'Máximo de preguntas generadas por petición',
             type: 'number'
         },
+        'AI_MONTHLY_LIMIT_FREE': {
+            value: 20,
+            category: 'limits',
+            description: 'Límite mensual de consultas al chat IA para usuarios gratuitos',
+            type: 'number'
+        },
+        'AI_MONTHLY_LIMIT_PREMIUM': {
+            value: 500,
+            category: 'limits',
+            description: 'Límite mensual de consultas al chat IA para usuarios Premium',
+            type: 'number'
+        },
 
         // IA
         'AI_MODEL': {
@@ -97,7 +109,7 @@ class SettingsService {
             type: 'string'
         },
         'GEMINI_MODEL': {
-            value: 'gemini-1.5-pro',
+            value: 'gemini-2.5-pro',
             category: 'ai',
             description: 'Modelo de Gemini',
             type: 'string'

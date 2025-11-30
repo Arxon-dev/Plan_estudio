@@ -1,6 +1,7 @@
 import sequelize from '../config/database';
 import { QueryTypes } from 'sequelize';
 import User from '../models/User';
+import SettingsService from './SettingsService';
 
 interface ChatUsage {
     queries_used: number;
@@ -10,9 +11,9 @@ interface ChatUsage {
     plan_type: 'free' | 'premium';
 }
 
-export const LIMITS = {
-    FREE: Number(process.env.CHAT_LIMIT_FREE) || 8,
-    PREMIUM: Number(process.env.CHAT_LIMIT_PREMIUM) || 80,
+const DEFAULT_LIMITS = {
+    FREE: Number(process.env.CHAT_LIMIT_FREE) || 20,
+    PREMIUM: Number(process.env.CHAT_LIMIT_PREMIUM) || 500,
 };
 
 export const getUsage = async (userId: number): Promise<ChatUsage> => {
@@ -22,7 +23,12 @@ export const getUsage = async (userId: number): Promise<ChatUsage> => {
     // Determinar plan (asumiendo que existe el campo o lógica de premium)
     // Si no existe el campo plan_type, usamos isPremium
     const planType = (user as any).plan_type || (user.isPremium ? 'premium' : 'free');
-    const limit = planType === 'premium' ? LIMITS.PREMIUM : LIMITS.FREE;
+    
+    // Obtener límites dinámicos desde SettingsService
+    const limitFree = await SettingsService.get('AI_MONTHLY_LIMIT_FREE', DEFAULT_LIMITS.FREE);
+    const limitPremium = await SettingsService.get('AI_MONTHLY_LIMIT_PREMIUM', DEFAULT_LIMITS.PREMIUM);
+    
+    const limit = planType === 'premium' ? limitPremium : limitFree;
 
     const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
 
@@ -39,7 +45,10 @@ export const getUsage = async (userId: number): Promise<ChatUsage> => {
     // Calcular fecha de renovación (1er día del próximo mes)
     const now = new Date();
     const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    const resetDate = nextMonth.toISOString().split('T')[0];
+    const year = nextMonth.getFullYear();
+    const month = String(nextMonth.getMonth() + 1).padStart(2, '0');
+    const day = String(nextMonth.getDate()).padStart(2, '0');
+    const resetDate = `${year}-${month}-${day}`;
 
     return {
         queries_used: queriesUsed,

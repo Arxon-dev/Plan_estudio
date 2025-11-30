@@ -11,8 +11,24 @@ if (!GEMINI_API_KEY) {
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || '');
 
-// Modelo para chat
-export const chatModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+// Modelo para chat (Factory function para configuración dinámica)
+export const getChatModel = (config?: any) => {
+    const defaultConfig = {
+        temperature: 0.3,
+        topK: 20,
+        topP: 0.8,
+        maxOutputTokens: 8192,
+        stopSequences: [],
+    };
+
+    return genAI.getGenerativeModel({
+        model: 'gemini-2.5-pro',
+        generationConfig: { ...defaultConfig, ...config }
+    });
+};
+
+// Mantener exportación estática por compatibilidad (opcional, pero mejor migrar)
+export const chatModel = getChatModel();
 
 // Modelo para embeddings
 export const embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' });

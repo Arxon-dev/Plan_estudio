@@ -3,6 +3,7 @@ import sequelize from '@config/database';
 import User from './User';
 import Theme from './Theme';
 import StudySession from './StudySession';
+import Simulacro from './Simulacro';
 
 export enum TestType {
   INITIAL = 'INITIAL',
@@ -25,6 +26,7 @@ interface TestAttemptAttributes {
   userId: number;
   themeId?: number;
   sessionId?: number;
+  simulacroId?: number;
   testType: TestType;
   totalQuestions: number;
   correctAnswers: number;
@@ -48,6 +50,7 @@ class TestAttempt extends Model<TestAttemptAttributes, TestAttemptCreationAttrib
   public userId!: number;
   public themeId?: number;
   public sessionId?: number;
+  public simulacroId?: number;
   public testType!: TestType;
   public totalQuestions!: number;
   public correctAnswers!: number;
@@ -94,6 +97,16 @@ TestAttempt.init(
       allowNull: true,
       references: {
         model: 'study_sessions',
+        key: 'id',
+      },
+      onDelete: 'SET NULL',
+    },
+    simulacroId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      field: 'simulacro_id',
+      references: {
+        model: 'simulacros',
         key: 'id',
       },
       onDelete: 'SET NULL',
@@ -207,9 +220,11 @@ TestAttempt.init(
 TestAttempt.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 TestAttempt.belongsTo(Theme, { foreignKey: 'themeId', as: 'theme' });
 TestAttempt.belongsTo(StudySession, { foreignKey: 'sessionId', as: 'session' });
+TestAttempt.belongsTo(Simulacro, { foreignKey: 'simulacroId', as: 'simulacro' });
 
 User.hasMany(TestAttempt, { foreignKey: 'userId', as: 'testAttempts' });
 Theme.hasMany(TestAttempt, { foreignKey: 'themeId', as: 'testAttempts' });
 StudySession.hasOne(TestAttempt, { foreignKey: 'sessionId', as: 'testAttempt' });
+Simulacro.hasMany(TestAttempt, { foreignKey: 'simulacroId', as: 'attempts' });
 
 export default TestAttempt;

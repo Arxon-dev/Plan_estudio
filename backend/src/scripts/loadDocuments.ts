@@ -18,13 +18,28 @@ interface DocumentChunk {
 }
 
 // Función para parsear el nombre del archivo y extraer metadata
-// Formato esperado: Bloque1_Tema1_Constitucion_Espanola.txt
-const parseFilename = (filename: string) => {
-    const parts = filename.replace('.txt', '').split('_');
-    const bloque = parts.find(p => p.startsWith('Bloque')) || 'Desconocido';
-    const tema = parts.find(p => p.startsWith('Tema')) || 'Desconocido';
-    // El resto es el nombre del documento
-    const documento = parts.filter(p => !p.startsWith('Bloque') && !p.startsWith('Tema')).join(' ');
+// Intenta extraer de la ruta (B1/Tema_1) o del nombre del archivo
+const parseMetadata = (filePath: string) => {
+    const filename = path.basename(filePath);
+    const dir = path.dirname(filePath);
+    const dirs = dir.split(path.sep);
+
+    // Intentar deducir Bloque y Tema de las carpetas padres
+    // Estructura esperada: .../B1/Tema_1/archivo.txt
+    let bloque = dirs.find(d => d.match(/^B\d+$/) || d.startsWith('Bloque')) || 'Desconocido';
+    let tema = dirs.find(d => d.startsWith('Tema')) || 'Desconocido';
+
+    // Si no se encuentra en directorios, intentar del nombre del archivo (legacy)
+    if (bloque === 'Desconocido' || tema === 'Desconocido') {
+        const parts = filename.replace('.txt', '').split('_');
+        if (bloque === 'Desconocido') bloque = parts.find(p => p.startsWith('Bloque')) || 'Desconocido';
+        if (tema === 'Desconocido') tema = parts.find(p => p.startsWith('Tema')) || 'Desconocido';
+    }
+
+    // Limpiar nombre del documento
+    let documento = filename.replace('.txt', '');
+    // Si el nombre empieza por "Tema X. ", quitarlo para dejar solo el título
+    documento = documento.replace(/^Tema\s*\d+[\.\-]\s*/i, '');
 
     return { bloque, tema, documento };
 };
@@ -52,19 +67,21 @@ const loadDocuments = async () => {
     try {
         console.log('🚀 Iniciando carga de documentos...');
 
-        // 1. Verificar/Crear colección
+        // 1. Recrear colección para asegurar limpieza
         try {
-            await qdrantClient.getCollection(COLLECTION_NAME);
-            console.log(`✅ Colección ${COLLECTION_NAME} existe.`);
+            console.log(`🗑️ Eliminando colección ${COLLECTION_NAME} existente...`);
+            await qdrantClient.deleteCollection(COLLECTION_NAME);
         } catch (e) {
-            console.log(`ℹ️ Creando colección ${COLLECTION_NAME}...`);
-            await qdrantClient.createCollection(COLLECTION_NAME, {
-                vectors: {
-                    size: 768, // Tamaño para text-embedding-004
-                    distance: 'Cosine',
-                },
-            });
+            console.log(`ℹ️ La colección ${COLLECTION_NAME} no existía.`);
         }
+
+        console.log(`✨ Creando nueva colección ${COLLECTION_NAME}...`);
+        await qdrantClient.createCollection(COLLECTION_NAME, {
+            vectors: {
+                size: 768, // Tamaño para text-embedding-004
+                distance: 'Cosine',
+            },
+        });
 
         // 2. Leer archivos (recursivo)
         if (!fs.existsSync(DOCS_DIR)) {
@@ -93,7 +110,7 @@ const loadDocuments = async () => {
             const file = path.basename(filePath);
             console.log(`Processing ${file}...`);
             const content = fs.readFileSync(filePath, 'utf-8');
-            const metadata = parseFilename(file);
+            const metadata = parseMetadata(filePath);
             const chunks = splitText(content);
 
             console.log(`  - Dividido en ${chunks.length} fragmentos.`);

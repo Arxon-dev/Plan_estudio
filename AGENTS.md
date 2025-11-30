@@ -66,3 +66,6 @@ El proyecto sigue una estructura de monorepo con frontend y backend separados:
 ## 6. Notas Adicionales
 - El proyecto utiliza variables de entorno (`.env`) para configuración sensible.
 - La generación de preguntas utiliza servicios de IA externos.
+- **IA Models**: 
+    - `gemini-1.5-pro` ya no está disponible (Nov 2025).
+    - Se utiliza `gemini-2.5-pro` según solicitud del usuario.

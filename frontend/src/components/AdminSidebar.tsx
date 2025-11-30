@@ -19,7 +19,8 @@ import {
     MegaphoneIcon,
     AdjustmentsHorizontalIcon,
     ClipboardDocumentListIcon,
-    ArrowLeftOnRectangleIcon
+    ArrowLeftOnRectangleIcon,
+    CpuChipIcon
 } from '@heroicons/react/24/outline';
 
 interface MenuItem {
@@ -49,8 +50,13 @@ export const AdminSidebar: React.FC = () => {
             ]
         },
         {
-            title: 'Contenido Académico',
+            title: 'Simulacros',
             icon: AcademicCapIcon,
+            path: '/admin/simulacros'
+        },
+        {
+            title: 'Contenido Académico',
+            icon: BookOpenIcon,
             submenu: [
                 { title: 'Temario', path: '/admin/contenido/temario', icon: BookOpenIcon },
                 { title: 'Banco de Preguntas', path: '/admin/contenido/preguntas', icon: QuestionMarkCircleIcon },
@@ -72,7 +78,8 @@ export const AdminSidebar: React.FC = () => {
             icon: Cog6ToothIcon,
             submenu: [
                 { title: 'Configuración', path: '/admin/sistema/configuracion', icon: AdjustmentsHorizontalIcon },
-                { title: 'Logs de Actividad', path: '/admin/sistema/logs', icon: ClipboardDocumentListIcon }
+                { title: 'Logs de Actividad', path: '/admin/sistema/logs', icon: ClipboardDocumentListIcon },
+                { title: 'Uso de IA', path: '/admin/sistema/ai-usage', icon: CpuChipIcon }
             ]
         }
     ];

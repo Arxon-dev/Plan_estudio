@@ -1,0 +1,61 @@
+/* Estilos personalizados para React Flow */
+
+.react-flow__node {
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.react-flow__node:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.react-flow__edge-path {
+    stroke-width: 2;
+    stroke: #3b82f6;
+}
+
+.react-flow__edge.animated .react-flow__edge-path {
+    stroke-dasharray: 5;
+    animation: dashdraw 0.5s linear infinite;
+}
+
+@keyframes dashdraw {
+    to {
+        stroke-dashoffset: -10;
+    }
+}
+
+.react-flow__controls {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.react-flow__controls-button {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.react-flow__controls-button:hover {
+    background: #f1f5f9;
+}
+
+.react-flow__minimap {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode */
+.dark .react-flow__node {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+}
+
+.dark .react-flow__controls-button {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+    color: white;
+}
+
+.dark .react-flow__controls-button:hover {
+    background: #334155;
+}

@@ -5,3 +5,11 @@ dist/
 .DS_Store
 coverage/
 .vscode/
+database.sqlite
+Doc/*.pdf
+Doc/*.zip
+src/scripts/*.pdf
+test_*.pdf
+*.pdf
+debug_*.js
+run-migration-simulacros.js

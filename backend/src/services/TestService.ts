@@ -4,6 +4,7 @@ import ThemeProgress, { ThemeLevel } from '../models/ThemeProgress';
 import UserTestStats from '../models/UserTestStats';
 import User from '../models/User';
 import Theme from '../models/Theme';
+import Simulacro from '../models/Simulacro';
 import SettingsService from './SettingsService';
 import { Op, fn, col, literal } from 'sequelize';
 
@@ -14,6 +15,7 @@ interface StartTestOptions {
   testType: TestType;
   questionCount: number;
   difficulty?: QuestionDifficulty;
+  simulacroId?: number;
 }
 
 interface AnswerDetail {
@@ -29,7 +31,7 @@ class TestService {
    * Iniciar un nuevo test
    */
   async startTest(options: StartTestOptions) {
-    const { userId, themeId, themePart, testType, questionCount, difficulty } = options;
+    const { userId, themeId, themePart, testType, questionCount, difficulty, simulacroId } = options;
 
     // Validar que el tema existe si se especifica
     if (themeId) {
@@ -40,14 +42,31 @@ class TestService {
     }
 
     // Seleccionar preguntas según el tipo de test
-    let questions;
-    if (difficulty) {
+    let questions: TestQuestion[] = [];
+    
+    if (simulacroId) {
+        const simulacro = await Simulacro.findByPk(simulacroId);
+        if (!simulacro || !simulacro.active) {
+            throw new Error('Simulacro no encontrado o inactivo');
+        }
+        // Fetch questions from IDs
+        const allQuestions = await TestQuestion.findAll({
+            where: { id: simulacro.questionIds }
+        });
+        
+        // Order them
+        const questionMap = new Map(allQuestions.map(q => [q.id, q]));
+        questions = simulacro.questionIds
+            .map(qid => questionMap.get(qid))
+            .filter((q): q is TestQuestion => q !== undefined);
+
+    } else if (difficulty) {
       questions = await this.selectQuestionsByDifficulty(themeId!, themePart, difficulty, questionCount);
     } else {
       questions = await this.generateRandomTest(themeId!, themePart, questionCount, userId);
     }
 
-    if (questions.length < questionCount) {
+    if (questions.length < questionCount && !simulacroId) {
       throw new Error(`No hay suficientes preguntas disponibles. Se encontraron ${questions.length} de ${questionCount} requeridas.`);
     }
 
@@ -55,6 +74,7 @@ class TestService {
     const attempt = await TestAttempt.create({
       userId,
       themeId,
+      simulacroId,
       testType,
       totalQuestions: questions.length,
       correctAnswers: 0,
@@ -122,6 +142,33 @@ class TestService {
     });
 
     return questions;
+  }
+
+  /**
+   * Obtener IDs de preguntas para simulacro
+   */
+  async getQuestionsForSimulacro(
+    themeIds: number[],
+    count: number
+  ): Promise<number[]> {
+    // Si no hay temas seleccionados, usar todos
+    const whereClause: any = {};
+    
+    if (themeIds && themeIds.length > 0) {
+      whereClause.themeId = {
+        [Op.in]: themeIds
+      };
+    }
+
+    // Usar Sequelize.literal('RAND()') para selección aleatoria
+    const questions = await TestQuestion.findAll({
+      where: whereClause,
+      attributes: ['id'],
+      order: literal('RAND()'),
+      limit: count
+    });
+
+    return questions.map(q => q.id);
   }
 
   /**

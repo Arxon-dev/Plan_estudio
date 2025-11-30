@@ -51,6 +51,16 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), Pay
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Aumentar timeout a 2 minutos (120000ms) para peticiones largas a Gemini
+app.use((req, res, next) => {
+  req.setTimeout(120000);
+  res.setTimeout(120000, () => {
+    console.log('Request has timed out.');
+    res.status(408).send('Request has timed out.');
+  });
+  next();
+});
+
 // Middleware de mantenimiento
 import { maintenanceMiddleware } from './middleware/maintenance';
 app.use(maintenanceMiddleware);
@@ -76,6 +86,8 @@ import rankingRoutes from './routes/ranking';
 app.use('/api/ranking', rankingRoutes);
 import chatRoutes from './routes/chat';
 app.use('/api/chat', chatRoutes);
+import simulacroRoutes from './routes/simulacros';
+app.use('/api/simulacros', simulacroRoutes);
 
 // Manejador de errores
 app.use(errorHandler);

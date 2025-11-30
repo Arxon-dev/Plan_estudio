@@ -78,7 +78,8 @@ export const Dashboard: React.FC = () => {
         { element: '#tour-dashboard-title', popover: { title: 'Inicio', description: 'Estado general de tu plan.' } },
         { element: '#tour-profile-btn', popover: { title: 'Mi Perfil', description: 'Gestiona tu cuenta y preferencias.' } },
         { element: '#tour-agenda-btn', popover: { title: 'Agenda de hoy', description: 'Accede a tus sesiones de hoy.' } },
-        { element: '#tour-tests-card', popover: { title: 'Tests', description: 'Evalúa tu conocimiento y practica.' } },
+        { element: '#tour-tests-card', popover: { title: 'Tests por Temas', description: 'Evalúa tu conocimiento tema por tema.' } },
+        { element: '#tour-simulacros-card', popover: { title: 'Simulacros', description: 'Realiza exámenes completos y compite en el ranking.' } },
         { element: '#tour-sessions-card', popover: { title: 'Sesiones', description: 'Calendario completo de estudio.' } },
         { element: '#tour-custom-blocks-card', popover: { title: 'Bloques a Medida', description: 'Diseña tu plan bloque a bloque con control total sobre tu horario.' } },
         { element: '#tour-themes-card', popover: { title: 'Temas', description: 'Explora los 21 temas.' } },
@@ -258,7 +259,7 @@ export const Dashboard: React.FC = () => {
                     <h3 className="text-sm font-medium text-yellow-800 mb-1">📅 Período de Preparación Libre</h3>
                     <p className="text-sm text-yellow-700 mb-2">
                       Estás en el período de preparación final (últimos 30 días antes del examen).
-                      Aprovecha para repasar temas clave, hacer simulacros y consolidar conocimientos.
+                      Aprovecha para repasar temas clave, <button onClick={() => navigate('/simulacros')} className="underline font-medium hover:text-yellow-900">hacer simulacros</button> y consolidar conocimientos.
                     </p>
                     <p className="text-xs text-yellow-600">
                       📅 Examen: {format(new Date(plan.examDate), 'dd/MM/yyyy')} •
@@ -330,9 +331,27 @@ export const Dashboard: React.FC = () => {
               </div>
               <span className="text-sm text-gray-500">Practicar</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Tests y Simulacros</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Tests por Temas</h3>
             <p className="text-gray-600 text-sm">
-              Pon a prueba tus conocimientos con tests por temas o simulacros completos.
+              Pon a prueba tus conocimientos con tests específicos por temas.
+            </p>
+          </div>
+
+          {/* Simulacros Card */}
+          <div
+            onClick={() => navigate('/simulacros')}
+            id="tour-simulacros-card"
+            className="card hover:shadow-lg transition-shadow cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <span className="text-sm text-gray-500">Exámenes</span>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Simulacros</h3>
+            <p className="text-gray-600 text-sm">
+              Realiza exámenes completos y compite en el ranking global.
             </p>
           </div>
 
