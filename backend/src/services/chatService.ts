@@ -160,27 +160,131 @@ export async function getAvailableDocuments(): Promise<{ bloque: string; temas: 
     }
 }
 
-// --- Helper: Reparar tablas Markdown ---
+// --- Helper: Reparar tablas Markdown (Smart Parsing) ---
 function repairMarkdownTables(text: string): string {
     if (!text) return text;
 
-    // Estrategia agresiva para separar filas pegadas
-    // Reemplaza "| |" o "||" por "|\n|"
-    // Esto asume que los espacios entre pipes son separadores de fila cuando faltan los saltos de línea
-    let processed = text.replace(/\|\s*\|/g, (match) => {
-        // Si es una línea de separación (ej: |---|), no la tocamos aquí si está aislada, 
-        // pero si está pegada a algo, el regex capturará los pipes de unión.
-        return '|\n|';
-    });
+    const lines = text.split('\n');
+    const processedLines: string[] = [];
+    
+    let inTable = false;
+    let tableCols = 0;
+    let bufferLines: string[] = []; // To hold potential table lines if we are unsure
 
-    // Asegurar que la línea de separación de encabezados tenga saltos de línea
-    // Busca patrones como: |\n|---|---|...|\n|
-    // A veces el reemplazo anterior deja cosas como: ...Header|\n|---|...
-    // Queremos asegurar que |---| tenga \n antes y después.
-    // Buscamos el patrón de guiones
-    processed = processed.replace(/([^\n])(\|\s*:?-{3,}:?.*\|)([^\n])/g, '$1\n$2\n$3');
+    // Regex helpers
+    // Detect header row: Starts/Ends with pipe, contains content
+    const isTableLine = (l: string) => /^\s*\|.*\|\s*$/.test(l);
+    // Detect separator row: |---| or |:---| etc.
+    const isSeparatorLine = (l: string) => /^\s*\|[\s:-]+\|\s*$/.test(l) || /^\s*\|([\s:-]+\|)+$/.test(l);
 
-    return processed;
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (isTableLine(line)) {
+            // Clean the line to count cells correctly
+            // Split by pipe, filter out empty start/end resulting from split
+            // e.g. "| a | b |" -> ["", " a ", " b ", ""]
+            const rawParts = line.split('|');
+            let parts = rawParts;
+            if (parts.length > 0 && parts[0].trim() === '') parts.shift();
+            if (parts.length > 0 && parts[parts.length - 1].trim() === '') parts.pop();
+            
+            const cellCount = parts.length;
+
+            if (!inTable) {
+                // Potential start of table
+                // Check if next line is separator to confirm it's a header
+                const nextLine = lines[i + 1];
+                if (nextLine && isSeparatorLine(nextLine)) {
+                    inTable = true;
+                    tableCols = cellCount;
+                    processedLines.push(line); // Header
+                } else {
+                    // Just a line with pipes but not a table start (or table without separator)
+                    processedLines.push(line);
+                }
+            } else {
+                // We are inside a table
+                if (isSeparatorLine(line)) {
+                    processedLines.push(line);
+                } else {
+                    // Body row
+                    // Check for "Compacted" rows (Multiple rows joined by phantom separators)
+                    // Formula: If (TotalCells + 1) % (Cols + 1) == 0, we likely have joined rows
+                    // Or simpler: If cellCount > tableCols, we need to split
+                    
+                    if (cellCount > tableCols) {
+                        // Try to split into chunks of tableCols
+                        // But we need to handle the separator between chunks.
+                        // Assuming the separator is a single cell (usually empty or space)
+                        
+                        // Calculate if it fits the "Joined with 1 separator" pattern
+                        // N * Cols + (N-1) = cellCount ?
+                        // Example: 2 rows of 3 cols. 3 + 1 + 3 = 7 cells.
+                        // Example: 3 rows of 3 cols. 3 + 1 + 3 + 1 + 3 = 11 cells.
+                        
+                        let isValidSplit = false;
+                        const rows: string[] = [];
+                        let currentIdx = 0;
+                        
+                        // We iterate and try to extract 'tableCols' cells, then skip 1 separator
+                        while (currentIdx < parts.length) {
+                            // Extract a row
+                            const rowCells = parts.slice(currentIdx, currentIdx + tableCols);
+                            if (rowCells.length === tableCols) {
+                                rows.push(`|${rowCells.join('|')}|`);
+                                currentIdx += tableCols;
+                                
+                                // If we are not at end, we expect a separator (1 cell)
+                                if (currentIdx < parts.length) {
+                                    // Skip 1 cell (the phantom separator)
+                                    currentIdx++; 
+                                }
+                            } else {
+                                // Remainder cells don't match column count
+                                // This might happen if the last row is incomplete or logic doesn't fit
+                                // Fallback: Just push what we have? 
+                                // Or maybe it wasn't a joined row pattern.
+                                isValidSplit = false; // Mark as suspicious
+                                break; 
+                            }
+                        }
+                        
+                        // Verify if we consumed everything
+                        if (currentIdx >= parts.length && rows.length > 1) {
+                            isValidSplit = true;
+                        }
+
+                        if (isValidSplit) {
+                            processedLines.push(...rows);
+                        } else {
+                            // Fallback: Maybe it's just a row with extra pipes/escaped pipes?
+                            // Or maybe "Total % Cols == 0" pattern (Contiguous without separator)
+                            if (cellCount % tableCols === 0) {
+                                // Simple chunking
+                                for (let k = 0; k < cellCount; k += tableCols) {
+                                    const chunk = parts.slice(k, k + tableCols);
+                                    processedLines.push(`|${chunk.join('|')}|`);
+                                }
+                            } else {
+                                // Cannot fix safely, push original
+                                processedLines.push(line);
+                            }
+                        }
+
+                    } else {
+                        // Normal row
+                        processedLines.push(line);
+                    }
+                }
+            }
+        } else {
+            inTable = false;
+            processedLines.push(line);
+        }
+    }
+
+    return processedLines.join('\n');
 }
 
 // --- Chat Principal ---
