@@ -140,13 +140,20 @@ export async function createSummaryPDF(title: string, content: string): Promise<
             const text = line.substring(2);
             checkPageBreak(15);
             page.drawText('•', { x: margin + 5, y: yPosition, size: fontSizeBody, font: fontBold, color: rgb(0,0,0) });
-            // Wrap text con sangría
-            yPosition = drawWrappedText(page, text, margin + 20, yPosition, maxWidth - 20, fontRegular, fontBold, fontSizeBody);
+            
+            // Wrap text con sangría y gestión de salto de página
+            const result = drawWrappedText(pdfDoc, page, text, margin + 20, yPosition, maxWidth - 20, fontRegular, fontBold, fontSizeBody, margin, height);
+            page = result.page;
+            yPosition = result.y;
+            
             yPosition -= 5;
         }
         else {
-            // Párrafo normal
-            yPosition = drawWrappedText(page, line, margin, yPosition, maxWidth, fontRegular, fontBold, fontSizeBody);
+            // Párrafo normal con gestión de salto de página
+            const result = drawWrappedText(pdfDoc, page, line, margin, yPosition, maxWidth, fontRegular, fontBold, fontSizeBody, margin, height);
+            page = result.page;
+            yPosition = result.y;
+            
             yPosition -= 10;
         }
     }
@@ -157,14 +164,13 @@ export async function createSummaryPDF(title: string, content: string): Promise<
 // --- HELPERS ---
 
 function parseTableLine(line: string): string[] {
-    return line
-        .split('|')
-        .map(c => c.trim())
-        .filter((c, index, arr) => {
-            if (index === 0 && c === '') return false;
-            if (index === arr.length - 1 && c === '') return false;
-            return true;
-        });
+    // Manejo básico de columnas escapadas o vacías
+    const parts = line.split('|');
+    // Eliminar el primer y último elemento si son vacíos (común en markdown | a | b |)
+    if (parts.length > 0 && parts[0].trim() === '') parts.shift();
+    if (parts.length > 0 && parts[parts.length - 1].trim() === '') parts.pop();
+    
+    return parts.map(c => c.trim());
 }
 
 function calculateTableHeight(
@@ -221,23 +227,37 @@ async function drawTable(
     const bottomMargin = 50;
 
     // --- HEADER ---
-    // Calcular altura del header
     const headerLines = headers.map(h => getWrappedLines(h, colWidth - (padding * 2), fontBold, fontBold, fontSize));
     const maxHeaderLines = Math.max(...headerLines.map(l => l.length), 1);
     const headerHeight = (maxHeaderLines * lineHeight) + (padding * 2);
 
-    // Helper interno para dibujar header
     const drawHeader = (targetPage: PDFPage, y: number) => {
+        // Fondo del header
         targetPage.drawRectangle({
             x: x,
             y: y - headerHeight,
             width: tableWidth,
             height: headerHeight,
-            color: rgb(0.9, 0.9, 0.9),
+            color: rgb(0.9, 0.9, 0.95),
         });
+        // Bordes del header
+        targetPage.drawRectangle({
+             x: x,
+             y: y - headerHeight,
+             width: tableWidth,
+             height: headerHeight,
+             borderColor: rgb(0.6, 0.6, 0.6),
+             borderWidth: 0.5,
+        });
+
         headers.forEach((header, i) => {
             const lines = headerLines[i];
-            let lineY = y - padding - fontSize;
+            // Centrar verticalmente si hay espacio
+            const cellContentHeight = lines.length * lineHeight;
+            const verticalOffset = (headerHeight - cellContentHeight) / 2;
+            
+            let lineY = y - padding - verticalOffset - fontSize + 2; // Ajuste fino
+            
             lines.forEach(line => {
                 let currentX = x + (i * colWidth) + padding;
                 line.tokens.forEach(token => {
@@ -252,10 +272,20 @@ async function drawTable(
                 });
                 lineY -= lineHeight;
             });
+            
+            // Línea vertical separadora (excepto última)
+            if (i < headers.length - 1) {
+                targetPage.drawLine({
+                    start: { x: x + ((i + 1) * colWidth), y: y },
+                    end: { x: x + ((i + 1) * colWidth), y: y - headerHeight },
+                    thickness: 0.5,
+                    color: rgb(0.7, 0.7, 0.7),
+                });
+            }
         });
     };
 
-    // Verificar si cabe el header (aunque el caller debería haber verificado, doble seguridad)
+    // Verificar si cabe el header
     if (currentY - headerHeight < bottomMargin) {
         currentPage = pdfDoc.addPage();
         currentY = pageHeight - bottomMargin;
@@ -266,37 +296,27 @@ async function drawTable(
 
     // --- FILAS ---
     for (const row of rows) {
-        // 1. Calcular altura de la fila basada en la celda más alta
         const cellLinesData = row.map((cell, i) => {
-             if (i >= headers.length) return []; // Ignorar celdas extra
-             const cellText = cell || '-';
+             if (i >= headers.length) return [];
+             const cellText = cell || '';
              return getWrappedLines(cellText, colWidth - (padding * 2), font, fontBold, fontSize);
         });
 
         const maxLines = Math.max(...cellLinesData.map(l => l.length), 1);
         const rowHeight = (maxLines * lineHeight) + (padding * 2);
 
-        // 2. Chequear salto de página para la fila
+        // Chequear salto de página
         if (currentY - rowHeight < bottomMargin) {
              currentPage = pdfDoc.addPage();
              currentY = pageHeight - bottomMargin;
              
-             // Repetir header en nueva página
              drawHeader(currentPage, currentY);
              currentY -= headerHeight;
         }
 
-        // 3. Línea separadora inferior
-        currentPage.drawLine({
-            start: { x: x, y: currentY - rowHeight },
-            end: { x: x + tableWidth, y: currentY - rowHeight },
-            thickness: 0.5,
-            color: rgb(0.8, 0.8, 0.8),
-        });
-
-        // 4. Dibujar contenido de celdas
+        // Dibujar celdas
         cellLinesData.forEach((lines, i) => {
-            let lineY = currentY - padding - fontSize;
+            let lineY = currentY - padding - fontSize + 2;
             
             lines.forEach(line => {
                 let currentX = x + (i * colWidth) + padding;
@@ -312,6 +332,26 @@ async function drawTable(
                 });
                 lineY -= lineHeight;
             });
+
+             // Línea vertical separadora (excepto última)
+             if (i < headers.length - 1) {
+                currentPage.drawLine({
+                    start: { x: x + ((i + 1) * colWidth), y: currentY },
+                    end: { x: x + ((i + 1) * colWidth), y: currentY - rowHeight },
+                    thickness: 0.5,
+                    color: rgb(0.8, 0.8, 0.8),
+                });
+            }
+        });
+        
+        // Borde exterior y separadores horizontales
+        currentPage.drawRectangle({
+            x: x,
+            y: currentY - rowHeight,
+            width: tableWidth,
+            height: rowHeight,
+            borderColor: rgb(0.8, 0.8, 0.8),
+            borderWidth: 0.5,
         });
 
         currentY -= rowHeight;
@@ -410,6 +450,7 @@ function getWrappedLines(
 }
 
 function drawWrappedText(
+    pdfDoc: PDFDocument,
     page: PDFPage,
     text: string,
     x: number,
@@ -417,16 +458,25 @@ function drawWrappedText(
     maxWidth: number,
     fontRegular: PDFFont,
     fontBold: PDFFont,
-    fontSize: number
-): number {
+    fontSize: number,
+    bottomMargin: number,
+    pageHeight: number
+): { page: PDFPage, y: number } {
     const lines = getWrappedLines(text, maxWidth, fontRegular, fontBold, fontSize);
+    let currentPage = page;
     let currentY = y;
-    const lineHeight = fontSize + 5;
+    const lineHeight = fontSize + 4;
 
     lines.forEach(line => {
+        // Check for page break before drawing the line
+        if (currentY < bottomMargin) {
+            currentPage = pdfDoc.addPage();
+            currentY = pageHeight - bottomMargin;
+        }
+
         let currentX = x;
         line.tokens.forEach(token => {
-            page.drawText(token.text, {
+            currentPage.drawText(token.text, {
                 x: currentX,
                 y: currentY,
                 size: fontSize,
@@ -438,7 +488,7 @@ function drawWrappedText(
         currentY -= lineHeight;
     });
     
-    return currentY;
+    return { page: currentPage, y: currentY };
 }
 
 function flushLine(
