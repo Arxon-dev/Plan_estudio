@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { BookOpen, Copy, Check, FileText, List, CreditCard, GitCompare, Network, Download, Image as ImageIcon, FileDown, MoreVertical } from 'lucide-react';
+import { BookOpen, Copy, Check, FileText, List, CreditCard, GitCompare, Network, Image as ImageIcon, FileDown, MoreVertical } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DiagramViewer } from './DiagramViewer';
 import { FlashcardViewer } from './FlashcardViewer';
