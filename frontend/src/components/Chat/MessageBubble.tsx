@@ -1,5 +1,5 @@
-import React from 'react';
-import { BookOpen, Copy, Check, FileText, List, CreditCard, GitCompare, Network } from 'lucide-react';
+import React, { useRef } from 'react';
+import { BookOpen, Copy, Check, FileText, List, CreditCard, GitCompare, Network, Download, Image as ImageIcon, FileDown, MoreVertical } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { DiagramViewer } from './DiagramViewer';
 import { FlashcardViewer } from './FlashcardViewer';
@@ -9,6 +9,13 @@ import { parseFlashcards } from '../../utils/flashcardParser';
 import { parseOutline } from '../../utils/outlineParser';
 import { parseDiagram } from '../../utils/diagramParser';
 import { ReactFlowProvider } from 'reactflow';
+import { downloadMessageAsPDF, downloadMessageAsPNG } from '../../services/chatExportService';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 const typeIcons: Record<string, React.ReactNode> = {
     summary: <FileText className="w-4 h-4" />,
@@ -31,11 +38,20 @@ const typeLabels: Record<string, string> = {
 export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) => void }> = ({ message, onShowSources }) => {
     const isUser = message.role === 'user';
     const [copied, setCopied] = React.useState(false);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(message.content);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleDownloadPDF = () => {
+        if (contentRef.current) downloadMessageAsPDF(contentRef.current, `chat-response-${Date.now()}`);
+    };
+
+    const handleDownloadPNG = () => {
+        if (contentRef.current) downloadMessageAsPNG(contentRef.current, `chat-response-${Date.now()}`);
     };
 
     // RENDERIZADO ESPECIAL PARA FLASHCARDS
@@ -45,7 +61,7 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
 
         return (
             <div className="flex justify-start mb-6">
-                <div className="bg-background rounded-xl p-6 max-w-[85%] w-full border shadow-sm">
+                <div ref={contentRef} className="bg-background rounded-xl p-6 max-w-[85%] w-full border shadow-sm">
                     {/* Badge */}
                     <div className="flex items-center gap-2 mb-4 pb-3 border-b text-primary">
                         <CreditCard className="w-5 h-5" />
@@ -68,6 +84,27 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
                             </ul>
                         </div>
                     )}
+
+                     <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50 no-export">
+                        <div className="flex-1" />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="text-xs text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted mr-1">
+                                    <MoreVertical className="w-3 h-3" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={handleDownloadPDF}>
+                                    <FileDown className="w-4 h-4 mr-2" />
+                                    Descargar PDF
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleDownloadPNG}>
+                                    <ImageIcon className="w-4 h-4 mr-2" />
+                                    Descargar PNG
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </div>
         );
@@ -79,7 +116,7 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
 
         return (
             <div className="flex justify-start mb-6">
-                <div className="bg-background rounded-xl p-6 max-w-[90%] w-full border shadow-sm">
+                <div ref={contentRef} className="bg-background rounded-xl p-6 max-w-[90%] w-full border shadow-sm">
                     {/* Badge */}
                     <div className="flex items-center gap-2 mb-4 pb-3 border-b text-primary">
                         <List className="w-5 h-5" />
@@ -102,6 +139,27 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
                             </ul>
                         </div>
                     )}
+
+                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50 no-export">
+                        <div className="flex-1" />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="text-xs text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted mr-1">
+                                    <MoreVertical className="w-3 h-3" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={handleDownloadPDF}>
+                                    <FileDown className="w-4 h-4 mr-2" />
+                                    Descargar PDF
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleDownloadPNG}>
+                                    <ImageIcon className="w-4 h-4 mr-2" />
+                                    Descargar PNG
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </div>
         );
@@ -113,7 +171,7 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
 
         return (
             <div className="flex justify-start mb-6">
-                <div className="bg-background rounded-xl p-6 w-full border shadow-sm">
+                <div ref={contentRef} className="bg-background rounded-xl p-6 w-full border shadow-sm">
                     {/* Badge */}
                     <div className="flex items-center gap-2 mb-4 pb-3 border-b text-primary">
                         <Network className="w-5 h-5" />
@@ -139,6 +197,27 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
                             </ul>
                         </div>
                     )}
+
+                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50 no-export">
+                        <div className="flex-1" />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="text-xs text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted mr-1">
+                                    <MoreVertical className="w-3 h-3" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={handleDownloadPDF}>
+                                    <FileDown className="w-4 h-4 mr-2" />
+                                    Descargar PDF
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleDownloadPNG}>
+                                    <ImageIcon className="w-4 h-4 mr-2" />
+                                    Descargar PNG
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </div>
         );
@@ -165,6 +244,7 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
     return (
         <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
             <div
+                ref={contentRef}
                 className={`max-w-[85%] rounded-lg p-4 ${isUser
                     ? 'bg-blue-600 text-white rounded-tr-none'
                     : 'bg-muted/50 border rounded-tl-none'
@@ -183,7 +263,7 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
                 </div>
 
                 {!isUser && (
-                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50">
+                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50 no-export">
                         {message.sources && message.sources.length > 0 && (
                             <button
                                 onClick={() => onShowSources(message.sources)}
@@ -194,6 +274,25 @@ export const MessageBubble: React.FC<{ message: any, onShowSources: (s: any[]) =
                             </button>
                         )}
                         <div className="flex-1" />
+                        
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="text-xs text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted mr-1">
+                                    <MoreVertical className="w-3 h-3" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={handleDownloadPDF}>
+                                    <FileDown className="w-4 h-4 mr-2" />
+                                    Descargar PDF
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleDownloadPNG}>
+                                    <ImageIcon className="w-4 h-4 mr-2" />
+                                    Descargar PNG
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
                         <button
                             onClick={handleCopy}
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"

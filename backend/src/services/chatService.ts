@@ -249,7 +249,7 @@ export const processChat = async (
 
         // 4. Consultar a Gemini
         const tokenLimits: Record<string, number> = {
-            summary: 4096,
+            summary: 8192,
             outline: 4096,
             flashcards: 4096,
             comparison: 4096,
