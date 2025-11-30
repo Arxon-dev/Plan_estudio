@@ -294,32 +294,31 @@ export function detectRequestType(userMessage: string): RequestType {
     const normalized = userMessage.toLowerCase();
 
     // PRIORIDAD 1: Flashcards (detectar PRIMERO)
-    if (/(flashcard|tarjeta|carta|ficha|repaso|memoriz)/i.test(normalized)) {
+    // Eliminado 'ficha' para evitar conflictos con 'Ficha de Estudio Técnica' (Summary)
+    if (/(flashcard|tarjeta|carta|repaso|memoriz)/i.test(normalized)) {
         return 'flashcards';
     }
 
-    // PRIORIDAD 2: Diagrama visual (esto es DIFERENTE de esquema)
-    // Movemos esto ANTES de outline para que "línea temporal" gane a "estructura"
+    // PRIORIDAD 2: Diagrama visual
     if (/(diagrama|mapa\s+mental|mapa\s+conceptual|gráfico|visual|línea\s+temporal|linea\s+temporal|línea\s+de\s+tiempo|linea\s+de\s+tiempo|cronología|cronologia|eje\s+cronológico|eje\s+cronologico|timeline|jerarquía|jerarquia)/i.test(normalized)) {
         return 'diagram';
     }
 
-    // PRIORIDAD 3: Esquema/Outline
-    if (/(esquema|outline|estructura|índice|organiza)/i.test(normalized)) {
-        return 'outline';
+    // PRIORIDAD 3: Comparación (Tabla comparativa)
+    if (/(compara|diferencia|vs|versus|similitud|tabla)/i.test(normalized)) {
+        return 'comparison';
     }
 
-    // Resto de detecciones...
-    if (/(resumen|resume|sintetiza|clave)/i.test(normalized)) {
+    // PRIORIDAD 4: Resumen (Summary)
+    // IMPORTANTE: Debe ir ANTES de Outline para que "Resumen de la Organización..." sea Summary
+    if (/(resumen|resume|sintetiza|clave|ficha)/i.test(normalized)) {
         return 'summary';
     }
 
-    if (/(flashcard|tarjeta|carta|estudio|repaso)/i.test(normalized)) {
-        return 'flashcards';
-    }
-
-    if (/(compara|diferencia|vs|versus|similitud|tabla)/i.test(normalized)) {
-        return 'comparison';
+    // PRIORIDAD 5: Esquema/Outline
+    // Usamos \b para palabras comunes como 'organiza' para evitar falsos positivos en títulos (ej: Organización)
+    if (/(esquema|outline|estructura|índice|\borganiza\b)/i.test(normalized)) {
+        return 'outline';
     }
 
     return 'general';
