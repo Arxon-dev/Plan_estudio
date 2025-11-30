@@ -34,14 +34,81 @@ export async function createSummaryPDF(title: string, content: string): Promise<
     });
     yPosition -= 40;
 
-    const lines = content.split('\n');
+    // Pre-procesar contenido para arreglar tablas compactadas (sin saltos de línea)
+    // Detecta patrones | ... | ... | y si están seguidos por otro | ... | sin salto de línea, lo inserta.
+    // Un patrón simple es buscar `|` seguido de espacio/texto y luego `|` que se repite, pero cuidado con falsos positivos.
+    // Mejor aproximación: Si una línea es MUY larga y contiene múltiples `|` que parecen filas distintas.
+    // Pero la regex segura es reemplazar `| |` por `|\n|` si es el patrón de unión de filas.
+    // A menudo el modelo devuelve `| cell | cell | | cell | cell |`.
+    
+    let processedContent = content;
+    // Intento 1: Insertar saltos de línea si detectamos el final de una fila y el inicio de otra pegados
+    // Buscamos "| |" que suele ser el delimitador entre filas cuando se pierde el salto de línea
+    // Ojo: " | " podría ser contenido válido, pero en tablas markdown raw es raro.
+    // Una tabla markdown típica: | a | b |\n| c | d |
+    // Si falta el \n: | a | b || c | d |
+    
+    // Reemplazar '||' por '|\n|' para separar filas pegadas
+    processedContent = processedContent.replace(/\|\|/g, '|\n|');
+    
+    // Reemplazar '| |' por '|\n|' (común si hay un espacio entre filas pegadas)
+    // Usamos una regex que busque el final de una fila y el inicio de otra
+    // Final de fila: `|`
+    // Espacios opcionales
+    // Inicio de fila: `|`
+    // Pero no queremos romper `| cell |`
+    // La heurística: Si hay `|` seguido de espacios y luego otro `|`, y esto ocurre en una línea que YA tiene estructura de tabla...
+    // Vamos a asumir que si el usuario ve todo pegado, es porque faltan los \n.
+    
+    // Vamos a hacer un split más inteligente.
+    const lines = processedContent.split('\n');
     let inTable = false;
     let tableHeaders: string[] = [];
     let tableRows: string[][] = [];
 
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-
+        let line = lines[i].trim();
+        
+        // Si la línea es muy larga y contiene muchos pipes, intentamos dividirla si parece contener múltiples filas
+        // Regex para encontrar patrones de cierre y apertura de fila: `\| *\|`
+        // Pero cuidado con celdas vacías `||`.
+        // Vamos a asumir que si una línea tiene el patrón `|---|` es la separadora.
+        
+        // Estrategia: Si la línea tiene múltiples ocurrencias de `|`, la analizamos.
+        // Si detectamos que contiene la estructura del header y luego filas en la MISMA línea.
+        
+        // Caso específico del usuario: | Concepto | ... | |---|---| ... | ... |
+        // Vamos a pre-procesar la línea actual para dividirla si es necesario
+        if (line.includes('|') && line.length > 100) { // Solo si es larga sospechamos
+             // Intentar insertar saltos de línea antes de cada inicio de fila aparente
+             // Un inicio de fila aparente es un `|` que no está precedido por texto (o es el inicio de la línea)
+             // Pero en una línea pegada: ... | dato | | otro dato | ...
+             // Reemplazamos `| |` por `|\n|`
+             line = line.replace(/\|\s*\|/g, (match) => {
+                 // Si es `||` (celda vacía o fin-inicio), o `| |`.
+                 // Es arriesgado si hay celdas vacías reales.
+                 // Pero en el contexto del problema (tablas rotas), es mejor intentar arreglar.
+                 // Mejor: si vemos la estructura del separador `|---|`, aseguramos que tenga saltos alrededor.
+                 if (match.trim() === '||') return '|\n|';
+                 return match;
+             });
+             
+             // Asegurar que el separador |---| tenga saltos
+             line = line.replace(/(\|\s*-{3,}\s*\|)/g, '\n$1\n');
+        }
+        
+        // Re-split por si hemos introducido saltos
+        const subLines = line.split('\n');
+        
+        for (let j = 0; j < subLines.length; j++) {
+            const subLine = subLines[j].trim();
+            if (subLine.length === 0) continue;
+            
+            await processLine(subLine, i + 1 < lines.length ? lines[i+1] : null);
+        }
+    }
+    
+    async function processLine(line: string, nextLineOriginal: string | null) {
         // --- DETECCIÓN DE TABLAS ---
         if (line.match(/^\|.*\|$/)) {
             if (!inTable) {
@@ -49,113 +116,131 @@ export async function createSummaryPDF(title: string, content: string): Promise<
                 inTable = true;
                 tableHeaders = parseTableLine(line);
                 
-                // Saltar línea separadora tipo |---|---|
-                if (lines[i + 1] && lines[i + 1].trim().match(/^\|[\s-]*\|/)) {
-                    i++; 
+                // No podemos saltar simplemente i++, porque estamos en un sub-loop.
+                // Debemos detectar si la SIGUIENTE sub-línea o línea original es el separador.
+                // Como hemos simplificado, asumiremos que el separador viene después.
+                // Si el separador NO viene, la tabla se verá rara, pero funcionará.
+                // PERO: en el código original saltábamos el separador.
+                // Aquí no podemos acceder fácilmente al "siguiente" en el loop principal desde processLine sin lógica compleja.
+                // Simplificación: Si la línea actual es un separador |---| (solo guiones y pipes), la ignoramos.
+                if (line.match(/^\|[\s-]*\|$/)) {
+                    inTable = false; // Reset temporal, pero realmente queremos ignorarla.
+                    // Si era header, ya lo guardamos. Si es separador, no hacemos nada.
+                    // Corrección: Si acabamos de empezar tabla, esta línea DEBERÍA ser el separador.
+                    // Si detectamos separador, simplemente retornamos.
+                    return;
                 }
-                continue;
+                return;
             } else {
+                // Si encontramos un separador en medio (raro), lo ignoramos
+                if (line.match(/^\|[\s-]*\|$/)) {
+                    return;
+                }
+
                 // Fila de datos
                 const row = parseTableLine(line);
                 tableRows.push(row);
                 
-                // Si la siguiente línea NO es tabla, dibujamos
-                const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
-                if (!nextLine.startsWith('|')) {
-                    // Dibujar tabla acumulada
-                    const tableHeight = calculateTableHeight(tableHeaders, tableRows, maxWidth, fontRegular, fontBold, fontSizeBody);
-                    const remainingSpace = yPosition - margin;
-                    
-                    // Decidir si saltar página
-                    const fitsOnNewPage = tableHeight < (height - margin * 2);
-                    
-                    if (fitsOnNewPage && tableHeight > remainingSpace) {
-                        page = pdfDoc.addPage();
-                        yPosition = height - margin;
-                    }
-                    
-                    const result = await drawTable(pdfDoc, page, tableHeaders, tableRows, margin, yPosition, maxWidth, fontRegular, fontBold, fontSizeBody);
-                    page = result.page;
-                    yPosition = result.y;
-                    
-                    yPosition -= 20; // Margen post-tabla
-                    
-                    inTable = false;
-                    tableHeaders = [];
-                    tableRows = [];
-                }
-                continue;
+                // ¿Cómo sabemos si es el final de la tabla?
+                // En el loop original mirábamos `nextLine`.
+                // Aquí, si `nextLineOriginal` no es tabla, o si es la última subLínea y no hay más...
+                // Es complejo.
+                // ENFOQUE ALTERNATIVO: Acumular filas. Si la siguiente línea NO empieza por pipe, dibujar.
+                // Como estamos en `processLine`, no sabemos qué viene después exactamente si estamos en subLines.
+                // PERO: Si estamos en el loop principal, `nextLineOriginal` nos da una pista.
+                
+                // Vamos a simplificar: Acumulamos todo.
+                // Solo dibujamos cuando detectamos una línea que NO es tabla, o al final del documento.
+                // Esto requiere que `processLine` maneje el estado `inTable` globalmente (que ya lo hace).
+                // Y necesitamos un trigger para "fin de tabla".
+                return;
+            }
+        } else {
+            // Línea que NO es tabla.
+            // Si estábamos en tabla, hay que dibujarla AHORA.
+            if (inTable) {
+                await drawCurrentTable();
+            }
+            
+            // --- RENDERIZADO DE TEXTO NORMAL ---
+            if (line.length === 0) {
+                yPosition -= 10; 
+                return;
+            }
+    
+            if (line.startsWith('## ')) {
+                checkPageBreak(40);
+                page.drawText(line.replace('## ', ''), {
+                    x: margin,
+                    y: yPosition,
+                    size: fontSizeSubHeader,
+                    font: fontBold,
+                    color: rgb(0.2, 0.2, 0.2),
+                });
+                yPosition -= 25;
+            } 
+            else if (line.startsWith('### ')) {
+                checkPageBreak(30);
+                page.drawText(line.replace('### ', ''), {
+                    x: margin,
+                    y: yPosition,
+                    size: fontSizeBody + 2,
+                    font: fontBold,
+                    color: rgb(0.3, 0.3, 0.3),
+                });
+                yPosition -= 20;
+            }
+            else if (line.startsWith('- ') || line.startsWith('* ')) {
+                const text = line.substring(2);
+                checkPageBreak(15);
+                page.drawText('•', { x: margin + 5, y: yPosition, size: fontSizeBody, font: fontBold, color: rgb(0,0,0) });
+                
+                const result = drawWrappedText(pdfDoc, page, text, margin + 20, yPosition, maxWidth - 20, fontRegular, fontBold, fontSizeBody, margin, height);
+                page = result.page;
+                yPosition = result.y;
+                
+                yPosition -= 5;
+            }
+            else {
+                const result = drawWrappedText(pdfDoc, page, line, margin, yPosition, maxWidth, fontRegular, fontBold, fontSizeBody, margin, height);
+                page = result.page;
+                yPosition = result.y;
+                
+                yPosition -= 10;
             }
         }
+    }
+    
+    // Al final del documento, si queda tabla pendiente
+    if (inTable) {
+        await drawCurrentTable();
+    }
 
-        // Si salimos del bucle y todavía hay tabla pendiente (caso fin de archivo)
-        if (inTable && i === lines.length - 1) {
-             const tableHeight = calculateTableHeight(tableHeaders, tableRows, maxWidth, fontRegular, fontBold, fontSizeBody);
-             const remainingSpace = yPosition - margin;
-             
-             const fitsOnNewPage = tableHeight < (height - margin * 2);
-             
-             if (fitsOnNewPage && tableHeight > remainingSpace) {
-                 page = pdfDoc.addPage();
-                 yPosition = height - margin;
-             }
-
-             const result = await drawTable(pdfDoc, page, tableHeaders, tableRows, margin, yPosition, maxWidth, fontRegular, fontBold, fontSizeBody);
-             page = result.page;
-             yPosition = result.y;
-
-             inTable = false;
-        }
-
-
-        // --- RENDERIZADO DE TEXTO ---
-        if (line.length === 0) {
-            yPosition -= 10; 
-            continue;
-        }
-
-        if (line.startsWith('## ')) {
-            checkPageBreak(40);
-            page.drawText(line.replace('## ', ''), {
-                x: margin,
-                y: yPosition,
-                size: fontSizeSubHeader,
-                font: fontBold,
-                color: rgb(0.2, 0.2, 0.2),
-            });
-            yPosition -= 25;
-        } 
-        else if (line.startsWith('### ')) {
-            checkPageBreak(30);
-            page.drawText(line.replace('### ', ''), {
-                x: margin,
-                y: yPosition,
-                size: fontSizeBody + 2,
-                font: fontBold,
-                color: rgb(0.3, 0.3, 0.3),
-            });
-            yPosition -= 20;
-        }
-        else if (line.startsWith('- ') || line.startsWith('* ')) {
-            const text = line.substring(2);
-            checkPageBreak(15);
-            page.drawText('•', { x: margin + 5, y: yPosition, size: fontSizeBody, font: fontBold, color: rgb(0,0,0) });
+    async function drawCurrentTable() {
+         // Filtrar filas vacías o separadores que se hayan colado
+         tableRows = tableRows.filter(r => !r.every(c => c.trim() === '' || c.match(/^-+$/)));
+         
+         if (tableHeaders.length > 0 && tableRows.length > 0) {
+            const tableHeight = calculateTableHeight(tableHeaders, tableRows, maxWidth, fontRegular, fontBold, fontSizeBody);
+            const remainingSpace = yPosition - margin;
             
-            // Wrap text con sangría y gestión de salto de página
-            const result = drawWrappedText(pdfDoc, page, text, margin + 20, yPosition, maxWidth - 20, fontRegular, fontBold, fontSizeBody, margin, height);
+            const fitsOnNewPage = tableHeight < (height - margin * 2);
+            
+            if (fitsOnNewPage && tableHeight > remainingSpace) {
+                page = pdfDoc.addPage();
+                yPosition = height - margin;
+            }
+   
+            const result = await drawTable(pdfDoc, page, tableHeaders, tableRows, margin, yPosition, maxWidth, fontRegular, fontBold, fontSizeBody);
             page = result.page;
             yPosition = result.y;
             
-            yPosition -= 5;
-        }
-        else {
-            // Párrafo normal con gestión de salto de página
-            const result = drawWrappedText(pdfDoc, page, line, margin, yPosition, maxWidth, fontRegular, fontBold, fontSizeBody, margin, height);
-            page = result.page;
-            yPosition = result.y;
-            
-            yPosition -= 10;
-        }
+            yPosition -= 20; 
+         }
+         
+         inTable = false;
+         tableHeaders = [];
+         tableRows = [];
     }
 
     return await pdfDoc.save();
