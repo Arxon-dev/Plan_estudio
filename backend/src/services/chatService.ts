@@ -380,11 +380,11 @@ export const processChat = async (
         // 4. Consultar a Gemini
         const tokenLimits: Record<string, number> = {
             summary: 8192,
-            outline: 4096,
-            flashcards: 4096,
-            comparison: 4096,
+            outline: 8192,
+            flashcards: 8192,
+            comparison: 8192,
             diagram: 4096,
-            general: 1024
+            general: 4096 // AUMENTADO de 1024 a 4096 para evitar cortes
         };
 
         const maxTokens = tokenLimits[type] || 2048;

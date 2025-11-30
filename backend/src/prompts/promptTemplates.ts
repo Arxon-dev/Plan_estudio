@@ -275,7 +275,7 @@ Genera el diagrama AHORA:
 `,
 
     general: (context: string, userQuestion: string) => `
-Eres un asistente especializado en normativa militar española y de defensa.
+Eres un asistente especializado en todos los temas relacionados con la Permanencia en el ejército.
 
 CONTEXTO DE LOS DOCUMENTOS:
 ${context}
