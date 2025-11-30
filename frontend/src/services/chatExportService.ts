@@ -30,12 +30,10 @@ export const downloadMessageAsPNG = async (element: HTMLElement, filename: strin
 
 export const downloadMessageAsPDF = async (element: HTMLElement, filename: string) => {
     try {
-        // First convert to PNG to preserve complex layout/styles
         const dataUrl = await toPng(element, {
             quality: 0.95,
             backgroundColor: '#ffffff',
             filter: (node) => {
-                // Exclude elements with 'no-export' class
                 if (node instanceof HTMLElement && node.classList.contains('no-export')) {
                     return false;
                 }
@@ -43,30 +41,27 @@ export const downloadMessageAsPDF = async (element: HTMLElement, filename: strin
             }
         });
 
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4'
-        });
-
+        const pdf = new jsPDF('p', 'mm', 'a4');
         const imgProps = pdf.getImageProperties(dataUrl);
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        const pageHeight = pdf.internal.pageSize.getHeight();
 
-        // If content is longer than one page, we might need to handle pagination or splitting
-        // For simplicity in this version, we'll just scale it to fit width and let height expand (or add pages if needed logic is complex)
-        // But standard approach for single message: just put it on the page.
-        
-        // If height > page height, we might want to handle that, but for chat messages usually they fit or we accept scaling/multipage.
-        // Let's just add the image for now.
-        
-        if (pdfHeight > pdf.internal.pageSize.getHeight()) {
-             // Simple multi-page logic could be added here, but for now let's just let it run
-             // or we can split. But simpler is often better for v1.
-             // Let's just add it.
+        let heightLeft = pdfHeight;
+        let position = 0;
+
+        // First page
+        pdf.addImage(dataUrl, 'PNG', 0, position, pdfWidth, pdfHeight);
+        heightLeft -= pageHeight;
+
+        // Subsequent pages
+        while (heightLeft > 0) {
+            position -= pageHeight; // Shift image up
+            pdf.addPage();
+            pdf.addImage(dataUrl, 'PNG', 0, position, pdfWidth, pdfHeight);
+            heightLeft -= pageHeight;
         }
 
-        pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`${filename}.pdf`);
     } catch (err) {
         console.error('Error generating PDF:', err);

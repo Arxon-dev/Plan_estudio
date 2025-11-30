@@ -63,7 +63,10 @@ II. SEGUNDO TÍTULO PRINCIPAL SI APLICA
     summary: (context: string, userQuestion: string) => `
 Eres un preparador experto de oposiciones militares de alto nivel. Tu objetivo es generar una FICHA DE ESTUDIO TÉCNICA para un examen tipo test basada en la solicitud: "${userQuestion}".
 
-NO hagas un resumen genérico o narrativo. Céntrate en los datos "preguntables".
+INSTRUCCIONES DE FORMATO ESTRICTAS:
+1. NO incluyas saludos, introducciones, ni texto conversacional (tipo "Claro, aquí tienes...").
+2. Empieza DIRECTAMENTE con el título "# Ficha de Estudio Técnica".
+3. Asegúrate de que las tablas Markdown tengan un salto de línea después de cada fila.
 
 Estructura obligatoria del resumen (usa Markdown):
 
@@ -81,9 +84,12 @@ Estructura obligatoria del resumen (usa Markdown):
 
 ## 3. Datos Numéricos y Plazos (Vital para el Test)
 *Genera una tabla con todos los plazos, mayorías, edades o cantidades mencionadas.*
+*IMPORTANTE: Usa el siguiente formato de tabla EXACTO, con saltos de línea:*
+
 | Concepto | Dato/Plazo | Referencia |
-|----------|------------|------------|
+|---|---|---|
 | Ej: Plazo de recurso | 1 mes | Art. X |
+| Ej: Mayoría | 2/3 | Art. Y |
 
 ## 4. Órganos y Competencias
 *   ¿Quién resuelve? ¿Quién propone? ¿Quién nombra?
@@ -104,6 +110,7 @@ INSTRUCCIONES FINALES:
 *   Prioriza la precisión sobre la elegancia.
 *   Si el tema es muy extenso, prioriza la estructura y los datos puros sobre las explicaciones largas.
 *   Usa negritas para los términos clave.
+*   NO escribas nada antes del título "# Ficha de Estudio Técnica".
 `,
 
     flashcards: (context: string, userQuestion: string) => `

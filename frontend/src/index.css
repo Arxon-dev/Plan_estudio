@@ -104,4 +104,15 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Custom Table Styles for Markdown Content */
+  .prose table {
+    @apply w-full border-collapse border border-border my-4;
+  }
+  .prose th {
+    @apply bg-muted p-2 border border-border font-bold text-left;
+  }
+  .prose td {
+    @apply p-2 border border-border;
+  }
 }
